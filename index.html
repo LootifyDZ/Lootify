@@ -5,144 +5,47 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Lootify | Login</title>
 <link rel="icon" href="rrrr.png">
-
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Geneva,sans-serif}
-body{
-    background:#F2DC91;
-    height:100vh;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-}
-
-/* MUSIC BUTTON - RIGHT PAGE */
-#musicBtn{
-    position: fixed;
-    top: 15px;
-    right: 20px;
-    font-size: 42px;
-    cursor: pointer;
-    user-select: none;
-    z-index: 9999;
-    transition: transform 0.3s;
-}
+body{background:#F2DC91;height:100vh;display:flex;justify-content:center;align-items:center;}
+#musicBtn{position:fixed;top:15px;right:20px;font-size:42px;cursor:pointer;user-select:none;z-index:9999;transition: transform 0.3s;}
 #musicBtn:hover{transform: scale(1.2) rotate(10deg);}
-
-/* LOGIN BOX */
-.login-box{
-    background:#F2DC91;
-    padding:35px;
-    width:380px;
-    border-radius:14px;
-    text-align:center;
-    box-shadow:0 0 25px rgba(0,0,0,.3);
-    animation: fadeUp 0.8s ease;
-    position: relative;
-}
-
-.login-box img{
-    width:130px;
-    margin-bottom:15px;
-    animation: pop 0.7s ease;
-}
-
-.login-box h2{
-    margin-bottom:20px;
-    color:#222;
-}
-
-.login-box input{
-    width:100%;
-    padding:12px;
-    margin:10px 0;
-    border:none;
-    border-radius:7px;
-    font-size:15px;
-}
-
-.login-box button{
-    width:100%;
-    padding:12px;
-    margin-top:10px;
-    border:none;
-    border-radius:7px;
-    font-size:16px;
-    font-weight:bold;
-    cursor:pointer;
-    transition: transform .2s, box-shadow .2s;
-}
-
-.login-box button:hover{
-    transform: scale(1.05);
-    box-shadow:0 0 15px rgba(0,0,0,0.3);
-}
-
-/* NORMAL LOGIN BUTTON */
-.login-box .normal{
-    background:#898989;
-    color:white;
-}
-
-/* GOOGLE LOGIN BUTTON */
-.login-box .google{
-    background:#AAAAAA; /* Grey */
-    color:white;
-}
-
-.login-box hr{
-    margin:18px 0;
-    border:1px solid #ccc;
-}
-
-/* ANIMATIONS */
-@keyframes fadeUp {
-    from {opacity:0; transform:translateY(40px);}
-    to {opacity:1; transform:translateY(0);}
-}
-@keyframes pop{
-    0% {transform:scale(0.5); opacity:0;}
-    100% {transform:scale(1); opacity:1;}
-}
+.login-box{background:#F2DC91;padding:35px;width:380px;border-radius:14px;text-align:center;box-shadow:0 0 25px rgba(0,0,0,.3);position:relative;animation: fadeUp 0.8s ease;}
+.login-box img{width:130px;margin-bottom:15px;animation: pop 0.7s ease;}
+.login-box h2{margin-bottom:20px;color:#222;}
+.login-box input{width:100%;padding:12px;margin:10px 0;border:none;border-radius:7px;font-size:15px;}
+.login-box button{width:100%;padding:12px;margin-top:10px;border:none;border-radius:7px;font-size:16px;font-weight:bold;cursor:pointer;transition: transform .2s, box-shadow .2s;}
+.login-box button:hover{transform: scale(1.05);box-shadow:0 0 15px rgba(0,0,0,0.3);}
+.login-box .normal{background:#898989;color:white;}
+.login-box .google{background:#AAAAAA;color:white;}
+.login-box hr{margin:18px 0;border:1px solid #ccc;}
+@keyframes fadeUp {from{opacity:0; transform:translateY(40px);}to{opacity:1; transform:translateY(0);}}
+@keyframes pop{0%{transform:scale(0.5);opacity:0;}100%{transform:scale(1);opacity:1;}}
 </style>
 </head>
-
 <body>
 
-<!-- MUSIC BUTTON -->
 <div id="musicBtn">🔈</div>
-<audio id="music" src="wow.mp3" loop muted autoplay></audio>
-
+<audio id="bgMusic" src="wow.mp3" loop muted autoplay></audio>
 <script>
-const music = document.getElementById("music");
-const btn = document.getElementById("musicBtn");
-
-btn.onclick = () => {
-    music.muted = !music.muted;
-    btn.textContent = music.muted ? "🔈" : "🔊";
-    music.play();
-};
+const btn=document.getElementById('musicBtn');
+const audio=document.getElementById('bgMusic');
+audio.play().catch(e=>console.log("Autoplay blocked"));
+btn.addEventListener('click',()=>{audio.muted=!audio.muted; btn.textContent=audio.muted?'🔈':'🔊'; if(audio.paused) audio.play();});
 </script>
 
-<!-- LOGIN BOX -->
 <div class="login-box">
     <img src="gg.png" alt="Lootify Logo">
-   
 
-    <!-- Normal Login -->
     <form onsubmit="login(event)">
         <input id="user" type="text" placeholder="Username" required>
         <input type="password" placeholder="Password" required>
         <button class="normal" type="submit">Log in</button>
     </form>
-
     <hr>
-
-    <!-- Google Login -->
     <button class="google" onclick="googleLogin()">Login with Google</button>
 </div>
 
-<!-- Firebase Google Auth -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
 import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
@@ -161,7 +64,7 @@ window.googleLogin = function(){
     .then(res=>{
         localStorage.setItem("loggedIn","true");
         localStorage.setItem("username",res.user.displayName);
-        window.location.href="Lootify.1.html";
+        window.location.href="Lootify1.html";
     })
     .catch(e=>alert(e.message));
 };
@@ -170,15 +73,11 @@ window.googleLogin = function(){
 <script>
 function login(e){
     e.preventDefault();
-    const user = document.getElementById("user").value;
     localStorage.setItem("loggedIn","true");
-    localStorage.setItem("username",user);
-    window.location.href="Lootify.html";
+    localStorage.setItem("username",document.getElementById("user").value);
+    window.location.href="Lootify1.html";
 }
 </script>
 
 </body>
 </html>
-
-
-
