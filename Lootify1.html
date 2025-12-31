@@ -6,7 +6,23 @@
 <title>Lootify | Main</title>
 <link rel="icon"  href="rr.png",type:"image/png " >
 
-<style>
+<style> 
+    .user-box button{
+    padding:12px 24px;
+    font-size:17px;
+    border:none;
+    border-radius:25px;   /* زر دائري */
+    cursor:pointer;
+    font-weight:bold;
+    background:linear-gradient(90deg,#f97316,#facc15);
+    color:#000;
+    transition:0.3s;
+}
+.user-box button:hover{
+    transform:scale(1.05);
+    box-shadow:0 5px 15px rgba(0,0,0,.3);
+}
+
 *{margin:0;padding:0;box-sizing:border-box;font-family:Geneva,sans-serif}
 body{background:#F2DC91;color:#000}
 
@@ -196,6 +212,7 @@ function logout(){
 
 </body>
 </html>
+
 
 
 
