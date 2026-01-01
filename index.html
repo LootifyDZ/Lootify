@@ -9,6 +9,20 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Geneva,sans-serif}
 body{background:#F2DC91;height:100vh;display:flex;justify-content:center;align-items:center;}
+
+{
+    min-height:100vh;
+    background:linear-gradient(
+        180deg,
+        #FFB703 0%,   /* شمس */
+        #F2DC91 35%,  /* أصفر تاعك */
+        #E09F3E 60%,  /* برتقالي غروب */
+        #9B5DE5 100%  /* بنفسجي خفيف */
+    );
+    background-attachment:fixed;
+    color:#000;
+}
+    
 #musicBtn{position:fixed;top:15px;right:20px;font-size:42px;cursor:pointer;user-select:none;z-index:9999;transition: transform 0.3s;}
 #musicBtn:hover{transform: scale(1.2) rotate(10deg);}
 .login-box{background:#F2DC91;padding:35px;width:380px;border-radius:14px;text-align:center;box-shadow:0 0 25px rgba(0,0,0,.3);position:relative;animation: fadeUp 0.8s ease;}
@@ -92,6 +106,7 @@ function login(e){
 
 </body>
 </html>
+
 
 
 
