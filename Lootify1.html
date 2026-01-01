@@ -158,13 +158,14 @@ resize();
 window.addEventListener("resize", resize);
 
 const particles = [];
-for(let i=0;i<60;i++){
+for(let i=0;i<35;i++){
   particles.push({
     x:Math.random()*canvas.width,
     y:Math.random()*canvas.height,
     r:Math.random()*2+1,
-    dx:(Math.random()-.5)*0.3,
-    dy:(Math.random()-.5)*0.3
+   dx:(Math.random()-.5)*0.6,
+dy:(Math.random()-.5)*0.2
+
   });
 }
 
@@ -172,9 +173,12 @@ function animate(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
   particles.forEach(p=>{
     ctx.beginPath();
-    ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
-    ctx.fillStyle="rgba(255,255,255,0.35)";
-    ctx.fill();
+ctx.moveTo(p.x, p.y);
+ctx.lineTo(p.x + 8, p.y);   // خطوط قصيرة = Tech
+ctx.strokeStyle = "rgba(0,0,0,0.35)"; // نيون داكن
+ctx.lineWidth = 1;
+ctx.stroke();
+
 
     p.x+=p.dx;
     p.y+=p.dy;
@@ -259,6 +263,7 @@ function logout(){
 
 </body>
 </html>
+
 
 
 
