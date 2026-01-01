@@ -1,10 +1,48 @@
-<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Lootify | Main</title> <link rel="icon" href="rr.png",type:"image/png " > <style> #particles{ position:fixed; top:0; left:0; width:100%; height:100%; z-index:-1; /* وراء كلشي */ pointer-events:none; } .user-box button{ padding:12px 24px; font-size:17px; border:none; border-radius:25px; /* زر دائري */ cursor:pointer; font-weight:bold; background:linear-gradient(90deg,#f97316,#facc15); color:#000; transition:0.3s; } .user-box button:hover{ transform:scale(1.05); box-shadow:0 5px 15px rgba(0,0,0,.3); } *{margin:0;padding:0;box-sizing:border-box;font-family:Geneva,sans-serif} body{background:#F2DC91;color:#000 background:linear-gradient( 180deg, #FFB703 0%, /* شمس */ #F2DC91 35%, /* أصفر تاعك */ #E09F3E 60%, /* برتقالي غروب */ #9B5DE5 100% /* بنفسجي خفيف */ ); background-attachment:fixed; color:#000; } /* HEADER */ header{ background:#222; color:white; padding:15px 30px; display:flex; align-items:center; justify-content:space-between; } header img{height:45px} nav a{ color:white; margin:0 15px; text-decoration:none; font-size:22px; font-weight:bold; } nav a:hover{color:#F2DC91} .user-box{ display:flex; align-items:center; gap:15px; } .user-box span{font-size:16px} .user-box button{ padding:6px 12px; border:none; border-radius:5px; cursor:pointer; font-weight:bold; } /* BANNER */ .banner{ height:260px; display:flex; align-items:center; justify-content:center; font-size:32px; font-weight:bold; color:white; background:linear-gradient(90deg,#222,#555); } /* PRODUCTS */ .products{ padding:40px; display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:25px; } .card{ background:white; padding:20px; border-radius:12px; text-align:center; box-shadow:0 5px 10px rgba(0,0,0,.2); } .card h3{margin-bottom:10px} .card button{ margin-top:10px; padding:8px 14px; border:none; background:#222; color:white; border-radius:6px; cursor:pointer; } .card button:hover{ background:#F2DC91; color:black; } /* CART */ .cart{ position:fixed; bottom:20px; right:20px; background:#222; color:white; padding:15px; border-radius:50%; cursor:pointer; } .cart span{ position:absolute; top:5px; right:5px; background:white; color:black; width:20px; height:20px; border-radius:50%; font-size:14px; display:flex; align-items:center; justify-content:center; } window.location.href = "index.html"; </style> </head> <body> <canvas id="particles"></canvas> <script> const canvas = document.getElementById("particles"); const ctx = canvas.getContext("2d"); function resize(){ canvas.width = window.innerWidth; canvas.height = window.innerHeight; } resize(); window.addEventListener("resize", resize); const particles = []; for(let i=0;i<60;i++){ particles.push({ x:Math.random()*canvas.width, y:Math.random()*canvas.height, r:Math.random()*2+1, dx:(Math.random()-.5)*0.3, dy:(Math.random()-.5)*0.3 }); } function animate(){ ctx.clearRect(0,0,canvas.width,canvas.height); particles.forEach(p=>{ ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.fillStyle="rgba(255,255,255,0.35)"; ctx.fill(); p.x+=p.dx; p.y+=p.dy; if(p.x<0||p.x>canvas.width) p.dx*=-1; if(p.y<0||p.y>canvas.height) p.dy*=-1; }); requestAnimationFrame(animate); } animate(); </script> <!-- 🔐 PROTECTION --> <script> if(localStorage.getItem("loggedIn")!=="true"){ window.location.href="index.html"; } </script> <header> <img src="rrrr.png"> <nav> <a href="mouse.html">Mouse</a> <a href="#">Keyboard</a> <a href="#">Headphones</a> <a href="#">Contact Us!</a> </nav> <div class="user-box"> <span id="username">Welcome</span> <button onclick="logout()">Logout</button> </div> </header> <div class="banner"> Best Gaming Deals 🔥 </div> <section class="products"> <div class="card"> <h3>Gaming Mouse</h3> <button onclick="addToCart('Mouse')">Add to cart</button> </div> <div class="card"> <h3>Mechanical Keyboard</h3> <button onclick="addToCart('Keyboard')">Add to cart</button> </div> <div class="card"> <h3>Headphones</h3> <button onclick="addToCart('Headphones')">Add to cart</button> </div> </section> <div class="cart" onclick="showCart()"> 🛒 <span id="count">0</span> </div> <script> /* USERNAME */ const name = localStorage.getItem("username") || "Player"; document.getElementById("username").innerText = "Hi, " + name; /* CART */ let cart = JSON.parse(localStorage.getItem("cart")) || []; updateCount(); function addToCart(item){ cart.push(item); localStorage.setItem("cart",JSON.stringify(cart)); updateCount(); } function updateCount(){ document.getElementById("count").innerText = cart.length; } function showCart(){ alert("Cart items:\n" + cart.join(", ")); } /* LOGOUT */ function logout(){ localStorage.clear(); window.location.href="index.html"; } </script> <audio id="bgMusic" src="wow.mp3" loop autoplay></audio> </body> </html>
-
-
-
-
-
-
+<!DOCTYPE html>
+<html lang="en"> 
+  <head> <meta charset="UTF-8"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <meta name = "google-site-verification" content ="71cf20503848fde6.html"> 
+    <title>Lootify | Login</title>
+    <link rel="icon" href="rr.png",type:"image/png " >
+    <style>
+      *{margin:0;padding:0;box-sizing:border-box;font-family:Geneva,sans-serif} 
+      body{background:#F2DC91;height:100vh;display:flex;justify-content:center;align-items:center;}
+      #particles{ position:fixed; top:0; left:0; width:100%; height:100%; z-index:-1; /* وراء كلشي */ pointer-events:none; } 
+      { min-height:100vh; background:linear-gradient( 180deg, #FFB703 0%, /* شمس */ #F2DC91 35%, /* أصفر تاعك */ #E09F3E 60%, /* برتقالي غروب */ #9B5DE5 100% /* بنفسجي خفيف */ ); background-attachment:fixed; color:#000; }
+      #musicBtn{position:fixed;top:15px;right:20px;font-size:42px;cursor:pointer;user-select:none;z-index:9999;transition: transform 0.3s;}
+      #musicBtn:hover{transform: scale(1.2) rotate(10deg);}
+      .login-box{background:#F2DC91;padding:35px;width:380px;border-radius:14px;text-align:center;box-shadow:0 0 25px rgba(0,0,0,.3);position:relative;animation: fadeUp 0.8s ease;} 
+      .login-box img{width:130px;margin-bottom:15px;animation: pop 0.7s ease;} .login-box h2{margin-bottom:20px;color:#222;}
+      .login-box input{width:100%;padding:12px;margin:10px 0;border:none;border-radius:7px;font-size:15px;}
+      .login-box button{width:100%;padding:12px;margin-top:10px;border:none;border-radius:7px;font-size:16px;font-weight:bold;cursor:pointer;transition: transform .2s, box-shadow .2s;}
+      .login-box button:hover{transform: scale(1.05);box-shadow:0 0 15px rgba(0,0,0,0.3);} .login-box .normal{background:#898989;color:white;} 
+      .login-box .google{background:#AAAAAA;color:white;}
+      .login-box hr{margin:18px 0;border:1px solid #ccc;}
+      @keyframes fadeUp {from{opacity:0; transform:translateY(40px);}to{opacity:1; transform:translateY(0);}}
+      @keyframes pop{0%{transform:scale(0.5);opacity:0;}100%{transform:scale(1);opacity:1;}} 
+    </style> 
+  </head>
+  <body> 
+    <div id="musicBtn">🔈</div>
+    <audio id="bgMusic" src="wow.mp3" loop muted autoplay></audio> <script> 
+      const btn=document.getElementById('musicBtn'); const audio=document.getElementById('bgMusic'); audio.play().catch(e=>console.log("Autoplay blocked")); btn.addEventListener('click',()=>{audio.muted=!audio.muted; btn.textContent=audio.muted?'🔈':'🔊'; if(audio.paused) audio.play();}); 
+    </script> 
+    <div class="login-box"> <img src="gg.png" alt="Lootify Logo"> <form onsubmit="login(event)">
+      <input id="user" type="text" placeholder="Username" required> 
+      <input type="password" placeholder="Password" required>
+      <button class="normal" type="submit">Log in</button>
+    </form>
+      <hr>
+      <button class="google" onclick="googleLogin()">Login with Google</button> </div> <script type="module"> // 
+        🔹 Firebase Initialization import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js"; import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-analytics.js"; import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js"; const firebaseConfig = { apiKey: "AIzaSyA6XbX1DMzr_LBqxnMyafBX2jVVtoWU4PU", authDomain: "lootify-89bf6.firebaseapp.com", projectId: "lootify-89bf6", storageBucket: "lootify-89bf6.firebasestorage.app", messagingSenderId: "1075454919896", appId: "1:1075454919896:web:3cada8ca62c612dd9a03ad", measurementId: "G-6M5P4J6SYX" }; const app = initializeApp(firebaseConfig); const analytics = getAnalytics(app); //
+        🔹 Google Login const auth = getAuth(app); const provider = new GoogleAuthProvider(); window.googleLogin =
+          function() { signInWithPopup(auth, provider) .then(res => { localStorage.setItem("loggedIn", "true"); localStorage.setItem("username", res.user.displayName); window.location.href = "Lootify1.html";
+                                                                     // الصفحة لي تحب تروح لها بعد login }) .catch(e => alert("Error: " + e.message)); }           ; </script> 
+    <script> function login(e){ e.preventDefault(); localStorage.setItem("loggedIn","true"); localStorage.setItem("username",document.getElementById("user").value); window.location.href="Lootify1.html"; } </script> 
+    <canvas id="particles"></canvas> <script> const canvas = document.getElementById("particles"); const ctx = canvas.getContext("2d"); function resize(){ canvas.width = window.innerWidth; canvas.height = window.innerHeight; } resize(); window.addEventListener("resize", resize); const particles = []; for(let i=0;i<60;i++){ particles.push({ x:Math.random()*canvas.width, y:Math.random()*canvas.height, r:Math.random()*2+1, dx:(Math.random()-.5)*0.3, dy:(Math.random()-.5)*0.3 }); } function animate(){ ctx.clearRect(0,0,canvas.width,canvas.height); particles.forEach(p=>{ ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.fillStyle="rgba(255,255,255,0.35)"; ctx.fill(); p.x+=p.dx; p.y+=p.dy; if(p.x<0||p.x>canvas.width) p.dx*=-1; if(p.y<0||p.y>canvas.height) p.dy*=-1; }); requestAnimationFrame(animate); } animate(); </script>
+  </body> 
+</html>
 
 
 
