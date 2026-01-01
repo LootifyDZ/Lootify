@@ -7,39 +7,24 @@
 <link rel="icon" href="rr.png" type="image/png">
 
 <style>
-
-/* ✅ PARTICLES (FIXED فقط) */
-#particles{
-    position:fixed;
-    top:0;
-    left:0;
-    width:100%;
-    height:100%;
-    z-index:0;              /* ❗ كان -1 */
-    pointer-events:none;
+ .user-box button{
+    padding:12px 24px;
+    font-size:17px;
+    border:none;
+    border-radius:25px;   /* زر دائري */
+    cursor:pointer;
+    font-weight:bold;
+    background:linear-gradient(90deg,#f97316,#facc15);
+    color:#000;
+    transition:0.3s;
 }
-
-/* نخلي المحتوى فوق particles */
-header, .banner, .products, .cart{
-    position:relative;
-    z-index:1;
+.user-box button:hover{
+    transform:scale(1.05);
+    box-shadow:0 5px 15px rgba(0,0,0,.3);
 }
-
-/* ========== باقي كودك بدون تغيير ========== */
 
 *{margin:0;padding:0;box-sizing:border-box;font-family:Geneva,sans-serif}
-
-body{
-    background:linear-gradient(
-        180deg,
-        #FFB703 0%,
-        #F2DC91 35%,
-        #E09F3E 60%,
-        #9B5DE5 100%
-    );
-    background-attachment:fixed;
-    color:#000;
-}
+body{background:#F2DC91;color:#000}
 
 /* HEADER */
 header{
@@ -67,22 +52,26 @@ nav a:hover{color:#F2DC91}
 }
 .user-box span{font-size:16px}
 .user-box button{
-    padding:12px 24px;
-    font-size:17px;
+    padding:6px 12px;
     border:none;
-    border-radius:25px;
+    border-radius:5px;
     cursor:pointer;
     font-weight:bold;
-    background:linear-gradient(90deg,#f97316,#facc15);
-    color:#000;
-    transition:.3s;
 }
-.user-box button:hover{
-    transform:scale(1.05);
-    box-shadow:0 5px 15px rgba(0,0,0,.3);
+
+/* BANNER */
+.banner{
+    height:260px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:32px;
+    font-weight:bold;
+    color:white;
+    background:linear-gradient(90deg,#222,#555);
 }
-*{margin:0;padding:0;box-sizing:border-box;font-family:Geneva,sans-serif}
-body{background:#F2DC91;color:#000}
+
+
 
 /* PRODUCTS */
 .products{
@@ -264,6 +253,7 @@ function logout(){
 
 </body>
 </html>
+
 
 
 
