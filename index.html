@@ -10,6 +10,22 @@
 *{margin:0;padding:0;box-sizing:border-box;font-family:Geneva,sans-serif}
 body{background:#F2DC91;height:100vh;display:flex;justify-content:center;align-items:center;}
 
+
+
+#particles{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    z-index:-1; /* وراء كلشي */
+    pointer-events:none;
+}
+
+
+
+    
+
 {
     min-height:100vh;
     background:linear-gradient(
@@ -103,9 +119,11 @@ function login(e){
     window.location.href="Lootify1.html";
     }
 </script>
+<canvas id="particles"></canvas>
 
 </body>
 </html>
+
 
 
 
