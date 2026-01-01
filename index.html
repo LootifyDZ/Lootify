@@ -3,20 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="google-site-verification" content="index.html">
+<meta name = "google-site-verification" content ="71cf20503848fde6.html">
 <title>Lootify | Login</title>
-<link rel="icon" href="rr.png" type="image/png">
-
+<link rel="icon" href="rr.png",type:"image/png " >
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Geneva,sans-serif}
+body{background:#F2DC91;height:100vh;display:flex;justify-content:center;align-items:center;}
 
-body{
-    background:#F2DC91;
-    height:100vh;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-}
+
 
 /* ✅ PARTICLES (FIXED فقط) */
 #particles{
@@ -48,86 +42,36 @@ body{
     color:#000;
 }
 
-#musicBtn{
-    position:fixed;
-    top:15px;
-    right:20px;
-    font-size:42px;
-    cursor:pointer;
-    user-select:none;
-    z-index:2;
-    transition:transform .3s;
-}
-#musicBtn:hover{transform:scale(1.2) rotate(10deg);}
-
-.login-box{
-    background:#F2DC91;
-    padding:35px;
-    width:380px;
-    border-radius:14px;
-    text-align:center;
-    box-shadow:0 0 25px rgba(0,0,0,.3);
-    animation:fadeUp .8s ease;
-}
-.login-box img{width:130px;margin-bottom:15px;animation:pop .7s ease;}
+    
+#musicBtn{position:fixed;top:15px;right:20px;font-size:42px;cursor:pointer;user-select:none;z-index:9999;transition: transform 0.3s;}
+#musicBtn:hover{transform: scale(1.2) rotate(10deg);}
+.login-box{background:#F2DC91;padding:35px;width:380px;border-radius:14px;text-align:center;box-shadow:0 0 25px rgba(0,0,0,.3);position:relative;animation: fadeUp 0.8s ease;}
+.login-box img{width:130px;margin-bottom:15px;animation: pop 0.7s ease;}
 .login-box h2{margin-bottom:20px;color:#222;}
-.login-box input{
-    width:100%;
-    padding:12px;
-    margin:10px 0;
-    border:none;
-    border-radius:7px;
-    font-size:15px;
-}
-.login-box button{
-    width:100%;
-    padding:12px;
-    margin-top:10px;
-    border:none;
-    border-radius:7px;
-    font-size:16px;
-    font-weight:bold;
-    cursor:pointer;
-    transition:transform .2s, box-shadow .2s;
-}
-.login-box button:hover{
-    transform:scale(1.05);
-    box-shadow:0 0 15px rgba(0,0,0,.3);
-}
+.login-box input{width:100%;padding:12px;margin:10px 0;border:none;border-radius:7px;font-size:15px;}
+.login-box button{width:100%;padding:12px;margin-top:10px;border:none;border-radius:7px;font-size:16px;font-weight:bold;cursor:pointer;transition: transform .2s, box-shadow .2s;}
+.login-box button:hover{transform: scale(1.05);box-shadow:0 0 15px rgba(0,0,0,0.3);}
 .login-box .normal{background:#898989;color:white;}
 .login-box .google{background:#AAAAAA;color:white;}
 .login-box hr{margin:18px 0;border:1px solid #ccc;}
-
-@keyframes fadeUp{
-    from{opacity:0;transform:translateY(40px);}
-    to{opacity:1;transform:translateY(0);}
-}
-@keyframes pop{
-    from{transform:scale(.5);opacity:0;}
-    to{transform:scale(1);opacity:1;}
-}
+@keyframes fadeUp {from{opacity:0; transform:translateY(40px);}to{opacity:1; transform:translateY(0);}}
+@keyframes pop{0%{transform:scale(0.5);opacity:0;}100%{transform:scale(1);opacity:1;}}
 </style>
 </head>
-
 <body>
 
-<!-- 🎵 MUSIC -->
 <div id="musicBtn">🔈</div>
 <audio id="bgMusic" src="wow.mp3" loop muted autoplay></audio>
 <script>
 const btn=document.getElementById('musicBtn');
 const audio=document.getElementById('bgMusic');
-audio.play().catch(()=>{});
-btn.onclick=()=>{
-  audio.muted=!audio.muted;
-  btn.textContent=audio.muted?'🔈':'🔊';
-  if(audio.paused) audio.play();
-};
+audio.play().catch(e=>console.log("Autoplay blocked"));
+btn.addEventListener('click',()=>{audio.muted=!audio.muted; btn.textContent=audio.muted?'🔈':'🔊'; if(audio.paused) audio.play();});
 </script>
 
-<!-- LOGIN BOX -->
 <div class="login-box">
     <img src="gg.png" alt="Lootify Logo">
+
     <form onsubmit="login(event)">
         <input id="user" type="text" placeholder="Username" required>
         <input type="password" placeholder="Password" required>
@@ -137,6 +81,48 @@ btn.onclick=()=>{
     <button class="google" onclick="googleLogin()">Login with Google</button>
 </div>
 
+<script type="module">
+  // 🔹 Firebase Initialization
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-analytics.js";
+  import { getAuth, GoogleAuthProvider, signInWithPopup } 
+    from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyA6XbX1DMzr_LBqxnMyafBX2jVVtoWU4PU",
+    authDomain: "lootify-89bf6.firebaseapp.com",
+    projectId: "lootify-89bf6",
+    storageBucket: "lootify-89bf6.firebasestorage.app",
+    messagingSenderId: "1075454919896",
+    appId: "1:1075454919896:web:3cada8ca62c612dd9a03ad",
+    measurementId: "G-6M5P4J6SYX"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+
+  // 🔹 Google Login
+  const auth = getAuth(app);
+  const provider = new GoogleAuthProvider();
+
+  window.googleLogin = function() {
+    signInWithPopup(auth, provider)
+      .then(res => {
+        localStorage.setItem("loggedIn", "true");
+        localStorage.setItem("username", res.user.displayName);
+        window.location.href = "Lootify1.html"; // الصفحة لي تحب تروح لها بعد login
+      })
+      .catch(e => alert("Error: " + e.message));
+  };
+</script>
+ <script>   
+function login(e){
+    e.preventDefault();
+    localStorage.setItem("loggedIn","true");
+    localStorage.setItem("username",document.getElementById("user").value);
+    window.location.href="Lootify1.html";
+    }
+</script>
 <!-- PARTICLES -->
 <canvas id="particles"></canvas>
 <script>
@@ -178,18 +164,14 @@ function animate(){
 animate();
 </script>
 
-<!-- LOGIN LOGIC -->
-<script>
-function login(e){
-    e.preventDefault();
-    localStorage.setItem("loggedIn","true");
-    localStorage.setItem("username",document.getElementById("user").value);
-    window.location.href="Lootify1.html";
-}
-</script>
-
 </body>
 </html>
+
+
+
+
+
+
 
 
 
