@@ -160,6 +160,20 @@ nav a:hover{color:#F2DC91}
   line-height:1.5;
   white-space:pre-wrap;
 }
+    #cursor {
+  display:inline-block;
+  margin-left:2px;
+  animation: blink 0.7s steps(1) infinite;
+  color:#c77dff;
+  font-family: monospace;
+  font-size: 18px;
+}
+
+@keyframes blink {
+  0%, 50% { opacity:1; }
+  50.1%, 100% { opacity:0; }
+}
+
 </style>
 </head>
 
@@ -167,7 +181,8 @@ nav a:hover{color:#F2DC91}
 
 <!-- Boot Screen -->
 <div id="bootScreen">
-  <pre id="bootText"></pre>
+ <pre id="bootText"></pre>
+  <span id="cursor">█</span>
 </div>
 
 <!-- Main Store -->
@@ -283,6 +298,7 @@ function logout(){localStorage.clear(); location.href="index.html";}
 
 </body>
 </html>
+
 
 
 
