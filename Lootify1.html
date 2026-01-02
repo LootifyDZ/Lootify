@@ -46,7 +46,7 @@ nav a:hover{color:#F2DC91}
     padding:12px 24px;
     font-size:17px;
     border:none;
-    border-radius:25px;   /* زر دائري */
+    border-radius:25px;
     cursor:pointer;
     font-weight:bold;
     background:linear-gradient(90deg,#f97316,#facc15);
@@ -82,7 +82,7 @@ nav a:hover{color:#F2DC91}
     font-weight:bold;
     color:white;
     background:linear-gradient(90deg,#222,#555);
-    text-shadow: 0 0 10px #c77dff, 0 0 20px #c77dff; /* subtle glow */
+    text-shadow: 0 0 10px #c77dff, 0 0 20px #c77dff;
 }
 
 /* PRODUCTS */
@@ -144,7 +144,7 @@ nav a:hover{color:#F2DC91}
   position:fixed;
   inset:0;
   background:#111;
-  color:#c77dff; /* purple accent */
+  color:#c77dff;
   font-family:monospace;
   display:flex;
   align-items:center;
@@ -154,56 +154,21 @@ nav a:hover{color:#F2DC91}
   padding:50px;
   z-index:9999;
 }
-    #loadingBar {
-  width: 60%;
-  height: 6px;
-  background: #222;
-  margin-top: 20px;
-  border-radius: 3px;
-  overflow: hidden;
-}
+#bootText { font-size:18px; line-height:1.5; white-space:pre-wrap; }
+#cursor { display:inline-block; margin-left:2px; animation:blink 0.7s steps(1) infinite; color:#c77dff; font-family: monospace; font-size: 18px; }
+@keyframes blink { 0%, 50% { opacity:1; } 50.1%,100%{opacity:0;} }
 
-#loadingFill {
-  width: 0%;
-  height: 100%;
-  background: #c77dff;
-  border-radius: 3px;
-  transition: width 0.3s linear;
-}
-
-
-#bootText {
-  font-size:18px;
-  line-height:1.5;
-  white-space:pre-wrap;
-}
-    #cursor {
-  display:inline-block;
-  margin-left:2px;
-  animation: blink 0.7s steps(1) infinite;
-  color:#c77dff;
-  font-family: monospace;
-  font-size: 18px;
-}
-
-@keyframes blink {
-  0%, 50% { opacity:1; }
-  50.1%, 100% { opacity:0; }
-}
+#loadingBar { width:60%; height:6px; background:#222; margin-top:20px; border-radius:3px; overflow:hidden; }
+#loadingFill { width:0%; height:100%; background:#c77dff; border-radius:3px; transition:width 0.3s linear; }
 
 </style>
 </head>
-
 <body>
 
 <!-- Boot Screen -->
 <div id="bootScreen">
- <pre id="bootText"></pre>
-  <span id="cursor">█</span>
-    <div id="loadingBar">
-  <div id="loadingFill"></div>
-</div>
-
+  <pre id="bootText"></pre><span id="cursor">█</span>
+  <div id="loadingBar"><div id="loadingFill"></div></div>
 </div>
 
 <!-- Main Store -->
@@ -221,68 +186,32 @@ nav a:hover{color:#F2DC91}
         <button onclick="logout()">Logout</button>
     </div>
   </header>
-
   <div class="banner">best gaming stuf in dz</div>
-
   <section class="products">
-      <div class="card">
-          <h3>Gaming Mouse</h3>
-          <button onclick="addToCart('Mouse')">Add to cart</button>
-      </div>
-      <div class="card">
-          <h3>Mechanical Keyboard</h3>
-          <button onclick="addToCart('Keyboard')">Add to cart</button>
-      </div>
-      <div class="card">
-          <h3>Headphones</h3>
-          <button onclick="addToCart('Headphones')">Add to cart</button>
-      </div>
+      <div class="card"><h3>Gaming Mouse</h3><button onclick="addToCart('Mouse')">Add to cart</button></div>
+      <div class="card"><h3>Mechanical Keyboard</h3><button onclick="addToCart('Keyboard')">Add to cart</button></div>
+      <div class="card"><h3>Headphones</h3><button onclick="addToCart('Headphones')">Add to cart</button></div>
   </section>
-
-  <div class="cart" onclick="showCart()">
-      🛒 <span id="count">0</span>
-  </div>
+  <div class="cart" onclick="showCart()">🛒 <span id="count">0</span></div>
 </div>
 
 <canvas id="particles"></canvas>
 
 <script>
-// Particles
-const canvas = document.getElementById("particles");
-const ctx = canvas.getContext("2d");
+// Particles - Purple rain
+const canvas=document.getElementById("particles");
+const ctx=canvas.getContext("2d");
 function resize(){canvas.width=innerWidth; canvas.height=innerHeight;}
 resize();
 addEventListener("resize",resize);
-
-const rain=[];
-for(let i=0;i<90;i++){
-  rain.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,l:Math.random()*18+8,s:Math.random()*3+2,a:Math.random()*0.5+0.3});
-}
-function animate(){
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  rain.forEach(r=>{
-    ctx.beginPath();
-    ctx.moveTo(r.x,r.y);
-    ctx.lineTo(r.x,r.y+r.l);
-    ctx.strokeStyle=`rgba(128,0,255,${r.a})`;
-    ctx.lineWidth=1.5;
-    ctx.stroke();
-    r.y+=r.s;
-    if(r.y>canvas.height){r.y=-20; r.x=Math.random()*canvas.width;}
-  });
-  requestAnimationFrame(animate);
-}
+const rain=[];for(let i=0;i<90;i++){rain.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,l:Math.random()*18+8,s:Math.random()*3+2,a:Math.random()*0.5+0.3});}
+function animate(){ctx.clearRect(0,0,canvas.width,canvas.height);rain.forEach(r=>{ctx.beginPath();ctx.moveTo(r.x,r.y);ctx.lineTo(r.x,r.y+r.l);ctx.strokeStyle=`rgba(128,0,255,${r.a})`;ctx.lineWidth=1.5;ctx.stroke();r.y+=r.s;if(r.y>canvas.height){r.y=-20;r.x=Math.random()*canvas.width;}});requestAnimationFrame(animate);}
 animate();
 </script>
 
-<!-- Protection -->
 <script>
-if(localStorage.getItem("loggedIn")!=="true"){location.href="index.html";}
-</script>
-
-<script>
-// Boot screen typing + transition
-const bootText = [
+// Boot screen typing + loading bar + transition
+const bootTextLines=[
   "> LOOTIFY OS BOOTING...",
   "> CHECKING SYSTEM...",
   "> LOADING GEAR DATABASE...",
@@ -292,31 +221,45 @@ const bootEl=document.getElementById("bootText");
 const bootScreen=document.getElementById("bootScreen");
 const mainStore=document.getElementById("mainStore");
 let i=0,j=0;
+
+function updateLoadingBar(){
+  let percent=Math.floor((i/bootTextLines.length)*100);
+  document.getElementById("loadingFill").style.width=percent+"%";
+}
+
 function typeLine(){
-  if(i<bootText.length){
-    if(j<bootText[i].length){bootEl.textContent+=bootText[i][j]; j++; setTimeout(typeLine,35);}
-    else{bootEl.textContent+="\n"; i++; j=0; setTimeout(typeLine,300);}
+  if(i<bootTextLines.length){
+    if(j<bootTextLines[i].length){
+      bootEl.textContent+=bootTextLines[i][j];
+      j++;
+      setTimeout(typeLine,35);
+    } else {
+      bootEl.textContent+="\n";
+      i++;
+      j=0;
+      updateLoadingBar();
+      setTimeout(typeLine,300);
+    }
   } else {
     bootScreen.style.transition="opacity 1s";
     bootScreen.style.opacity="0";
-    setTimeout(()=>{bootScreen.style.display="none"; mainStore.style.display="block";},1000);
+    setTimeout(()=>{
+      bootScreen.style.display="none";
+      mainStore.style.display="block";
+    },1000);
   }
 }
-typeLine();
-    function updateLoadingBar(){
-  let percent = Math.floor((i / bootText.length) * 100);
-  document.getElementById("loadingFill").style.width = percent + "%";
-}
-else {
-  bootEl.textContent += "\n"; 
-  i++; j=0; 
-  updateLoadingBar();  // ← هذا السطر الجديد
-  setTimeout(typeLine,300);
-}
 
+typeLine();
 </script>
 
 <script>
+// Protection
+if(localStorage.getItem("loggedIn")!=="true"){location.href="index.html";}
+</script>
+
+<script>
+// User & Cart
 document.getElementById("username").innerText="Hi, "+(localStorage.getItem("username")||"Player");
 let cart=JSON.parse(localStorage.getItem("cart"))||[];
 updateCount();
@@ -330,6 +273,7 @@ function logout(){localStorage.clear(); location.href="index.html";}
 
 </body>
 </html>
+
 
 
 
