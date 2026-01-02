@@ -19,7 +19,7 @@ body{
 #particles{
     position:fixed;
     inset:0;
-    z-index:-1;
+    z-index:1000;
     pointer-events:none;
 }
 
@@ -154,6 +154,23 @@ nav a:hover{color:#F2DC91}
   padding:50px;
   z-index:9999;
 }
+    #loadingBar {
+  width: 60%;
+  height: 6px;
+  background: #222;
+  margin-top: 20px;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+#loadingFill {
+  width: 0%;
+  height: 100%;
+  background: #c77dff;
+  border-radius: 3px;
+  transition: width 0.3s linear;
+}
+
 
 #bootText {
   font-size:18px;
@@ -183,6 +200,10 @@ nav a:hover{color:#F2DC91}
 <div id="bootScreen">
  <pre id="bootText"></pre>
   <span id="cursor">█</span>
+    <div id="loadingBar">
+  <div id="loadingFill"></div>
+</div>
+
 </div>
 
 <!-- Main Store -->
@@ -282,6 +303,17 @@ function typeLine(){
   }
 }
 typeLine();
+    function updateLoadingBar(){
+  let percent = Math.floor((i / bootText.length) * 100);
+  document.getElementById("loadingFill").style.width = percent + "%";
+}
+else {
+  bootEl.textContent += "\n"; 
+  i++; j=0; 
+  updateLoadingBar();  // ← هذا السطر الجديد
+  setTimeout(typeLine,300);
+}
+
 </script>
 
 <script>
@@ -298,6 +330,7 @@ function logout(){localStorage.clear(); location.href="index.html";}
 
 </body>
 </html>
+
 
 
 
