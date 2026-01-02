@@ -84,9 +84,19 @@ nav a:hover{color:#F2DC91}
     justify-content:center;
     font-size:32px;
     font-weight:bold;
-    color:white;
-    background:linear-gradient(90deg,#222,#555);
+    color:white;}
+.banner.boot{
+    background:#111;
+    color:#c77dff;
+    font-family:monospace;
+    text-align:left;
+    padding:30px;
 }
+.banner.boot pre{
+    font-size:18px;
+    line-height:1.6;
+}
+
 
 
 /* PRODUCTS */
@@ -214,7 +224,10 @@ if(localStorage.getItem("loggedIn")!=="true"){
         <button onclick="logout()">Logout</button>
     </div>
 </header>
-<div class= "banner">best gaming stuf in dz</div>
+<div class="banner boot">
+  <pre id="bootText"></pre>
+</div>
+
 <section class="products">
     <div class="card">
         <h3>Gaming Mouse</h3>
@@ -259,9 +272,42 @@ function logout(){
 </script>
 
 <audio src="wow.mp3" autoplay loop></audio>
+<script>
+const lines = [
+  "> BOOTING LOOTIFY OS...",
+  "> CHECKING GEAR COMPATIBILITY ███████░░ 70%",
+  "> SYNCING PLAYER PROFILE ██████████ 100%",
+  "> SYSTEM READY",
+  "",
+  "WELCOME, PLAYER",
+  "UPGRADE YOUR SETUP"
+];
+
+let i = 0;
+let j = 0;
+const speed = 35;
+const el = document.getElementById("bootText");
+
+function typeLine(){
+  if(i < lines.length){
+    if(j < lines[i].length){
+      el.textContent += lines[i][j];
+      j++;
+      setTimeout(typeLine, speed);
+    }else{
+      el.textContent += "\n";
+      i++;
+      j = 0;
+      setTimeout(typeLine, 300);
+    }
+  }
+}
+typeLine();
+</script>
 
 </body>
 </html>
+
 
 
 
