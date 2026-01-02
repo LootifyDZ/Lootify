@@ -154,20 +154,16 @@ nav a:hover{color:#F2DC91}
   padding:50px;
   z-index:9999;
 }
-#bootText { font-size:18px; line-height:1.5; white-space:pre-wrap; }
-#cursor { display:inline-block; margin-left:2px; animation:blink 0.7s steps(1) infinite; color:#c77dff; font-family: monospace; font-size: 18px; }
-@keyframes blink { 0%, 50% { opacity:1; } 50.1%,100%{opacity:0;} }
-
+#bootText { font-size:18px; line-height:1.5; white-space:pre-wrap; font-family: monospace; }
 #loadingBar { width:60%; height:6px; background:#222; margin-top:20px; border-radius:3px; overflow:hidden; }
 #loadingFill { width:0%; height:100%; background:#c77dff; border-radius:3px; transition:width 0.3s linear; }
-
 </style>
 </head>
 <body>
 
 <!-- Boot Screen -->
 <div id="bootScreen">
-  <pre id="bootText"></pre><span id="cursor">█</span>
+  <pre id="bootText"></pre>
   <div id="loadingBar"><div id="loadingFill"></div></div>
 </div>
 
@@ -198,7 +194,7 @@ nav a:hover{color:#F2DC91}
 <canvas id="particles"></canvas>
 
 <script>
-// Particles - Purple rain
+// Purple rain particles
 const canvas=document.getElementById("particles");
 const ctx=canvas.getContext("2d");
 function resize(){canvas.width=innerWidth; canvas.height=innerHeight;}
@@ -210,7 +206,7 @@ animate();
 </script>
 
 <script>
-// Boot screen typing + loading bar + transition
+// Boot screen typing + cursor + loading bar + transition
 const bootTextLines=[
   "> LOOTIFY OS BOOTING...",
   "> CHECKING SYSTEM...",
@@ -230,23 +226,20 @@ function updateLoadingBar(){
 function typeLine(){
   if(i<bootTextLines.length){
     if(j<bootTextLines[i].length){
-      bootEl.textContent+=bootTextLines[i][j];
+      bootEl.textContent = bootTextLines.slice(0,i).join("\n") + (i>0?"\n":"") + bootTextLines[i].slice(0,j+1) + "█";
       j++;
       setTimeout(typeLine,35);
     } else {
-      bootEl.textContent+="\n";
-      i++;
       j=0;
+      i++;
       updateLoadingBar();
       setTimeout(typeLine,300);
     }
   } else {
+    bootEl.textContent = bootTextLines.join("\n");
     bootScreen.style.transition="opacity 1s";
     bootScreen.style.opacity="0";
-    setTimeout(()=>{
-      bootScreen.style.display="none";
-      mainStore.style.display="block";
-    },1000);
+    setTimeout(()=>{bootScreen.style.display="none"; mainStore.style.display="block";},1000);
   }
 }
 
@@ -273,6 +266,8 @@ function logout(){localStorage.clear(); location.href="index.html";}
 
 </body>
 </html>
+
+
 
 
 
