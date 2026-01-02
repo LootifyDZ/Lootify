@@ -147,9 +147,6 @@ nav a:hover{color:#F2DC91}
 
 <body>
 
-<!-- PARTICLES -->
-<canvas id="particles"></canvas>
-
 <script>
 const canvas = document.getElementById("particles");
 const ctx = canvas.getContext("2d");
@@ -161,36 +158,40 @@ function resize(){
 resize();
 addEventListener("resize", resize);
 
-const particles = [];
-for(let i=0;i<55;i++){
-  particles.push({
-    x:Math.random()*canvas.width,
-    y:Math.random()*canvas.height,
-    r:Math.random()*1.6+0.8,
-    dx:(Math.random()-.5)*0.35,
-    dy:(Math.random()-.5)*0.35,
-    a:Math.random()*0.5+0.3
+const rain = [];
+for(let i=0;i<90;i++){
+  rain.push({
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height,
+    l: Math.random() * 18 + 8,   // طول القطرة
+    s: Math.random() * 3 + 2,    // السرعة
+    a: Math.random() * 0.5 + 0.3 // الشفافية
   });
 }
 
 function animate(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
-  particles.forEach(p=>{
+
+  rain.forEach(r=>{
     ctx.beginPath();
-    ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
-    ctx.fillStyle=`rgba(30,30,30,${p.a})`; // cyber dark dots
-    ctx.fill();
+    ctx.moveTo(r.x, r.y);
+    ctx.lineTo(r.x, r.y + r.l);
+    ctx.strokeStyle = `rgba(128,0,255,${r.a})`; // PURPLE RAIN 💜
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
 
-    p.x+=p.dx;
-    p.y+=p.dy;
-
-    if(p.x<0||p.x>canvas.width) p.dx*=-1;
-    if(p.y<0||p.y>canvas.height) p.dy*=-1;
+    r.y += r.s;
+    if(r.y > canvas.height){
+      r.y = -20;
+      r.x = Math.random() * canvas.width;
+    }
   });
+
   requestAnimationFrame(animate);
 }
 animate();
 </script>
+
 
 <!-- PROTECTION -->
 <script>
@@ -260,6 +261,7 @@ function logout(){
 
 </body>
 </html>
+
 
 
 
