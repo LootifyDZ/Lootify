@@ -42,7 +42,7 @@ nav a{
 }
 nav a:hover{color:#F2DC91}
 
-   .user-box button{
+.user-box button{
     padding:12px 24px;
     font-size:17px;
     border:none;
@@ -57,9 +57,6 @@ nav a:hover{color:#F2DC91}
     transform:scale(1.05);
     box-shadow:0 5px 15px rgba(0,0,0,.3);
 }
-
-
-
 
 .user-box{
     display:flex;
@@ -85,29 +82,8 @@ nav a:hover{color:#F2DC91}
     font-weight:bold;
     color:white;
     background:linear-gradient(90deg,#222,#555);
+    text-shadow: 0 0 10px #c77dff, 0 0 20px #c77dff; /* subtle glow */
 }
-#bootScreen {
-  position:fixed;
-  inset:0;
-  background:#111;
-  color:#c77dff; /* purple accent */
-  font-family:monospace;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  flex-direction:column;
-  text-align:left;
-  padding:50px;
-  z-index:9999;
-}
-
-#bootText {
-  font-size:18px;
-  line-height:1.5;
-  white-space:pre-wrap;
-}
-
-
 
 /* PRODUCTS */
 .products{
@@ -162,16 +138,34 @@ nav a:hover{color:#F2DC91}
     align-items:center;
     justify-content:center;
 }
+
+/* Boot Screen */
+#bootScreen {
+  position:fixed;
+  inset:0;
+  background:#111;
+  color:#c77dff; /* purple accent */
+  font-family:monospace;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+  text-align:left;
+  padding:50px;
+  z-index:9999;
+}
+
+#bootText {
+  font-size:18px;
+  line-height:1.5;
+  white-space:pre-wrap;
+}
 </style>
 </head>
 
-    
 <body>
 
-
-
-    
-    <!-- Boot Screen -->
+<!-- Boot Screen -->
 <div id="bootScreen">
   <pre id="bootText"></pre>
 </div>
@@ -214,126 +208,43 @@ nav a:hover{color:#F2DC91}
   </div>
 </div>
 
-
-
-
-    
 <canvas id="particles"></canvas>
 
 <script>
+// Particles
 const canvas = document.getElementById("particles");
 const ctx = canvas.getContext("2d");
-
-function resize(){
-  canvas.width = innerWidth;
-  canvas.height = innerHeight;
-}
+function resize(){canvas.width=innerWidth; canvas.height=innerHeight;}
 resize();
-addEventListener("resize", resize);
+addEventListener("resize",resize);
 
-const rain = [];
+const rain=[];
 for(let i=0;i<90;i++){
-  rain.push({
-    x: Math.random() * canvas.width,
-    y: Math.random() * canvas.height,
-    l: Math.random() * 18 + 8,   // طول القطرة
-    s: Math.random() * 3 + 2,    // السرعة
-    a: Math.random() * 0.5 + 0.3 // الشفافية
-  });
+  rain.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,l:Math.random()*18+8,s:Math.random()*3+2,a:Math.random()*0.5+0.3});
 }
-
 function animate(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
-
   rain.forEach(r=>{
     ctx.beginPath();
-    ctx.moveTo(r.x, r.y);
-    ctx.lineTo(r.x, r.y + r.l);
-    ctx.strokeStyle = `rgba(128,0,255,${r.a})`; // PURPLE RAIN 💜
-    ctx.lineWidth = 1.5;
+    ctx.moveTo(r.x,r.y);
+    ctx.lineTo(r.x,r.y+r.l);
+    ctx.strokeStyle=`rgba(128,0,255,${r.a})`;
+    ctx.lineWidth=1.5;
     ctx.stroke();
-
-    r.y += r.s;
-    if(r.y > canvas.height){
-      r.y = -20;
-      r.x = Math.random() * canvas.width;
-    }
+    r.y+=r.s;
+    if(r.y>canvas.height){r.y=-20; r.x=Math.random()*canvas.width;}
   });
-
   requestAnimationFrame(animate);
 }
 animate();
 </script>
 
-
-<!-- PROTECTION -->
+<!-- Protection -->
 <script>
-if(localStorage.getItem("loggedIn")!=="true"){
-    location.href="index.html";
-}
+if(localStorage.getItem("loggedIn")!=="true"){location.href="index.html";}
 </script>
 
-<header>
-    <img src="rrrr.png">
-    <nav>
-        <a href="mouse.html">Mouse</a>
-        <a href="#">Keyboard</a>
-        <a href="#">Headphones</a>
-        <a href="#">Contact</a>
-    </nav>
-    <div class="user-box">
-        <span id="username"></span>
-        <button onclick="logout()">Logout</button>
-    </div>
-</header>
-
-
-<section class="products">
-    <div class="card">
-        <h3>Gaming Mouse</h3>
-        <button onclick="addToCart('Mouse')">Add to cart</button>
-    </div>
-    <div class="card">
-        <h3>Mechanical Keyboard</h3>
-        <button onclick="addToCart('Keyboard')">Add to cart</button>
-    </div>
-    <div class="card">
-        <h3>Headphones</h3>
-        <button onclick="addToCart('Headphones')">Add to cart</button>
-    </div>
-</section>
-
-<div class="cart" onclick="showCart()">
-    🛒 <span id="count">0</span>
-</div>
-
 <script>
-document.getElementById("username").innerText =
-  "Hi, " + (localStorage.getItem("username") || "Player");
-
-let cart = JSON.parse(localStorage.getItem("cart")) || [];
-updateCount();
-
-function addToCart(item){
-  cart.push(item);
-  localStorage.setItem("cart",JSON.stringify(cart));
-  updateCount();
-}
-function updateCount(){
-  document.getElementById("count").innerText = cart.length;
-}
-function showCart(){
-  alert(cart.join(", "));
-}
-function logout(){
-  localStorage.clear();
-  location.href="index.html";
-}
-</script>
-
-<audio src="wow.mp3" autoplay loop></audio>
-
- <script>
 // Boot screen typing + transition
 const bootText = [
   "> LOOTIFY OS BOOTING...",
@@ -341,41 +252,38 @@ const bootText = [
   "> LOADING GEAR DATABASE...",
   "> SYSTEM READY"
 ];
-
-const bootEl = document.getElementById("bootText");
-const bootScreen = document.getElementById("bootScreen");
-const mainStore = document.getElementById("mainStore");
-
-let i=0, j=0;
-
+const bootEl=document.getElementById("bootText");
+const bootScreen=document.getElementById("bootScreen");
+const mainStore=document.getElementById("mainStore");
+let i=0,j=0;
 function typeLine(){
   if(i<bootText.length){
-    if(j<bootText[i].length){
-      bootEl.textContent += bootText[i][j];
-      j++;
-      setTimeout(typeLine,35);
-    } else {
-      bootEl.textContent += "\n";
-      i++; j=0;
-      setTimeout(typeLine,300);
-    }
+    if(j<bootText[i].length){bootEl.textContent+=bootText[i][j]; j++; setTimeout(typeLine,35);}
+    else{bootEl.textContent+="\n"; i++; j=0; setTimeout(typeLine,300);}
   } else {
-    // Boot finished → Transition
-    bootScreen.style.transition = "opacity 1s";
-    bootScreen.style.opacity = "0";
-    setTimeout(()=>{
-      bootScreen.style.display="none";
-      mainStore.style.display="block";
-    },1000);
+    bootScreen.style.transition="opacity 1s";
+    bootScreen.style.opacity="0";
+    setTimeout(()=>{bootScreen.style.display="none"; mainStore.style.display="block";},1000);
   }
 }
-
 typeLine();
 </script>
 
+<script>
+document.getElementById("username").innerText="Hi, "+(localStorage.getItem("username")||"Player");
+let cart=JSON.parse(localStorage.getItem("cart"))||[];
+updateCount();
+function addToCart(item){cart.push(item);localStorage.setItem("cart",JSON.stringify(cart));updateCount();}
+function updateCount(){document.getElementById("count").innerText=cart.length;}
+function showCart(){alert(cart.join(", "));}
+function logout(){localStorage.clear(); location.href="index.html";}
+</script>
+
+<audio src="wow.mp3" autoplay loop></audio>
 
 </body>
 </html>
+
 
 
 
