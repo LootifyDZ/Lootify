@@ -75,8 +75,7 @@ nav a:hover{color:#F2DC91}
     font-weight:bold;
 }
 
-
-    /* BANNER */
+/* BANNER */
 .banner{
     height:260px;
     display:flex;
@@ -84,17 +83,28 @@ nav a:hover{color:#F2DC91}
     justify-content:center;
     font-size:32px;
     font-weight:bold;
-    color:white;}
-.banner.boot{
-    background:#111;
-    color:#c77dff;
-    font-family:monospace;
-    text-align:left;
-    padding:30px;
+    color:white;
+    background:linear-gradient(90deg,#222,#555);
 }
-.banner.boot pre{
-    font-size:18px;
-    line-height:1.6;
+#bootScreen {
+  position:fixed;
+  inset:0;
+  background:#111;
+  color:#c77dff; /* purple accent */
+  font-family:monospace;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+  text-align:left;
+  padding:50px;
+  z-index:9999;
+}
+
+#bootText {
+  font-size:18px;
+  line-height:1.5;
+  white-space:pre-wrap;
 }
 
 
@@ -155,7 +165,59 @@ nav a:hover{color:#F2DC91}
 </style>
 </head>
 
+    
 <body>
+
+
+
+    
+    <!-- Boot Screen -->
+<div id="bootScreen">
+  <pre id="bootText"></pre>
+</div>
+
+<!-- Main Store -->
+<div id="mainStore" style="display:none;">
+  <header>
+    <img src="rrrr.png">
+    <nav>
+        <a href="mouse.html">Mouse</a>
+        <a href="#">Keyboard</a>
+        <a href="#">Headphones</a>
+        <a href="#">Contact</a>
+    </nav>
+    <div class="user-box">
+        <span id="username"></span>
+        <button onclick="logout()">Logout</button>
+    </div>
+  </header>
+
+  <div class="banner">best gaming stuf in dz</div>
+
+  <section class="products">
+      <div class="card">
+          <h3>Gaming Mouse</h3>
+          <button onclick="addToCart('Mouse')">Add to cart</button>
+      </div>
+      <div class="card">
+          <h3>Mechanical Keyboard</h3>
+          <button onclick="addToCart('Keyboard')">Add to cart</button>
+      </div>
+      <div class="card">
+          <h3>Headphones</h3>
+          <button onclick="addToCart('Headphones')">Add to cart</button>
+      </div>
+  </section>
+
+  <div class="cart" onclick="showCart()">
+      🛒 <span id="count">0</span>
+  </div>
+</div>
+
+
+
+
+    
 <canvas id="particles"></canvas>
 
 <script>
@@ -224,9 +286,7 @@ if(localStorage.getItem("loggedIn")!=="true"){
         <button onclick="logout()">Logout</button>
     </div>
 </header>
-<div class="banner boot">
-  <pre id="bootText"></pre>
-</div>
+
 
 <section class="products">
     <div class="card">
@@ -272,41 +332,51 @@ function logout(){
 </script>
 
 <audio src="wow.mp3" autoplay loop></audio>
-<script>
-const lines = [
-  "> BOOTING LOOTIFY OS...",
-  "> CHECKING GEAR COMPATIBILITY ███████░░ 70%",
-  "> SYNCING PLAYER PROFILE ██████████ 100%",
-  "> SYSTEM READY",
-  "",
-  "WELCOME, PLAYER",
-  "UPGRADE YOUR SETUP"
+
+ <script>
+// Boot screen typing + transition
+const bootText = [
+  "> LOOTIFY OS BOOTING...",
+  "> CHECKING SYSTEM...",
+  "> LOADING GEAR DATABASE...",
+  "> SYSTEM READY"
 ];
 
-let i = 0;
-let j = 0;
-const speed = 35;
-const el = document.getElementById("bootText");
+const bootEl = document.getElementById("bootText");
+const bootScreen = document.getElementById("bootScreen");
+const mainStore = document.getElementById("mainStore");
+
+let i=0, j=0;
 
 function typeLine(){
-  if(i < lines.length){
-    if(j < lines[i].length){
-      el.textContent += lines[i][j];
+  if(i<bootText.length){
+    if(j<bootText[i].length){
+      bootEl.textContent += bootText[i][j];
       j++;
-      setTimeout(typeLine, speed);
-    }else{
-      el.textContent += "\n";
-      i++;
-      j = 0;
-      setTimeout(typeLine, 300);
+      setTimeout(typeLine,35);
+    } else {
+      bootEl.textContent += "\n";
+      i++; j=0;
+      setTimeout(typeLine,300);
     }
+  } else {
+    // Boot finished → Transition
+    bootScreen.style.transition = "opacity 1s";
+    bootScreen.style.opacity = "0";
+    setTimeout(()=>{
+      bootScreen.style.display="none";
+      mainStore.style.display="block";
+    },1000);
   }
 }
+
 typeLine();
 </script>
 
+
 </body>
 </html>
+
 
 
 
