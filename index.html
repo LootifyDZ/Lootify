@@ -17,7 +17,7 @@
 
 body{
    background: linear-gradient(
-    180deg,
+    0deg,
     #050008 0%,
     #1a0033 30%,
     #5a189a 65%,
@@ -191,51 +191,21 @@ window.googleLogin = ()=>{
 };
 </script>
 
-<!-- cyber particles -->
 <script>
-const canvas = document.getElementById("particles");
-const ctx = canvas.getContext("2d");
-
-function resize(){
-  canvas.width = innerWidth;
-  canvas.height = innerHeight;
-}
+// Purple rain particles
+const canvas=document.getElementById("particles");
+const ctx=canvas.getContext("2d");
+function resize(){canvas.width=innerWidth; canvas.height=innerHeight;}
 resize();
-addEventListener("resize", resize);
-
-const particles=[];
-for(let i=0;i<35;i++){
-  particles.push({
-    x:Math.random()*canvas.width,
-    y:Math.random()*canvas.height,
-    dx:(Math.random()-.5)*0.8,
-    dy:(Math.random()-.5)*0.25
-  });
-}
-
-function animate(){
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  particles.forEach(p=>{
-    ctx.beginPath();
-    ctx.moveTo(p.x,p.y);
-    ctx.lineTo(p.x+10,p.y);
-    ctx.strokeStyle="rgba(0,0,0,.4)";
-    ctx.lineWidth=1;
-    ctx.stroke();
-
-    p.x+=p.dx;
-    p.y+=p.dy;
-
-    if(p.x<0||p.x>canvas.width) p.dx*=-1;
-    if(p.y<0||p.y>canvas.height) p.dy*=-1;
-  });
-  requestAnimationFrame(animate);
-}
+addEventListener("resize",resize);
+const rain=[];for(let i=0;i<90;i++){rain.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,l:Math.random()*18+8,s:Math.random()*3+2,a:Math.random()*0.5+0.3});}
+function animate(){ctx.clearRect(0,0,canvas.width,canvas.height);rain.forEach(r=>{ctx.beginPath();ctx.moveTo(r.x,r.y);ctx.lineTo(r.x,r.y+r.l);ctx.strokeStyle=`rgba(128,0,255,${r.a})`;ctx.lineWidth=1.5;ctx.stroke();r.y+=r.s;if(r.y>canvas.height){r.y=-20;r.x=Math.random()*canvas.width;}});requestAnimationFrame(animate);}
 animate();
 </script>
 
 </body>
 </html>
+
 
 
 
