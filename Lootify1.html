@@ -15,8 +15,6 @@ body{
     overflow-x:hidden;
 }
 
-
-
 /* HEADER */
 header{
     background:#222;
@@ -36,22 +34,6 @@ nav a{
 }
 nav a:hover{color:#F2DC91}
 
-.user-box button{
-    padding:12px 24px;
-    font-size:17px;
-    border:none;
-    border-radius:25px;
-    cursor:pointer;
-    font-weight:bold;
-    background:linear-gradient(90deg,#f97316,#facc15);
-    color:#000;
-    transition:0.3s;
-}
-.user-box button:hover{
-    transform:scale(1.05);
-    box-shadow:0 5px 15px rgba(0,0,0,.3);
-}
-
 .user-box{
     display:flex;
     align-items:center;
@@ -59,11 +41,12 @@ nav a:hover{color:#F2DC91}
 }
 .user-box span{font-size:16px}
 .user-box button{
-    padding:6px 12px;
+    padding:8px 16px;
     border:none;
-    border-radius:5px;
+    border-radius:8px;
     cursor:pointer;
     font-weight:bold;
+    background:linear-gradient(90deg,#f97316,#facc15);
 }
 
 /* BANNER */
@@ -75,8 +58,8 @@ nav a:hover{color:#F2DC91}
     font-size:32px;
     font-weight:bold;
     color:white;
-    background:linear-gradient(90deg,#222,#555);
-    text-shadow: 0 0 10px #c77dff, 0 0 20px #c77dff;
+    background:linear-gradient(90deg,#222,#444);
+    text-shadow:0 0 15px rgba(199,125,255,.6);
 }
 
 /* PRODUCTS */
@@ -133,37 +116,56 @@ nav a:hover{color:#F2DC91}
     justify-content:center;
 }
 
-/* Boot Screen */
-#bootScreen {
-  position:fixed;
-  inset:0;
-  background:#111;
-  color:#c77dff;
-  font-family:monospace;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  flex-direction:column;
-  text-align:left;
-  padding:50px;
-  z-index:9999;
+/* ===== NPC SYSTEM ===== */
+#npcBox{
+    position:fixed;
+    bottom:30px;
+    left:30px;
+    display:flex;
+    align-items:flex-end;
+    gap:15px;
+    z-index:999;
+    opacity:0;
+    transform:translateY(20px);
+    transition:.6s ease;
 }
-#bootText { font-size:18px; line-height:1.5; white-space:pre-wrap; font-family: monospace; }
-#loadingBar { width:60%; height:6px; background:#222; margin-top:20px; border-radius:3px; overflow:hidden; }
-#loadingFill { width:0%; height:100%; background:#c77dff; border-radius:3px; transition:width 0.3s linear; }
+
+#npcBox.show{
+    opacity:1;
+    transform:translateY(0);
+}
+
+#npcBox img{
+    width:120px;
+    image-rendering:pixelated;
+}
+
+.npcBubble{
+    background:rgba(20,20,30,.95);
+    color:#fff;
+    padding:14px 18px;
+    border-radius:14px;
+    max-width:280px;
+    font-size:15px;
+    line-height:1.4;
+    box-shadow:0 0 20px rgba(199,125,255,.5);
+    border:1px solid rgba(199,125,255,.4);
+    white-space:pre-line;
+}
 </style>
 </head>
+
 <body>
 
-<!-- Boot Screen -->
-<div id="bootScreen">
-  <pre id="bootText"></pre>
-  <div id="loadingBar"><div id="loadingFill"></div></div>
+<!-- NPC -->
+<div id="npcBox">
+    <img src="npc.png" alt="Lootify NPC">
+    <div class="npcBubble">
+        <span id="npcText"></span>
+    </div>
 </div>
 
-<!-- Main Store -->
-<div id="mainStore" style="display:none;">
-  <header>
+<header>
     <img src="rrrr.png">
     <nav>
         <a href="mouse.html">Mouse</a>
@@ -175,80 +177,103 @@ nav a:hover{color:#F2DC91}
         <span id="username"></span>
         <button onclick="logout()">Logout</button>
     </div>
-  </header>
-  <div class="banner">best gaming stuf in dz</div>
-  <section class="products">
-      <div class="card"><h3>Gaming Mouse</h3><button onclick="addToCart('Mouse')">Add to cart</button></div>
-      <div class="card"><h3>Mechanical Keyboard</h3><button onclick="addToCart('Keyboard')">Add to cart</button></div>
-      <div class="card"><h3>Headphones</h3><button onclick="addToCart('Headphones')">Add to cart</button></div>
-  </section>
-  <div class="cart" onclick="showCart()">🛒 <span id="count">0</span></div>
-</div>
+</header>
 
+<div class="banner">best gaming stuff in dz</div>
 
+<section class="products">
+    <div class="card">
+        <h3>Gaming Mouse</h3>
+        <button onclick="addToCart('Mouse')">Add to cart</button>
+    </div>
+    <div class="card">
+        <h3>Mechanical Keyboard</h3>
+        <button onclick="addToCart('Keyboard')">Add to cart</button>
+    </div>
+    <div class="card">
+        <h3>Headphones</h3>
+        <button onclick="addToCart('Headphones')">Add to cart</button>
+    </div>
+</section>
 
+<div class="cart" onclick="showCart()">🛒 <span id="count">0</span></div>
 
+<!-- PROTECTION -->
 <script>
-// Boot screen typing + cursor + loading bar + transition
-const bootTextLines=[
-  "> LOOTIFY OS BOOTING...",
-  "> CHECKING SYSTEM...",
-  "> LOADING GEAR DATABASE...",
-  "> SYSTEM READY"
-];
-const bootEl=document.getElementById("bootText");
-const bootScreen=document.getElementById("bootScreen");
-const mainStore=document.getElementById("mainStore");
-let i=0,j=0;
-
-function updateLoadingBar(){
-  let percent=Math.floor((i/bootTextLines.length)*100);
-  document.getElementById("loadingFill").style.width=percent+"%";
+if(localStorage.getItem("loggedIn")!=="true"){
+    location.href="index.html";
 }
+</script>
 
-function typeLine(){
-  if(i<bootTextLines.length){
-    if(j<bootTextLines[i].length){
-      bootEl.textContent = bootTextLines.slice(0,i).join("\n") + (i>0?"\n":"") + bootTextLines[i].slice(0,j+1) + "█";
-      j++;
-      setTimeout(typeLine,35);
+<!-- USER + CART -->
+<script>
+document.getElementById("username").innerText =
+  "Hi, " + (localStorage.getItem("username") || "Player");
+
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
+updateCount();
+
+function addToCart(item){
+  cart.push(item);
+  localStorage.setItem("cart",JSON.stringify(cart));
+  updateCount();
+}
+function updateCount(){
+  document.getElementById("count").innerText = cart.length;
+}
+function showCart(){
+  alert(cart.join(", "));
+}
+function logout(){
+  localStorage.clear();
+  location.href="index.html";
+}
+</script>
+
+<!-- NPC SCRIPT -->
+<script>
+const npcLines = [
+  "Hey "+(localStorage.getItem("username")||"Player")+".",
+  "Welcome to Lootify.",
+  "This store is for real gamers only.",
+  "Take your time... choose wisely."
+];
+
+const npcBox = document.getElementById("npcBox");
+const npcText = document.getElementById("npcText");
+
+let li=0, ci=0;
+
+function npcType(){
+  if(li < npcLines.length){
+    if(ci < npcLines[li].length){
+      npcText.textContent += npcLines[li][ci];
+      ci++;
+      setTimeout(npcType,30);
     } else {
-      j=0;
-      i++;
-      updateLoadingBar();
-      setTimeout(typeLine,300);
+      npcText.textContent += "\n";
+      li++; ci=0;
+      setTimeout(npcType,400);
     }
   } else {
-    bootEl.textContent = bootTextLines.join("\n");
-    bootScreen.style.transition="opacity 1s";
-    bootScreen.style.opacity="0";
-    setTimeout(()=>{bootScreen.style.display="none"; mainStore.style.display="block";},1000);
+    setTimeout(()=>{
+      npcBox.style.opacity="0";
+      npcBox.style.transform="translateY(20px)";
+    },3000);
   }
 }
 
-typeLine();
-</script>
-
-<script>
-// Protection
-if(localStorage.getItem("loggedIn")!=="true"){location.href="index.html";}
-</script>
-
-<script>
-// User & Cart
-document.getElementById("username").innerText="Hi, "+(localStorage.getItem("username")||"Player");
-let cart=JSON.parse(localStorage.getItem("cart"))||[];
-updateCount();
-function addToCart(item){cart.push(item);localStorage.setItem("cart",JSON.stringify(cart));updateCount();}
-function updateCount(){document.getElementById("count").innerText=cart.length;}
-function showCart(){alert(cart.join(", "));}
-function logout(){localStorage.clear(); location.href="index.html";}
+setTimeout(()=>{
+  npcBox.classList.add("show");
+  npcType();
+},600);
 </script>
 
 <audio src="wow.mp3" autoplay loop></audio>
 
 </body>
 </html>
+
 
 
 
