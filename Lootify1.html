@@ -39,7 +39,6 @@ nav a:hover{color:#F2DC91}
     align-items:center;
     gap:15px;
 }
-.user-box span{font-size:16px}
 .user-box button{
     padding:8px 16px;
     border:none;
@@ -59,7 +58,6 @@ nav a:hover{color:#F2DC91}
     font-weight:bold;
     color:white;
     background:linear-gradient(90deg,#222,#444);
-    text-shadow:0 0 15px rgba(199,125,255,.6);
 }
 
 /* PRODUCTS */
@@ -76,7 +74,6 @@ nav a:hover{color:#F2DC91}
     text-align:center;
     box-shadow:0 8px 18px rgba(0,0,0,.2);
 }
-.card h3{margin-bottom:12px}
 .card button{
     padding:9px 16px;
     border:none;
@@ -116,54 +113,68 @@ nav a:hover{color:#F2DC91}
     justify-content:center;
 }
 
-/* ===== NPC SYSTEM ===== */
-#npcBox{
+/* ===== RPG DIALOGUE BOX ===== */
+#dialogueBox{
     position:fixed;
-    bottom:30px;
-    left:30px;
+    bottom:20px;
+    left:50%;
+    transform:translateX(-50%);
+    width:88%;
+    max-width:900px;
+    background:rgba(20,20,30,.96);
+    border:3px solid #c77dff;
+    border-radius:14px;
     display:flex;
-    align-items:flex-end;
-    gap:15px;
+    gap:18px;
+    padding:16px;
+    box-shadow:0 0 25px rgba(199,125,255,.6);
     z-index:999;
-    opacity:0;
-    transform:translateY(20px);
-    transition:.6s ease;
 }
 
-#npcBox.show{
-    opacity:1;
-    transform:translateY(0);
-}
-
-#npcBox img{
+#dialogueAvatar{
     width:120px;
+    height:120px;
+    background:#000;
+    border:2px solid #c77dff;
+    border-radius:10px;
+    overflow:hidden;
+    flex-shrink:0;
+}
+#dialogueAvatar img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
     image-rendering:pixelated;
 }
 
-.npcBubble{
-    background:rgba(20,20,30,.95);
-    color:#fff;
-    padding:14px 18px;
-    border-radius:14px;
-    max-width:280px;
-    font-size:15px;
-    line-height:1.4;
-    box-shadow:0 0 20px rgba(199,125,255,.5);
-    border:1px solid rgba(199,125,255,.4);
-    white-space:pre-line;
+#dialogueContent{
+    flex:1;
+    color:white;
+}
+
+#npcName{
+    font-weight:bold;
+    color:#f2dc91;
+    margin-bottom:6px;
+    font-size:18px;
+}
+
+#npcText{
+    font-size:16px;
+    line-height:1.5;
+    white-space:pre-wrap;
+}
+
+#continueHint{
+    text-align:right;
+    font-size:13px;
+    opacity:.6;
+    margin-top:6px;
 }
 </style>
 </head>
 
 <body>
-
-<!-- NPC -->
-<div id="npcBox">
-    <img src="npc.png" alt="Lootify NPC">
-    <div class="npcBubble">
-        <span id="npcText"></span>
-    </div>
-</div>
 
 <header>
     <img src="rrrr.png">
@@ -182,21 +193,24 @@ nav a:hover{color:#F2DC91}
 <div class="banner">best gaming stuff in dz</div>
 
 <section class="products">
-    <div class="card">
-        <h3>Gaming Mouse</h3>
-        <button onclick="addToCart('Mouse')">Add to cart</button>
-    </div>
-    <div class="card">
-        <h3>Mechanical Keyboard</h3>
-        <button onclick="addToCart('Keyboard')">Add to cart</button>
-    </div>
-    <div class="card">
-        <h3>Headphones</h3>
-        <button onclick="addToCart('Headphones')">Add to cart</button>
-    </div>
+    <div class="card"><h3>Gaming Mouse</h3><button onclick="addToCart('Mouse')">Add to cart</button></div>
+    <div class="card"><h3>Mechanical Keyboard</h3><button onclick="addToCart('Keyboard')">Add to cart</button></div>
+    <div class="card"><h3>Headphones</h3><button onclick="addToCart('Headphones')">Add to cart</button></div>
 </section>
 
 <div class="cart" onclick="showCart()">🛒 <span id="count">0</span></div>
+
+<!-- RPG DIALOGUE -->
+<div id="dialogueBox">
+    <div id="dialogueAvatar">
+        <img src="npc.png" alt="Lootify NPC">
+    </div>
+    <div id="dialogueContent">
+        <div id="npcName">Lootify</div>
+        <div id="npcText"></div>
+        <div id="continueHint">▶ Click anywhere to continue</div>
+    </div>
+</div>
 
 <!-- PROTECTION -->
 <script>
@@ -205,12 +219,11 @@ if(localStorage.getItem("loggedIn")!=="true"){
 }
 </script>
 
-<!-- USER + CART -->
 <script>
 document.getElementById("username").innerText =
   "Hi, " + (localStorage.getItem("username") || "Player");
 
-let cart = JSON.parse(localStorage.getItem("cart")) || [];
+let cart=JSON.parse(localStorage.getItem("cart"))||[];
 updateCount();
 
 function addToCart(item){
@@ -218,71 +231,51 @@ function addToCart(item){
   localStorage.setItem("cart",JSON.stringify(cart));
   updateCount();
 }
-function updateCount(){
-  document.getElementById("count").innerText = cart.length;
-}
-function showCart(){
-  alert(cart.join(", "));
-}
-function logout(){
-  localStorage.clear();
-  location.href="index.html";
-}
+function updateCount(){document.getElementById("count").innerText=cart.length;}
+function showCart(){alert(cart.join(", "));}
+function logout(){localStorage.clear(); location.href="index.html";}
 </script>
 
-<!-- NPC SCRIPT -->
+<!-- NPC DIALOGUE SCRIPT -->
 <script>
-const npcLines = [
-  "Hey "+(localStorage.getItem("username")||"Player")+".",
-  "Welcome to Lootify.",
-  "This store is for real gamers only.",
-  "Take your time... choose wisely."
+const dialogues = [
+  "Welcome, warrior.\nThis is Lootify — a place forged for gamers.",
+  "Every weapon here has been tested.\nEvery gear has a purpose.",
+  "Choose carefully.\nYour setup defines your playstyle.",
+  "When you're ready… start browsing."
 ];
 
-const npcBox = document.getElementById("npcBox");
-const npcText = document.getElementById("npcText");
+const npcText=document.getElementById("npcText");
+let d=0,c=0;
 
-let li=0, ci=0;
-
-function npcType(){
-  if(li < npcLines.length){
-    if(ci < npcLines[li].length){
-      npcText.textContent += npcLines[li][ci];
-      ci++;
-      setTimeout(npcType,30);
-    } else {
-      npcText.textContent += "\n";
-      li++; ci=0;
-      setTimeout(npcType,400);
-    }
-  } else {
-    setTimeout(()=>{
-      npcBox.style.opacity="0";
-      npcBox.style.transform="translateY(20px)";
-    },3000);
+function typeDialogue(){
+  if(c<dialogues[d].length){
+    npcText.textContent+=dialogues[d][c];
+    c++;
+    setTimeout(typeDialogue,28);
   }
 }
 
-setTimeout(()=>{
-  npcBox.classList.add("show");
-  npcType();
-},600);
+typeDialogue();
+
+document.addEventListener("click",()=>{
+  if(c<dialogues[d].length){
+    npcText.textContent=dialogues[d];
+    c=dialogues[d].length;
+  } else {
+    d++;
+    if(d<dialogues.length){
+      npcText.textContent="";
+      c=0;
+      typeDialogue();
+    } else {
+      document.getElementById("dialogueBox").style.display="none";
+    }
+  }
+});
 </script>
 
 <audio src="wow.mp3" autoplay loop></audio>
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
