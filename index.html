@@ -3,162 +3,185 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lootify | Login</title>
+<title>Lootify | System Access</title>
 
 <link rel="icon" href="rr.png" type="image/png">
 
 <style>
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-  font-family:Geneva,sans-serif;
-}
+*{margin:0;padding:0;box-sizing:border-box;font-family:monospace}
 
 body{
-   background: linear-gradient(
+  background:linear-gradient(
     0deg,
     #050008 0%,
     #1a0033 30%,
     #5a189a 65%,
     #f2dc91 100%
   );
-  min-height:100vh;
+  height:100vh;
   display:flex;
   justify-content:center;
   align-items:center;
   overflow:hidden;
+  color:#eee;
 }
 
-/* particles canvas */
+/* particles */
 #particles{
   position:fixed;
   inset:0;
   z-index:-1;
-  pointer-events:none;
 }
 
-/* music button */
+/* music */
 #musicBtn{
   position:fixed;
   top:15px;
   right:20px;
-  font-size:38px;
+  font-size:32px;
   cursor:pointer;
-  z-index:999;
-  transition:transform .3s;
-}
-#musicBtn:hover{
-  transform:scale(1.15);
 }
 
-/* login box */
-.login-box{
-  background:#F2DC91;
-  width:380px;
-  padding:35px;
-  border-radius:14px;
-  text-align:center;
-  box-shadow:0 0 30px rgba(0,0,0,.35);
-  animation:fadeUp .8s ease;
+/* system box */
+.system{
+  width:90%;
+  max-width:520px;
 }
 
-.login-box img{
-  width:120px;
+/* typing text */
+#terminalText{
+  line-height:1.7;
+  font-size:15px;
+  min-height:180px;
+}
+
+.cursor{
+  display:inline-block;
+  width:10px;
+  background:#f2dc91;
+  animation:blink 1s infinite;
+}
+
+@keyframes blink{
+  50%{opacity:0;}
+}
+
+/* progress */
+.progress{
+  margin-top:20px;
+  height:8px;
+  background:#111;
+  border:1px solid #7b2cbf;
+  overflow:hidden;
+}
+
+.bar{
+  height:100%;
+  width:0%;
+  background:#f2dc91;
+  transition:.3s;
+}
+
+/* terminal */
+.terminal{
+  display:none;
+  margin-top:25px;
+  background:rgba(0,0,0,.6);
+  padding:20px;
+  border-left:4px solid #f2dc91;
+}
+
+.terminal input{
+  width:100%;
+  background:black;
+  color:#f2dc91;
+  border:none;
+  border-bottom:1px solid #7b2cbf;
+  padding:10px;
+  outline:none;
   margin-bottom:15px;
 }
 
-.login-box input{
+.terminal button{
   width:100%;
   padding:12px;
-  margin:10px 0;
-  border:none;
-  border-radius:7px;
-  font-size:15px;
-  outline:none;
-}
-
-.login-box button{
-  width:100%;
-  padding:12px;
-  margin-top:10px;
-  border:none;
-  border-radius:7px;
-  font-size:16px;
-  font-weight:bold;
-  cursor:pointer;
-  transition:.25s;
-}
-
-.login-box button:hover{
-  transform:scale(1.05);
-}
-
-.normal{
   background:#111;
-  color:#F2DC91;
-}
-
-.google{
-  background:#333;
-  color:#fff;
-}
-
-.login-box hr{
-  margin:18px 0;
-  border:1px solid rgba(0,0,0,.2);
-}
-
-@keyframes fadeUp{
-  from{opacity:0;transform:translateY(40px);}
-  to{opacity:1;transform:translateY(0);}
+  color:#f2dc91;
+  border:1px solid #f2dc91;
+  margin-top:8px;
+  cursor:pointer;
 }
 </style>
 </head>
 
 <body>
 
-<!-- music -->
 <div id="musicBtn">🔈</div>
 <audio id="bgMusic" src="wow.mp3" loop muted autoplay></audio>
 
-<!-- login -->
-<div class="login-box">
-  <img src="gg.png" alt="Lootify Logo">
+<div class="system">
+  <div id="terminalText"></div>
+  <div class="progress"><div class="bar" id="bar"></div></div>
 
-  <form onsubmit="login(event)">
-    <input id="user" type="text" placeholder="Username" required>
-    <input type="password" placeholder="Password" required>
-    <button class="normal">Log in</button>
-  </form>
-
-  <hr>
-
-  <button class="google" onclick="googleLogin()">Login with Google</button>
+  <div class="terminal" id="loginBox">
+    <span>&gt; ENTER USER KEY :</span>
+    <input id="user" type="text" autocomplete="off">
+    <button onclick="login(event)">UNLOCK SYSTEM</button>
+    <button onclick="googleLogin()">GOOGLE AUTH</button>
+  </div>
 </div>
 
 <canvas id="particles"></canvas>
 
-<!-- music script -->
+<!-- typing + fake security -->
 <script>
-const btn = document.getElementById("musicBtn");
-const audio = document.getElementById("bgMusic");
+const text = [
+  "BOOTING LOOTIFY OS...",
+  "INITIALIZING CORE MODULES...",
+  "CHECKING MEMORY ...... OK",
+  "VERIFYING NETWORK ..... OK",
+  "SCANNING FOR THREATS...",
+  "NO THREAT DETECTED",
+  "SECURITY LEVEL : HIGH",
+  "SYSTEM LOCKED",
+  "AWAITING USER AUTHORIZATION"
+];
 
-audio.play().catch(()=>{});
+const terminal = document.getElementById("terminalText");
+const bar = document.getElementById("bar");
+const loginBox = document.getElementById("loginBox");
 
-btn.onclick = ()=>{
-  audio.muted = !audio.muted;
-  btn.textContent = audio.muted ? "🔈" : "🔊";
-};
+let line = 0;
+let char = 0;
+
+function type(){
+  if(line < text.length){
+    if(char < text[line].length){
+      terminal.innerHTML += text[line][char];
+      char++;
+      setTimeout(type,35);
+    }else{
+      terminal.innerHTML += "<br>";
+      bar.style.width = ((line+1)/text.length*100)+"%";
+      line++;
+      char=0;
+      setTimeout(type,400);
+    }
+  }else{
+    terminal.innerHTML += "<span class='cursor'></span>";
+    setTimeout(()=>loginBox.style.display="block",600);
+  }
+}
+type();
 </script>
 
-<!-- login script -->
+<!-- login -->
 <script>
 function login(e){
   e.preventDefault();
   localStorage.setItem("loggedIn","true");
   localStorage.setItem("username",document.getElementById("user").value);
-  window.location.href="Lootify1.html";
+  location.href="Lootify1.html";
 }
 </script>
 
@@ -185,35 +208,44 @@ window.googleLogin = ()=>{
     .then(res=>{
       localStorage.setItem("loggedIn","true");
       localStorage.setItem("username",res.user.displayName);
-      window.location.href="Lootify1.html";
-    })
-    .catch(e=>alert(e.message));
+      location.href="Lootify1.html";
+    });
 };
 </script>
 
+<!-- music -->
 <script>
-// Purple rain particles
+const btn=document.getElementById("musicBtn");
+const audio=document.getElementById("bgMusic");
+btn.onclick=()=>{
+  audio.muted=!audio.muted;
+  btn.textContent=audio.muted?"🔈":"🔊";
+};
+</script>
+
+<!-- purple rain -->
+<script>
 const canvas=document.getElementById("particles");
 const ctx=canvas.getContext("2d");
-function resize(){canvas.width=innerWidth; canvas.height=innerHeight;}
-resize();
-addEventListener("resize",resize);
-const rain=[];for(let i=0;i<90;i++){rain.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,l:Math.random()*18+8,s:Math.random()*3+2,a:Math.random()*0.5+0.3});}
-function animate(){ctx.clearRect(0,0,canvas.width,canvas.height);rain.forEach(r=>{ctx.beginPath();ctx.moveTo(r.x,r.y);ctx.lineTo(r.x,r.y+r.l);ctx.strokeStyle=`rgba(128,0,255,${r.a})`;ctx.lineWidth=1.5;ctx.stroke();r.y+=r.s;if(r.y>canvas.height){r.y=-20;r.x=Math.random()*canvas.width;}});requestAnimationFrame(animate);}
+function resize(){canvas.width=innerWidth;canvas.height=innerHeight;}
+resize();addEventListener("resize",resize);
+const rain=[];
+for(let i=0;i<90;i++)rain.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,l:Math.random()*18+8,s:Math.random()*3+2,a:Math.random()*0.5+0.3});
+function animate(){
+ ctx.clearRect(0,0,canvas.width,canvas.height);
+ rain.forEach(r=>{
+  ctx.beginPath();
+  ctx.moveTo(r.x,r.y);
+  ctx.lineTo(r.x,r.y+r.l);
+  ctx.strokeStyle=`rgba(128,0,255,${r.a})`;
+  ctx.stroke();
+  r.y+=r.s;
+  if(r.y>canvas.height){r.y=-20;r.x=Math.random()*canvas.width;}
+ });
+ requestAnimationFrame(animate);
+}
 animate();
 </script>
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
