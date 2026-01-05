@@ -52,6 +52,7 @@ body{
   line-height:1.7;
   font-size:15px;
   min-height:180px;
+  transition: color 0.5s;
 }
 
 .cursor{
@@ -110,18 +111,6 @@ body{
   margin-top:8px;
   cursor:pointer;
 }
-
-/* fake checkboxes */
-.fake-check{
-  display:flex;
-  align-items:center;
-  margin-top:10px;
-  font-size:14px;
-}
-.fake-check input[type="checkbox"]{
-  margin-right:8px;
-  accent-color:#a67c52;
-}
 </style>
 </head>
 
@@ -137,15 +126,6 @@ body{
   <div class="terminal" id="loginBox">
     <span>&gt; ENTER USER KEY :</span>
     <input id="user" type="text" autocomplete="off">
-    
-    <!-- fake checkboxes -->
-    <div class="fake-check">
-      <input type="checkbox" id="check1"><label for="check1">Security Check 1</label>
-    </div>
-    <div class="fake-check">
-      <input type="checkbox" id="check2"><label for="check2">Security Check 2</label>
-    </div>
-
     <button onclick="login(event)">UNLOCK SYSTEM</button>
     <button onclick="googleLogin()">GOOGLE AUTH</button>
   </div>
@@ -153,7 +133,7 @@ body{
 
 <canvas id="particles"></canvas>
 
-<!-- typing + fake security -->
+<!-- typing -->
 <script>
 const text = [
   "BOOTING LOOTIFY OS...",
@@ -189,27 +169,12 @@ function type(){
     }
   }else{
     terminal.innerHTML += "<span class='cursor'></span>";
+    // بعد الانتهاء النصوص تصير شفافة
+    terminal.style.color="transparent";
     setTimeout(()=>loginBox.style.display="block",600);
   }
 }
 type();
-
-// fake checkbox behavior
-const check1 = document.getElementById("check1");
-const check2 = document.getElementById("check2");
-
-check1.addEventListener("change",()=>{
-  if(check1.checked && check2.checked){
-    check1.parentElement.style.display="none";
-    check2.parentElement.style.display="none";
-  }
-});
-check2.addEventListener("change",()=>{
-  if(check1.checked && check2.checked){
-    check1.parentElement.style.display="none";
-    check2.parentElement.style.display="none";
-  }
-});
 </script>
 
 <!-- login -->
@@ -254,10 +219,7 @@ window.googleLogin = ()=>{
 <script>
 const btn=document.getElementById("musicBtn");
 const audio=document.getElementById("bgMusic");
-btn.onclick=()=>{
-  audio.muted=!audio.muted;
-  btn.textContent=audio.muted?"🔈":"🔊";
-};
+btn.onclick=()=>{ audio.muted=!audio.muted; btn.textContent=audio.muted?"🔈":"🔊"; };
 </script>
 
 <!-- purple rain -->
@@ -266,8 +228,7 @@ const canvas=document.getElementById("particles");
 const ctx=canvas.getContext("2d");
 function resize(){canvas.width=innerWidth;canvas.height=innerHeight;}
 resize();addEventListener("resize",resize);
-const rain=[];
-for(let i=0;i<90;i++)rain.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,l:Math.random()*18+8,s:Math.random()*3+2,a:Math.random()*0.5+0.3});
+const rain=[];for(let i=0;i<90;i++)rain.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,l:Math.random()*18+8,s:Math.random()*3+2,a:Math.random()*0.5+0.3});
 function animate(){
  ctx.clearRect(0,0,canvas.width,canvas.height);
  rain.forEach(r=>{
@@ -286,6 +247,8 @@ animate();
 
 </body>
 </html>
+
+
 
 
 
