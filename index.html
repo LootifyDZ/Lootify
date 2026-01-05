@@ -12,10 +12,10 @@
 body{
   background:linear-gradient(
     0deg,
-    #050008 0%,
-    #1a0033 30%,
-    #5a189a 65%,
-    #f2dc91 100%
+    #1a0f00 0%,
+    #3d1f0a 30%,
+    #5a2d15 65%,
+    #a67c52 100%
   );
   height:100vh;
   display:flex;
@@ -57,7 +57,7 @@ body{
 .cursor{
   display:inline-block;
   width:10px;
-  background:#f2dc91;
+  background:#a67c52;
   animation:blink 1s infinite;
 }
 
@@ -70,14 +70,14 @@ body{
   margin-top:20px;
   height:8px;
   background:#111;
-  border:1px solid #7b2cbf;
+  border:1px solid #5a2d15;
   overflow:hidden;
 }
 
 .bar{
   height:100%;
   width:0%;
-  background:#f2dc91;
+  background:#a67c52;
   transition:.3s;
 }
 
@@ -87,15 +87,15 @@ body{
   margin-top:25px;
   background:rgba(0,0,0,.6);
   padding:20px;
-  border-left:4px solid #f2dc91;
+  border-left:4px solid #a67c52;
 }
 
 .terminal input{
   width:100%;
-  background:black;
-  color:#f2dc91;
+  background:#2b1506;
+  color:#a67c52;
   border:none;
-  border-bottom:1px solid #7b2cbf;
+  border-bottom:1px solid #5a2d15;
   padding:10px;
   outline:none;
   margin-bottom:15px;
@@ -104,11 +104,23 @@ body{
 .terminal button{
   width:100%;
   padding:12px;
-  background:#111;
-  color:#f2dc91;
-  border:1px solid #f2dc91;
+  background:#3d1f0a;
+  color:#a67c52;
+  border:1px solid #a67c52;
   margin-top:8px;
   cursor:pointer;
+}
+
+/* fake checkboxes */
+.fake-check{
+  display:flex;
+  align-items:center;
+  margin-top:10px;
+  font-size:14px;
+}
+.fake-check input[type="checkbox"]{
+  margin-right:8px;
+  accent-color:#a67c52;
 }
 </style>
 </head>
@@ -125,6 +137,15 @@ body{
   <div class="terminal" id="loginBox">
     <span>&gt; ENTER USER KEY :</span>
     <input id="user" type="text" autocomplete="off">
+    
+    <!-- fake checkboxes -->
+    <div class="fake-check">
+      <input type="checkbox" id="check1"><label for="check1">Security Check 1</label>
+    </div>
+    <div class="fake-check">
+      <input type="checkbox" id="check2"><label for="check2">Security Check 2</label>
+    </div>
+
     <button onclick="login(event)">UNLOCK SYSTEM</button>
     <button onclick="googleLogin()">GOOGLE AUTH</button>
   </div>
@@ -172,6 +193,23 @@ function type(){
   }
 }
 type();
+
+// fake checkbox behavior
+const check1 = document.getElementById("check1");
+const check2 = document.getElementById("check2");
+
+check1.addEventListener("change",()=>{
+  if(check1.checked && check2.checked){
+    check1.parentElement.style.display="none";
+    check2.parentElement.style.display="none";
+  }
+});
+check2.addEventListener("change",()=>{
+  if(check1.checked && check2.checked){
+    check1.parentElement.style.display="none";
+    check2.parentElement.style.display="none";
+  }
+});
 </script>
 
 <!-- login -->
@@ -248,4 +286,6 @@ animate();
 
 </body>
 </html>
+
+
 
