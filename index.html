@@ -10,12 +10,10 @@
 *{margin:0;padding:0;box-sizing:border-box;font-family:monospace}
 
 body{
-  background:linear-gradient(
-    0deg,
-    #1a0f00 0%,
-    #3d1f0a 30%,
-    #5a2d15 65%,
-    #a67c52 100%
+  background:
+   
+   color: #a67c52 
+
   );
   height:100vh;
   display:flex;
@@ -89,6 +87,14 @@ body{
   background:rgba(0,0,0,.6);
   padding:20px;
   border-left:4px solid #a67c52;
+}
+.fade-out{
+  animation: fadeOut 1.2s forwards;
+}
+
+@keyframes fadeOut{
+  from{ opacity:1; }
+  to{ opacity:0; }
 }
 
 .terminal input{
@@ -167,12 +173,18 @@ function type(){
       char=0;
       setTimeout(type,400);
     }
-  }else{
-    terminal.innerHTML += "<span class='cursor'></span>";
-    // بعد الانتهاء النصوص تصير شفافة
-    terminal.style.color="transparent";
-    setTimeout(()=>loginBox.style.display="block",600);
-  }
+}else{
+  terminal.innerHTML += "<span class='cursor'></span>";
+
+  setTimeout(()=>{
+    terminal.classList.add("fade-out");
+  },400);
+
+  setTimeout(()=>{
+    loginBox.style.display="block";
+  },1300);
+}
+
 }
 type();
 </script>
@@ -247,6 +259,7 @@ animate();
 
 </body>
 </html>
+
 
 
 
