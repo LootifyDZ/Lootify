@@ -191,7 +191,8 @@ function showLine(){
     return;
   }
 
-  line.textContent = ""; // نص جديد على نفس السطر
+  line.style.opacity = 1; // ارجع line مرئية
+  line.textContent = "";    // نص جديد على نفس السطر
   let char = 0;
 
   function typeChar(){
@@ -200,16 +201,24 @@ function showLine(){
       char++;
       setTimeout(typeChar,35);
     }else{
-      // update progress
+      // update progress gradually
       bar.style.width = ((index+1)/text.length*100)+"%";
 
-      // fade this line after a moment
+      // fade this line تدريجياً قبل الانتقال
       setTimeout(()=>{
-        line.style.opacity = 0;
-      },700);
-
-      index++;
-      setTimeout(showLine,900);
+        // fade out effect تدريجي (stairs)
+        let fadeSteps = 10;
+        let step = 0;
+        let fadeInterval = setInterval(()=>{
+          line.style.opacity = 1 - ((step+1)/fadeSteps);
+          step++;
+          if(step >= fadeSteps){
+            clearInterval(fadeInterval);
+            index++;
+            showLine(); // اعمل line الجاية بعد fade
+          }
+        }, 60);
+      }, 700);
     }
   }
 
@@ -217,6 +226,7 @@ function showLine(){
 }
 
 showLine();
+
 </script>
 
 
@@ -291,6 +301,7 @@ animate();
 
 </body>
 </html>
+
 
 
 
