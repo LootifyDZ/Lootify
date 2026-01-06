@@ -124,6 +124,15 @@
   margin-top:8px;
   cursor:pointer;
 }
+ .line{
+  opacity:1;
+  transition:opacity .6s;
+}
+
+.line.fade{
+  opacity:0;
+}
+
 </style>
 </head>
 
@@ -164,37 +173,49 @@ const terminal = document.getElementById("terminalText");
 const bar = document.getElementById("bar");
 const loginBox = document.getElementById("loginBox");
 
-let line = 0;
-let char = 0;
+let index = 0;
 
-function type(){
-  if(line < text.length){
-    if(char < text[line].length){
-      terminal.innerHTML += text[line][char];
+function showLine(){
+  if(index >= text.length){
+    // hide progress bar finally
+    setTimeout(()=>{
+      document.querySelector(".progress").classList.add("hide-bar");
+      loginBox.style.display = "block";
+    },600);
+    return;
+  }
+
+  const line = document.createElement("div");
+  line.className = "line";
+  terminal.appendChild(line);
+
+  let char = 0;
+
+  function typeChar(){
+    if(char < text[index].length){
+      line.textContent += text[index][char];
       char++;
-      setTimeout(type,35);
+      setTimeout(typeChar,35);
     }else{
-      terminal.innerHTML += "<br>";
-      bar.style.width = ((line+1)/text.length*100)+"%";
-      line++;
-      char=0;
-      setTimeout(type,400);
+      // update progress
+      bar.style.width = ((index+1)/text.length*100)+"%";
+
+      // fade this line after a moment
+      setTimeout(()=>{
+        line.classList.add("fade");
+      },700);
+
+      index++;
+      setTimeout(showLine,900);
     }
-}else{
-  terminal.innerHTML += "<span class='cursor'></span>";
+  }
 
-  setTimeout(()=>{
-    terminal.classList.add("fade-out");
-  },400);
-
-  setTimeout(()=>{
-    loginBox.style.display="block";
-  },1300);
+  typeChar();
 }
 
-}
-type();
+showLine();
 </script>
+
 
 <!-- login -->
 <script>
@@ -266,6 +287,7 @@ animate();
 
 </body>
 </html>
+
 
 
 
