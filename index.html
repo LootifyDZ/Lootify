@@ -12,7 +12,7 @@
 
  body{
   background:linear-gradient(
-    0deg,
+    180deg,
     #a67c52 0%,
     #8c6239 50%,
     #5a2d15 100%
@@ -175,6 +175,12 @@ const loginBox = document.getElementById("loginBox");
 
 let index = 0;
 
+// خلي line واحدة
+terminal.textContent = "";
+const line = document.createElement("span");
+line.className = "line";
+terminal.appendChild(line);
+
 function showLine(){
   if(index >= text.length){
     // hide progress bar finally
@@ -185,10 +191,7 @@ function showLine(){
     return;
   }
 
-  const line = document.createElement("div");
-  line.className = "line";
-  terminal.appendChild(line);
-
+  line.textContent = ""; // نص جديد على نفس السطر
   let char = 0;
 
   function typeChar(){
@@ -202,7 +205,7 @@ function showLine(){
 
       // fade this line after a moment
       setTimeout(()=>{
-        line.classList.add("fade");
+        line.style.opacity = 0;
       },700);
 
       index++;
@@ -215,6 +218,7 @@ function showLine(){
 
 showLine();
 </script>
+
 
 
 <!-- login -->
@@ -287,6 +291,7 @@ animate();
 
 </body>
 </html>
+
 
 
 
