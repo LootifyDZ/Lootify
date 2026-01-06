@@ -10,10 +10,12 @@
 *{margin:0;padding:0;box-sizing:border-box;font-family:monospace}
 
 body{
-  background:
-   
-   color: #a67c52 
-
+ body{
+  background:linear-gradient(
+    0deg,
+    #a67c52 0%,
+    #8c6239 50%,
+    #5a2d15 100%
   );
   height:100vh;
   display:flex;
@@ -79,6 +81,11 @@ body{
   background:#a67c52;
   transition:.3s;
 }
+  .hide-bar{
+  opacity:0;
+  transition:opacity .4s;
+}
+
 
 /* terminal */
 .terminal{
@@ -259,6 +266,7 @@ animate();
 
 </body>
 </html>
+
 
 
 
