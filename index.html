@@ -202,7 +202,7 @@ function showLine(){
     if(char < text[index].length){
       line.textContent += text[index][char];
       char++;
-      setTimeout(typeChar,35);
+      setTimeout(typeChar,20);
     }else{
       // update progress gradually
       bar.style.width = ((index+1)/text.length*100)+"%";
@@ -220,8 +220,8 @@ function showLine(){
             index++;
             showLine(); // اعمل line الجاية بعد fade
           }
-        }, 60);
-      }, 700);
+        }, 35);
+      }, 300);
     }
   }
 
@@ -283,6 +283,13 @@ btn.onclick=()=>{ audio.muted=!audio.muted; btn.textContent=audio.muted?"🔈":"
 const canvas = document.getElementById("particles");
 const ctx = canvas.getContext("2d");
 
+let mouse = { x:null, y:null };
+
+addEventListener("mousemove",e=>{
+  mouse.x=e.x;
+  mouse.y=e.y;
+});
+
 function resize(){
   canvas.width = innerWidth;
   canvas.height = innerHeight;
@@ -290,17 +297,16 @@ function resize(){
 resize();
 addEventListener("resize", resize);
 
-const particles = [];
-const COUNT = 80;
+const particles=[];
+const COUNT=90;
 
 for(let i=0;i<COUNT;i++){
   particles.push({
-    x: Math.random()*canvas.width,
-    y: Math.random()*canvas.height,
-    r: Math.random()*2 + 1,
-    dx: (Math.random()-0.5)*0.4,
-    dy: (Math.random()-0.5)*0.4,
-    a: Math.random()*0.5 + 0.3
+    x:Math.random()*canvas.width,
+    y:Math.random()*canvas.height,
+    r:Math.random()*2+1,
+    vx:(Math.random()-0.5)*0.6,
+    vy:(Math.random()-0.5)*0.6
   });
 }
 
@@ -308,27 +314,36 @@ function animate(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
 
   particles.forEach(p=>{
+    const dx=mouse.x-p.x;
+    const dy=mouse.y-p.y;
+    const dist=Math.sqrt(dx*dx+dy*dy);
+
+    if(dist<120){
+      p.x -= dx*0.01;
+      p.y -= dy*0.01;
+    }
+
+    p.x+=p.vx;
+    p.y+=p.vy;
+
+    if(p.x<0||p.x>canvas.width) p.vx*=-1;
+    if(p.y<0||p.y>canvas.height) p.vy*=-1;
+
     ctx.beginPath();
     ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
-    ctx.fillStyle = `rgba(255,220,180,${p.a})`;
+    ctx.fillStyle="rgba(255,220,180,0.6)";
     ctx.fill();
-
-    p.x += p.dx;
-    p.y += p.dy;
-
-    if(p.x<0||p.x>canvas.width) p.dx*=-1;
-    if(p.y<0||p.y>canvas.height) p.dy*=-1;
   });
 
   requestAnimationFrame(animate);
 }
-
 animate();
 </script>
 
 
 </body>
 </html>
+
 
 
 
