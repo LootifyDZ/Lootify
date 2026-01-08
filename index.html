@@ -26,56 +26,45 @@ body::after{
   inset:0;
   background:repeating-linear-gradient(
     to bottom,
-    rgba(0,0,0,.08) 0px,
-    rgba(0,0,0,.08) 1px,
+    rgba(0,0,0,.07) 0px,
+    rgba(0,0,0,.07) 1px,
     transparent 2px,
     transparent 4px
   );
   pointer-events:none;
-  animation:scan 8s linear infinite;
-}
-@keyframes scan{
-  from{background-position:0 0}
-  to{background-position:0 100%}
 }
 
-#particles{position:fixed;inset:0;z-index:-1}
-
-#musicBtn{
-  position:fixed;
-  top:15px;
-  right:20px;
-  font-size:32px;
-  cursor:pointer;
-}
-
+/* logo */
 #logo{
   position:fixed;
   top:20px;
   left:50%;
   transform:translateX(-50%);
   height:65px;
+  z-index:5;
 }
 
 .system{
   width:90%;
-  max-width:720px;
+  max-width:760px;
   transform:translateY(-40px);
 }
 
+/* terminal */
 #terminalText{
-  font-size:17px;
-  line-height:1.7;
-  min-height:160px;
+  font-size:18px;
+  min-height:40px; /* سطر واحد فقط */
+  white-space:nowrap;
+  overflow:hidden;
 }
 
 .line{
-  display:block;
+  display:inline-block;
   transition:opacity .6s;
 }
 
 .progress{
-  margin-top:20px;
+  margin-top:18px;
   height:8px;
   background:#1a0d05;
   border:1px solid #5a2d15;
@@ -84,7 +73,7 @@ body::after{
 .bar{
   height:100%;
   width:0%;
-  background:#a67c52;
+  background:#d2a679;
   transition:.4s;
 }
 
@@ -93,12 +82,10 @@ body::after{
 .terminal{
   margin-top:25px;
   background:rgba(0,0,0,.65);
-  border-left:4px solid #a67c52;
+  border-left:4px solid #d2a679;
   padding:22px;
   display:none;
 }
-
-.terminal span{color:#e6c79c}
 
 .terminal input{
   width:100%;
@@ -116,14 +103,23 @@ body::after{
   padding:12px;
   background:#3d1f0a;
   color:#f3d7b0;
-  border:1px solid #a67c52;
+  border:1px solid #d2a679;
   margin-top:8px;
   cursor:pointer;
 }
 
-@media(max-width:768px){
-  #logo{height:45px}
-  #terminalText{font-size:15px}
+#musicBtn{
+  position:fixed;
+  top:15px;
+  right:20px;
+  font-size:32px;
+  cursor:pointer;
+}
+
+#particles{
+  position:fixed;
+  inset:0;
+  z-index:-1;
 }
 </style>
 </head>
@@ -134,34 +130,35 @@ body::after{
 <audio id="bgMusic" src="wow.mp3" loop muted autoplay></audio>
 
 <div class="system">
-  <div id="terminalText"></div>
+  <div id="terminalText"><span class="line" id="line"></span></div>
   <div class="progress" id="prog"><div class="bar" id="bar"></div></div>
 
   <div class="terminal" id="loginBox">
     <span>&gt; ENTER USER KEY :</span>
-    <input id="user" autocomplete="off">
+    <input id="user">
     <button onclick="login()">UNLOCK SYSTEM</button>
-    <button onclick="googleLogin()">GOOGLE AUTH</button>
   </div>
 </div>
 
 <canvas id="particles"></canvas>
 
 <script>
-/* ===== typing sound (LOW) ===== */
+/* ===== صوت typing (ضعيف بزاف) ===== */
 const AudioCtx = window.AudioContext || window.webkitAudioContext;
 const audioCtx = new AudioCtx();
+
 function playTypeSound(){
-  const o=audioCtx.createOscillator(), g=audioCtx.createGain();
+  const o=audioCtx.createOscillator();
+  const g=audioCtx.createGain();
   o.type="square";
-  o.frequency.value=850+Math.random()*150;
-  g.gain.value=0.015; // 🔉 منخفض
+  o.frequency.value=700+Math.random()*120;
+  g.gain.value=0.006; // 🔉 ضعيف جدا
   o.connect(g); g.connect(audioCtx.destination);
-  o.start(); o.stop(audioCtx.currentTime+0.05);
+  o.start(); o.stop(audioCtx.currentTime+0.04);
 }
 
-/* ===== boot text ===== */
-const lines=[
+/* ===== boot text (سطر واحد فقط) ===== */
+const steps=[
 "BOOTING LOOTIFY OS...",
 "INITIALIZING CORE MODULES...",
 "CHECKING MEMORY ..... OK",
@@ -171,39 +168,40 @@ const lines=[
 "AWAITING USER AUTHORIZATION"
 ];
 
-const term=document.getElementById("terminalText");
+const line=document.getElementById("line");
 const bar=document.getElementById("bar");
 let i=0;
 
-function nextLine(){
-  if(i>=lines.length){
+function nextStep(){
+  if(i>=steps.length){
     document.getElementById("prog").classList.add("hide");
     document.getElementById("loginBox").style.display="block";
     return;
   }
 
-  const span=document.createElement("span");
-  span.className="line";
-  term.appendChild(span);
-
+  line.textContent="";
+  line.style.opacity=1;
   let c=0;
+
   function type(){
-    if(c<lines[i].length){
-      span.textContent+=lines[i][c++];
+    if(c<steps[i].length){
+      line.textContent+=steps[i][c++];
       playTypeSound();
-      setTimeout(type,22); // 🐢 أبطأ
+      setTimeout(type,28); // أبطأ
     }else{
-      bar.style.width=((i+1)/lines.length*100)+"%";
+      bar.style.width=((i+1)/steps.length*100)+"%";
       setTimeout(()=>{
-        span.style.opacity=0;
-        i++;
-        nextLine();
-      },400);
+        line.style.opacity=0;
+        setTimeout(()=>{
+          i++;
+          nextStep();
+        },300);
+      },500);
     }
   }
   type();
 }
-nextLine();
+nextStep();
 
 /* ===== login ===== */
 function login(){
@@ -220,30 +218,61 @@ btn.onclick=()=>{
   btn.textContent=audio.muted?"🔈":"🔊";
 };
 
-/* ===== particles ===== */
+/* ===== particles (تأثير حقيقي) ===== */
 const canvas=document.getElementById("particles");
 const ctx=canvas.getContext("2d");
 resize(); window.onresize=resize;
-function resize(){canvas.width=innerWidth;canvas.height=innerHeight}
 
-const p=[];
-for(let i=0;i<90;i++)
-  p.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*2+1,vx:(Math.random()-.5),vy:(Math.random()-.5)});
+function resize(){
+  canvas.width=innerWidth;
+  canvas.height=innerHeight;
+}
 
-function anim(){
+let mouse={x:null,y:null};
+addEventListener("mousemove",e=>{
+  mouse.x=e.x; mouse.y=e.y;
+});
+
+const particles=[];
+for(let i=0;i<120;i++){
+  particles.push({
+    x:Math.random()*canvas.width,
+    y:Math.random()*canvas.height,
+    r:Math.random()*2+1,
+    vx:(Math.random()-.5)*0.6,
+    vy:(Math.random()-.5)*0.6
+  });
+}
+
+function animate(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
-  p.forEach(o=>{
-    o.x+=o.vx; o.y+=o.vy;
-    if(o.x<0||o.x>canvas.width)o.vx*=-1;
-    if(o.y<0||o.y>canvas.height)o.vy*=-1;
+
+  particles.forEach(p=>{
+    if(mouse.x){
+      const dx=mouse.x-p.x;
+      const dy=mouse.y-p.y;
+      const d=Math.sqrt(dx*dx+dy*dy);
+      if(d<140){
+        p.x-=dx*0.015;
+        p.y-=dy*0.015;
+      }
+    }
+
+    p.x+=p.vx; p.y+=p.vy;
+    if(p.x<0||p.x>canvas.width)p.vx*=-1;
+    if(p.y<0||p.y>canvas.height)p.vy*=-1;
+
     ctx.beginPath();
-    ctx.arc(o.x,o.y,o.r,0,Math.PI*2);
-    ctx.fillStyle="rgba(255,220,180,.5)";
+    ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+    ctx.fillStyle="rgba(255,220,180,.75)";
+    ctx.shadowBlur=10;
+    ctx.shadowColor="#ffd8a8";
     ctx.fill();
   });
-  requestAnimationFrame(anim);
+
+  requestAnimationFrame(animate);
 }
-anim();
+animate();
 </script>
 
 </body>
