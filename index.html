@@ -135,11 +135,28 @@
 .line.fade{
   opacity:0;
 }
+/* LOGO */
+#logo{
+  position:fixed;
+  top:20px;
+  left:50%;
+  transform:translateX(-50%);
+  height:65px;
+  z-index:5;
+}
+
+@media (max-width:768px){
+  #logo{
+    height:45px;
+    top:15px;
+  }
+}
 
 </style>
 </head>
 
 <body>
+<img src="ggg.png" id="logo">
 
 <div id="musicBtn">🔈</div>
 <audio id="bgMusic" src="wow.mp3" loop muted autoplay></audio>
@@ -157,71 +174,73 @@
 </div>
 
 <canvas id="particles"></canvas>
+<audio id="typeSound" src="type.mp3" preload="auto"></audio>
 
 <!-- typing -->
 <script>
 const text = [
-  "BOOTING LOOTIFY OS...",
-  "INITIALIZING CORE MODULES...",
-  "CHECKING MEMORY ...... OK",
-  "VERIFYING NETWORK ..... OK",
-  "SCANNING FOR THREATS...",
-  "NO THREAT DETECTED",
-  "SECURITY LEVEL : HIGH",
-  "SYSTEM LOCKED",
-  "AWAITING USER AUTHORIZATION"
+  {msg:"BOOTING LOOTIFY OS...", mood:"boot"},
+  {msg:"INITIALIZING CORE MODULES...", mood:"boot"},
+  {msg:"CHECKING MEMORY ...... OK", mood:"secure"},
+  {msg:"VERIFYING NETWORK ..... OK", mood:"secure"},
+  {msg:"SECURITY LEVEL : HIGH", mood:"secure"},
+  {msg:"SYSTEM LOCKED", mood:"locked"},
+  {msg:"AWAITING USER AUTHORIZATION", mood:"locked"}
 ];
 
 const terminal = document.getElementById("terminalText");
 const bar = document.getElementById("bar");
 const loginBox = document.getElementById("loginBox");
+const typeSound = document.getElementById("typeSound");
 
 let index = 0;
-
-// خلي line واحدة
 terminal.textContent = "";
+
 const line = document.createElement("span");
 line.className = "line";
 terminal.appendChild(line);
 
+function glitch(){
+  line.style.textShadow="2px 0 red,-2px 0 cyan";
+  setTimeout(()=>line.style.textShadow="none",120);
+}
+
 function showLine(){
   if(index >= text.length){
-    // hide progress bar finally
     setTimeout(()=>{
       document.querySelector(".progress").classList.add("hide-bar");
       loginBox.style.display = "block";
-    },600);
+    },400);
     return;
   }
 
-  line.style.opacity = 1; // ارجع line مرئية
-  line.textContent = "";    // نص جديد على نفس السطر
-  let char = 0;
+  line.textContent="";
+  line.style.opacity=1;
+  let char=0;
 
   function typeChar(){
-    if(char < text[index].length){
-      line.textContent += text[index][char];
-      char++;
-      setTimeout(typeChar,20);
-    }else{
-      // update progress gradually
-      bar.style.width = ((index+1)/text.length*100)+"%";
+    if(char < text[index].msg.length){
+      line.textContent += text[index].msg[char++];
+      typeSound.currentTime=0;
+      typeSound.play();
 
-      // fade this line تدريجياً قبل الانتقال
+      if(Math.random()<0.05) glitch();
+
+      setTimeout(typeChar,14); // ⚡ أسرع
+    }else{
+      bar.style.width=((index+1)/text.length*100)+"%";
+
       setTimeout(()=>{
-        // fade out effect تدريجي (stairs)
-        let fadeSteps = 10;
-        let step = 0;
-        let fadeInterval = setInterval(()=>{
-          line.style.opacity = 1 - ((step+1)/fadeSteps);
-          step++;
-          if(step >= fadeSteps){
-            clearInterval(fadeInterval);
+        let step=0;
+        let fade=setInterval(()=>{
+          line.style.opacity=1-(++step/8);
+          if(step>=8){
+            clearInterval(fade);
             index++;
-            showLine(); // اعمل line الجاية بعد fade
+            showLine();
           }
-        }, 35);
-      }, 300);
+        },30);
+      },220);
     }
   }
 
@@ -229,8 +248,8 @@ function showLine(){
 }
 
 showLine();
-
 </script>
+
 
 
 
@@ -343,6 +362,7 @@ animate();
 
 </body>
 </html>
+
 
 
 
