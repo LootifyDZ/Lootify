@@ -174,7 +174,7 @@
 </div>
 
 <canvas id="particles"></canvas>
-<audio id="typeSound" src="type.mp3" preload="auto"></audio>
+
 
 <!-- typing -->
 <script>
@@ -359,9 +359,31 @@ function animate(){
 animate();
 </script>
 
+<script>
+const AudioCtx = window.AudioContext || window.webkitAudioContext;
+const audioCtx = new AudioCtx();
+
+function playTypeSound(){
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+
+  osc.type = "square";
+  osc.frequency.setValueAtTime(900 + Math.random()*200, audioCtx.currentTime);
+
+  gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.05);
+
+  osc.connect(gain);
+  gain.connect(audioCtx.destination);
+
+  osc.start();
+  osc.stop(audioCtx.currentTime + 0.05);
+}
+</script>
 
 </body>
 </html>
+
 
 
 
