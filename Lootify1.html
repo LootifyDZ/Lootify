@@ -20,15 +20,14 @@ body{
     overflow-x:hidden;
 }
 
-/* HEADER */
+/* HEADER - PC */
 header{
     background:#0d0d0dcc;
     color:white;
-    padding:15px 30px;
+    padding:20px 60px;
     display:flex;
     align-items:center;
     justify-content:space-between;
-    backdrop-filter: blur(6px);
 }
 header img{height:50px}
 nav a{
@@ -283,6 +282,39 @@ nav a:hover{color:#f2dc91}
     font-size:15px;
   }
 }
+ @media (max-width: 768px){
+
+  header{
+    flex-direction:column;
+    padding:12px;
+  }
+
+  nav a{
+    font-size:16px;
+  }
+
+  .banner{
+    height:200px;
+    font-size:24px;
+  }
+
+  .products{
+    padding:30px 18px;
+  }
+
+  #dialogueBox{
+    width:94%;
+  }
+
+  #npcText{
+    font-size:15px;
+  }
+}
+@media (min-width: 1200px){
+  .banner{ font-size:56px; }
+  nav a{ font-size:24px; }
+}
+
 
 </style>
 </head>
@@ -399,6 +431,7 @@ dialogueBox.addEventListener("click",()=>{
 
 </body>
 </html>
+
 
 
 
