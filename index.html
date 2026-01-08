@@ -7,22 +7,23 @@
 <link rel="icon" href="rr.png" type="image/png">
 
 <style>
+:root{
+  --bg-main:#1a0d05;
+  --bg-soft:#2b160a;
+  --accent:#c89b63;
+  --text:#f5e6d3;
+}
+
 *{margin:0;padding:0;box-sizing:border-box;font-family:monospace}
 
-
- body{
-  background:linear-gradient(
-    180deg,
-    #a67c52 0%,
-    #8c6239 50%,
-    #5a2d15 100%
-  );
+body{
+  background:linear-gradient(180deg,var(--bg-main),var(--bg-soft));
   height:100vh;
   display:flex;
   justify-content:center;
   align-items:center;
   overflow:hidden;
-  color:#eee;
+  color:var(--text);
 }
 
 /* particles */
@@ -37,7 +38,7 @@
   position:fixed;
   top:15px;
   right:20px;
-  font-size:32px;
+  font-size:30px;
   cursor:pointer;
 }
 
@@ -45,97 +46,71 @@
 .system{
   width:90%;
   max-width:520px;
-  transform: translateY(-60px);
+  transform:translateY(-50px);
 }
 
-/* typing text */
+/* typing */
 #terminalText{
-  line-height:1.7;
+  min-height:150px;
   font-size:15px;
-  min-height:180px;
-  transition: color 0.5s;
-}
-
-.cursor{
-  display:inline-block;
-  width:10px;
-  background:white;
-  animation:blink 1s infinite;
-}
-
-@keyframes blink{
-  50%{opacity:0;}
+  letter-spacing:0.5px;
 }
 
 /* progress */
 .progress{
-  margin-top:20px;
-  height:8px;
-  background:#111;
-  border:1px solid #5a2d15;
+  margin-top:18px;
+  height:7px;
+  background:#120804;
+  border:1px solid var(--accent);
   overflow:hidden;
 }
-
 .bar{
   height:100%;
   width:0%;
-  background:#a67c52;
-  transition:.3s;
+  background:var(--accent);
+  transition:width .2s linear;
 }
-  .hide-bar{
-  opacity:0;
-  transition:opacity .4s;
-}
-
+.hide-bar{opacity:0;transition:.4s}
 
 /* terminal */
 .terminal{
-
-  margin-top:25px;
-  background:rgba(0,0,0,.6);
-  border-left:4px solid #a67c52;top :40px;
   display:none;
-  background:rgba(0,0,0,.6);
+  margin-top:25px;
+  background:rgba(20,10,5,.9);
+  border-left:4px solid var(--accent);
   padding:20px;
-}
-.fade-out{
-  animation: fadeOut 1.2s forwards;
-}
-
-@keyframes fadeOut{
-  from{ opacity:1; }
-  to{ opacity:0; }
 }
 
 .terminal input{
   width:100%;
-  background:#2b1506;
-  color:#a67c52;
+  background:#1f1007;
+  color:var(--text);
   border:none;
-  border-bottom:1px solid #5a2d15;
+  border-bottom:1px solid var(--accent);
   padding:10px;
   outline:none;
-  margin-bottom:15px;
+  margin-bottom:14px;
 }
 
 .terminal button{
   width:100%;
   padding:12px;
-  background:#3d1f0a;
-  color:#a67c52;
-  border:1px solid #a67c52;
+  background:#2e170b;
+  color:var(--accent);
+  border:1px solid var(--accent);
   margin-top:8px;
   cursor:pointer;
+  font-weight:bold;
 }
- .line{
+
+.line{
   opacity:1;
-  transition:opacity .6s;
+  transition:opacity .4s, transform .4s;
 }
-
-.line.fade{
+.fade-step{
   opacity:0;
+  transform:translateY(-6px);
 }
-
 </style>
 </head>
 
@@ -158,191 +133,109 @@
 
 <canvas id="particles"></canvas>
 
-<!-- typing -->
 <script>
-const text = [
-  "BOOTING LOOTIFY OS...",
-  "INITIALIZING CORE MODULES...",
-  "CHECKING MEMORY ...... OK",
-  "VERIFYING NETWORK ..... OK",
-  "SCANNING FOR THREATS...",
-  "NO THREAT DETECTED",
-  "SECURITY LEVEL : HIGH",
-  "SYSTEM LOCKED",
-  "AWAITING USER AUTHORIZATION"
+const text=[
+ "BOOTING LOOTIFY OS...",
+ "CHECKING MEMORY ...... OK",
+ "VERIFYING NETWORK ..... OK",
+ "SECURITY LEVEL : HIGH",
+ "SYSTEM LOCKED",
+ "AWAITING USER AUTHORIZATION"
 ];
 
-const terminal = document.getElementById("terminalText");
-const bar = document.getElementById("bar");
-const loginBox = document.getElementById("loginBox");
+const terminal=document.getElementById("terminalText");
+const bar=document.getElementById("bar");
+const loginBox=document.getElementById("loginBox");
 
-let index = 0;
+let index=0;
+const SPEED=15;
 
-// خلي line واحدة
-terminal.textContent = "";
-const line = document.createElement("span");
-line.className = "line";
+const line=document.createElement("span");
+line.className="line";
 terminal.appendChild(line);
 
 function showLine(){
-  if(index >= text.length){
-    // hide progress bar finally
+ if(index>=text.length){
+  setTimeout(()=>{
+    document.querySelector(".progress").classList.add("hide-bar");
+    loginBox.style.display="block";
+  },300);
+  return;
+ }
+
+ line.textContent="";
+ line.style.opacity=1;
+ line.style.transform="translateY(0)";
+ let c=0;
+
+ const typer=setInterval(()=>{
+  line.textContent+=text[index][c++];
+  if(c>=text[index].length){
+    clearInterval(typer);
+    bar.style.width=((index+1)/text.length*100)+"%";
     setTimeout(()=>{
-      document.querySelector(".progress").classList.add("hide-bar");
-      loginBox.style.display = "block";
-    },600);
-    return;
-  }
-
-  line.style.opacity = 1; // ارجع line مرئية
-  line.textContent = "";    // نص جديد على نفس السطر
-  let char = 0;
-
-  function typeChar(){
-    if(char < text[index].length){
-      line.textContent += text[index][char];
-      char++;
-      setTimeout(typeChar,20);
-    }else{
-      // update progress gradually
-      bar.style.width = ((index+1)/text.length*100)+"%";
-
-      // fade this line تدريجياً قبل الانتقال
+      line.classList.add("fade-step");
       setTimeout(()=>{
-        // fade out effect تدريجي (stairs)
-        let fadeSteps = 10;
-        let step = 0;
-        let fadeInterval = setInterval(()=>{
-          line.style.opacity = 1 - ((step+1)/fadeSteps);
-          step++;
-          if(step >= fadeSteps){
-            clearInterval(fadeInterval);
-            index++;
-            showLine(); // اعمل line الجاية بعد fade
-          }
-        }, 35);
-      }, 300);
-    }
+        line.classList.remove("fade-step");
+        index++;
+        showLine();
+      },350);
+    },250);
   }
-
-  typeChar();
+ },SPEED);
 }
 
 showLine();
-
 </script>
 
-
-
-<!-- login -->
 <script>
 function login(e){
-  e.preventDefault();
-  localStorage.setItem("loggedIn","true");
-  localStorage.setItem("username",document.getElementById("user").value);
-  location.href="Lootify1.html";
+ e.preventDefault();
+ localStorage.setItem("loggedIn","true");
+ localStorage.setItem("username",document.getElementById("user").value);
+ localStorage.setItem("showNPC","true"); // 👈 يخلي الشات يطلع مباشرة
+ location.href="Lootify1.html";
 }
 </script>
 
-<!-- firebase -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
 import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyA6XbX1DMzr_LBqxnMyafBX2jVVtoWU4PU",
-  authDomain: "lootify-89bf6.firebaseapp.com",
-  projectId: "lootify-89bf6",
-  storageBucket: "lootify-89bf6.firebasestorage.app",
-  messagingSenderId: "1075454919896",
-  appId: "1:1075454919896:web:3cada8ca62c612dd9a03ad"
-};
+const app=initializeApp({
+ apiKey:"AIzaSyA6XbX1DMzr_LBqxnMyafBX2jVVtoWU4PU",
+ authDomain:"lootify-89bf6.firebaseapp.com",
+ projectId:"lootify-89bf6",
+ storageBucket:"lootify-89bf6.firebasestorage.app",
+ messagingSenderId:"1075454919896",
+ appId:"1:1075454919896:web:3cada8ca62c612dd9a03ad"
+});
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const provider = new GoogleAuthProvider();
+const auth=getAuth(app);
+const provider=new GoogleAuthProvider();
 
-window.googleLogin = ()=>{
-  signInWithPopup(auth, provider)
-    .then(res=>{
-      localStorage.setItem("loggedIn","true");
-      localStorage.setItem("username",res.user.displayName);
-      location.href="Lootify1.html";
-    });
+window.googleLogin=()=>{
+ signInWithPopup(auth,provider).then(res=>{
+  localStorage.setItem("loggedIn","true");
+  localStorage.setItem("username",res.user.displayName);
+  localStorage.setItem("showNPC","true");
+  location.href="Lootify1.html";
+ });
 };
 </script>
 
-<!-- music -->
 <script>
 const btn=document.getElementById("musicBtn");
 const audio=document.getElementById("bgMusic");
-btn.onclick=()=>{ audio.muted=!audio.muted; btn.textContent=audio.muted?"🔈":"🔊"; };
+btn.onclick=()=>{
+ audio.muted=!audio.muted;
+ btn.textContent=audio.muted?"🔈":"🔊";
+};
 </script>
-
-<script>
-const canvas = document.getElementById("particles");
-const ctx = canvas.getContext("2d");
-
-let mouse = { x:null, y:null };
-
-addEventListener("mousemove",e=>{
-  mouse.x=e.x;
-  mouse.y=e.y;
-});
-
-function resize(){
-  canvas.width = innerWidth;
-  canvas.height = innerHeight;
-}
-resize();
-addEventListener("resize", resize);
-
-const particles=[];
-const COUNT=90;
-
-for(let i=0;i<COUNT;i++){
-  particles.push({
-    x:Math.random()*canvas.width,
-    y:Math.random()*canvas.height,
-    r:Math.random()*2+1,
-    vx:(Math.random()-0.5)*0.6,
-    vy:(Math.random()-0.5)*0.6
-  });
-}
-
-function animate(){
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-
-  particles.forEach(p=>{
-    const dx=mouse.x-p.x;
-    const dy=mouse.y-p.y;
-    const dist=Math.sqrt(dx*dx+dy*dy);
-
-    if(dist<120){
-      p.x -= dx*0.01;
-      p.y -= dy*0.01;
-    }
-
-    p.x+=p.vx;
-    p.y+=p.vy;
-
-    if(p.x<0||p.x>canvas.width) p.vx*=-1;
-    if(p.y<0||p.y>canvas.height) p.vy*=-1;
-
-    ctx.beginPath();
-    ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
-    ctx.fillStyle="rgba(255,220,180,0.6)";
-    ctx.fill();
-  });
-
-  requestAnimationFrame(animate);
-}
-animate();
-</script>
-
 
 </body>
 </html>
+
 
 
 
