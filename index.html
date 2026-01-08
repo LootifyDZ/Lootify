@@ -257,11 +257,20 @@ showLine();
 <script>
 function login(e){
   e.preventDefault();
+
   localStorage.setItem("loggedIn","true");
-  localStorage.setItem("username",document.getElementById("user").value);
+  localStorage.setItem(
+    "username",
+    document.getElementById("user").value || "Player"
+  );
+
+  // 👇 هذا السطر الجديد
+  localStorage.setItem("showNPC","true");
+
   location.href="Lootify1.html";
 }
 </script>
+
 
 <!-- firebase -->
 <script type="module">
@@ -383,6 +392,7 @@ function playTypeSound(){
 
 </body>
 </html>
+
 
 
 
