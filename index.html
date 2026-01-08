@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Lootify | System Access</title>
-<link rel="icon" href="rr.png" type="image/png">
+<link rel="icon" href="rr.png">
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:monospace}
@@ -17,6 +17,26 @@ body{
   align-items:center;
   overflow:hidden;
   color:#eee;
+}
+
+/* scanlines */
+body::after{
+  content:"";
+  position:fixed;
+  inset:0;
+  background:repeating-linear-gradient(
+    to bottom,
+    rgba(0,0,0,.08) 0px,
+    rgba(0,0,0,.08) 1px,
+    transparent 2px,
+    transparent 4px
+  );
+  pointer-events:none;
+  animation:scan 8s linear infinite;
+}
+@keyframes scan{
+  from{background-position:0 0}
+  to{background-position:0 100%}
 }
 
 #particles{position:fixed;inset:0;z-index:-1}
@@ -51,7 +71,7 @@ body{
 
 .line{
   display:block;
-  transition:opacity .5s;
+  transition:opacity .6s;
 }
 
 .progress{
@@ -65,7 +85,7 @@ body{
   height:100%;
   width:0%;
   background:#a67c52;
-  transition:.25s;
+  transition:.4s;
 }
 
 .hide{opacity:0}
@@ -78,12 +98,12 @@ body{
   display:none;
 }
 
-.terminal span{color:#d9b38c}
+.terminal span{color:#e6c79c}
 
 .terminal input{
   width:100%;
   background:#2b1506;
-  color:#f1d1a6;
+  color:#f3d7b0;
   border:none;
   border-bottom:1px solid #5a2d15;
   padding:12px;
@@ -95,7 +115,7 @@ body{
   width:100%;
   padding:12px;
   background:#3d1f0a;
-  color:#f1d1a6;
+  color:#f3d7b0;
   border:1px solid #a67c52;
   margin-top:8px;
   cursor:pointer;
@@ -128,13 +148,14 @@ body{
 <canvas id="particles"></canvas>
 
 <script>
-/* ===== typing sound ===== */
+/* ===== typing sound (LOW) ===== */
 const AudioCtx = window.AudioContext || window.webkitAudioContext;
 const audioCtx = new AudioCtx();
 function playTypeSound(){
   const o=audioCtx.createOscillator(), g=audioCtx.createGain();
-  o.type="square"; o.frequency.value=900+Math.random()*200;
-  g.gain.value=0.04;
+  o.type="square";
+  o.frequency.value=850+Math.random()*150;
+  g.gain.value=0.015; // 🔉 منخفض
   o.connect(g); g.connect(audioCtx.destination);
   o.start(); o.stop(audioCtx.currentTime+0.05);
 }
@@ -170,14 +191,14 @@ function nextLine(){
     if(c<lines[i].length){
       span.textContent+=lines[i][c++];
       playTypeSound();
-      setTimeout(type,12);
+      setTimeout(type,22); // 🐢 أبطأ
     }else{
       bar.style.width=((i+1)/lines.length*100)+"%";
       setTimeout(()=>{
         span.style.opacity=0;
         i++;
         nextLine();
-      },200);
+      },400);
     }
   }
   type();
@@ -206,15 +227,18 @@ resize(); window.onresize=resize;
 function resize(){canvas.width=innerWidth;canvas.height=innerHeight}
 
 const p=[];
-for(let i=0;i<90;i++)p.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*2+1,vx:(Math.random()-.5),vy:(Math.random()-.5)});
+for(let i=0;i<90;i++)
+  p.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*2+1,vx:(Math.random()-.5),vy:(Math.random()-.5)});
+
 function anim(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
   p.forEach(o=>{
     o.x+=o.vx; o.y+=o.vy;
     if(o.x<0||o.x>canvas.width)o.vx*=-1;
     if(o.y<0||o.y>canvas.height)o.vy*=-1;
-    ctx.beginPath();ctx.arc(o.x,o.y,o.r,0,Math.PI*2);
-    ctx.fillStyle="rgba(255,220,180,.6)";
+    ctx.beginPath();
+    ctx.arc(o.x,o.y,o.r,0,Math.PI*2);
+    ctx.fillStyle="rgba(255,220,180,.5)";
     ctx.fill();
   });
   requestAnimationFrame(anim);
@@ -222,16 +246,5 @@ function anim(){
 anim();
 </script>
 
-<!-- firebase google login stays same -->
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
