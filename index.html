@@ -248,6 +248,35 @@ function login(){
   localStorage.setItem("username",user.value||"Player");
   location.href="Lootify1.html";
 }
+  /* ===== music ===== */
+const btn=document.getElementById("musicBtn");
+const audio=document.getElementById("bgMusic");
+btn.onclick=()=>{audio.muted=!audio.muted; btn.textContent=audio.muted?"🔈":"🔊";};
+
+/* ===== particles ===== */
+const canvas=document.getElementById("particles");
+const ctx=canvas.getContext("2d");
+resize(); window.onresize=resize;
+function resize(){canvas.width=innerWidth;canvas.height=innerHeight}
+
+const p=[];
+for(let i=0;i<90;i++)
+  p.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*2+1,vx:(Math.random()-.5),vy:(Math.random()-.5)});
+
+function anim(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  p.forEach(o=>{
+    o.x+=o.vx; o.y+=o.vy;
+    if(o.x<0||o.x>canvas.width)o.vx*=-1;
+    if(o.y<0||o.y>canvas.height)o.vy*=-1;
+    ctx.beginPath();
+    ctx.arc(o.x,o.y,o.r,0,Math.PI*2);
+    ctx.fillStyle="rgba(255,220,180,.5)";
+    ctx.fill();
+  });
+  requestAnimationFrame(anim);
+}
+anim();
 </script>
 
 
@@ -282,6 +311,7 @@ window.googleLogin = function(){
 
 </body>
 </html>
+
 
 
 
