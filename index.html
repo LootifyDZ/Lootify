@@ -99,13 +99,26 @@ body::after{
   .login-art,.terminal-wrap{width:100%}
   #logo{height:45px}
   #terminalText{font-size:15px}
+}  
+
+  /* ===== BEAR ABOVE LOGIN BOX ===== */
+.bear-login{
+  position:absolute;
+  top:-135px;              /* هذا اللي يخلي يديه فوق الكارت */
+  left:50%;
+  transform:translateX(-50%);
+  width:230px;
+  image-rendering:pixelated;
+  pointer-events:none;
+  z-index:10;
+  display:none;            /* مخفي حتى يبان login */
 }
+
 </style>
 </head>
 
 <body>
 
-<img src="ggg.png" id="logo">
 <div id="musicBtn">🔈</div>
 <audio id="bgMusic" src="wow.mp3" loop muted autoplay></audio>
 
@@ -113,7 +126,7 @@ body::after{
 
   <!-- IMAGE -->
   <div class="login-art">
-    <img src="bear.png" alt="Lootify Pixel Art"> <!-- الصورة أولاً -->
+    <img src="bearee.png" alt="Lootify Pixel Art"> <!-- الصورة أولاً -->
     <div class="eyes"> <!-- العيون بعد الصورة -->
       <div class="eye left"><div class="pupil"></div></div>
       <div class="eye right"><div class="pupil"></div></div>
@@ -121,7 +134,23 @@ body::after{
   </div>
 
   <!-- TERMINAL -->
-  <div class="terminal-wrap">
+ <div class="terminal-wrap" style="position:relative;">
+
+  <!-- BEAR فوق login -->
+  <img src="bearee.png" class="bear-login" id="bearLogin">
+
+  <div id="terminalText"></div>
+  <div class="progress"><div class="bar" id="bar"></div></div>
+
+  <div class="terminal" id="loginBox">
+    <span>&gt; ENTER USER KEY :</span>
+    <input id="user" autocomplete="off">
+    <button onclick="login()">UNLOCK SYSTEM</button>
+    <button id="googleBtn">GOOGLE AUTH</button>
+  </div>
+
+</div>
+
     <div id="terminalText"></div>
     <div class="progress"><div class="bar" id="bar"></div></div>
 
@@ -184,8 +213,15 @@ function playTypeSound(){
 
 function glitch(el){el.style.textShadow="2px 0 red,-2px 0 cyan"; setTimeout(()=>el.style.textShadow="none",80);}
 
-function typeLine(){
-  if(index>=text.length){document.querySelector(".progress").classList.add("hide"); loginBox.style.display="block"; return;}
+function typeLine(){const bear = document.getElementById("bearLogin");
+
+if(index>=text.length){
+  document.querySelector(".progress").classList.add("hide");
+  loginBox.style.display="block";
+  bear.style.display="block"; // 👈 هنا يبان الدب
+  return;
+}
+
   if(char<text[index].length){line.textContent+=text[index][char++]; if(char%3===0) playTypeSound(); if(Math.random()<.04) glitch(line); setTimeout(typeLine,45);}
   else{bar.style.width=((index+1)/text.length*100)+"%"; setTimeout(()=>{line.textContent=""; char=0; index++; typeLine();},500);}
 }
@@ -236,6 +272,7 @@ animate();
 
 </body>
 </html>
+
 
 
 
