@@ -274,70 +274,10 @@ function animate(){
 animate();
 </script>
 
-/* ===== music ===== */
-const btn=document.getElementById("musicBtn");
-const audio=document.getElementById("bgMusic");
-btn.onclick=()=>{
-  audio.muted=!audio.muted;
-  btn.textContent=audio.muted?"🔈":"🔊";
-};
-
-/* ===== particles ===== */
-const canvas=document.getElementById("particles");
-const ctx=canvas.getContext("2d");
-resize(); window.onresize=resize;
-function resize(){canvas.width=innerWidth;canvas.height=innerHeight}
-
-const p=[];
-for(let i=0;i<90;i++)
-  p.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*2+1,vx:(Math.random()-.5),vy:(Math.random()-.5)});
-
-function anim(){
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  p.forEach(o=>{
-    o.x+=o.vx; o.y+=o.vy;
-    if(o.x<0||o.x>canvas.width)o.vx*=-1;
-    if(o.y<0||o.y>canvas.height)o.vy*=-1;
-    ctx.beginPath();
-    ctx.arc(o.x,o.y,o.r,0,Math.PI*2);
-    ctx.fillStyle="rgba(255,220,180,.5)";
-    ctx.fill();
-  });
-  requestAnimationFrame(anim);
-}
-anim();
-</script>
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
-import { getAuth, GoogleAuthProvider, signInWithPopup } 
-from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyA6XbX1DMzr_LBqxnMyafBX2jVVtoWU4PU",
-  authDomain: "lootify-89bf6.firebaseapp.com",
-  projectId: "lootify-89bf6",
-  storageBucket: "lootify-89bf6.appspot.com",
-  messagingSenderId: "1075454919896",
-  appId: "1:1075454919896:web:3cada8ca62c612dd9a03ad"
-};
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const provider = new GoogleAuthProvider();
-
-window.googleLogin = function(){
-  signInWithPopup(auth, provider)
-    .then(res=>{
-      localStorage.setItem("loggedIn","true");
-      localStorage.setItem("username",res.user.displayName);
-      location.href="Lootify1.html";
-    })
-    .catch(err=>console.error(err));
-};
-</script>
 
 </body>
 </html>
+
 
 
 
