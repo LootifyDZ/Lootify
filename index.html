@@ -154,6 +154,42 @@ body::after{
   #logo{height:45px}
   #terminalText{font-size:15px}
 }
+  /* ===== EYES FOLLOW CURSOR ===== */
+.eyes{
+  position:absolute;
+  width:100%;
+  height:100%;
+  pointer-events:none;
+}
+
+.eye{
+  position:absolute;
+  width:22px;
+  height:22px;
+  background:#f3e6d0;
+  border-radius:50%;
+  top:38%;
+}
+
+.eye.left{ left:43%; }
+.eye.right{ left:53%; }
+
+.pupil{
+  width:8px;
+  height:8px;
+  background:#1a0d05;
+  border-radius:50%;
+  position:absolute;
+  top:7px;
+  left:7px;
+  transition:.05s;
+}
+
+/* خلي الصورة container position */
+.login-art{
+  position:relative;
+}
+
 </style>
 </head>
 
@@ -167,8 +203,13 @@ body::after{
 
   <!-- IMAGE -->
   <div class="login-art">
-    <img src="bear.png" alt="Lootify Pixel Art">
+  <div class="eyes">
+    <div class="eye left"><div class="pupil"></div></div>
+    <div class="eye right"><div class="pupil"></div></div>
   </div>
+  <img src="bear.png" alt="Lootify Pixel Art">
+</div>
+
 
   <!-- TERMINAL -->
   <div class="terminal-wrap">
@@ -296,8 +337,26 @@ function animate(){
 }
 animate();
 </script>
+<script>
+/* ===== EYES FOLLOW MOUSE ===== */
+const pupils=document.querySelectorAll(".pupil");
+
+document.addEventListener("mousemove",e=>{
+  pupils.forEach(p=>{
+    const rect=p.parentElement.getBoundingClientRect();
+    const x=e.clientX-(rect.left+rect.width/2);
+    const y=e.clientY-(rect.top+rect.height/2);
+    const angle=Math.atan2(y,x);
+    const move=6;
+
+    p.style.transform=
+      `translate(${Math.cos(angle)*move}px,${Math.sin(angle)*move}px)`;
+  });
+});
+</script>
 
 </body>
 </html>
+
 
 
