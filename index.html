@@ -19,37 +19,6 @@ body{
   color:#eee;
 }
 
-/* scanlines */
-body::after{
-  content:"";
-  position:fixed;
-  inset:0;
-  background:repeating-linear-gradient(
-    to bottom,
-    rgba(0,0,0,.08) 0px,
-    rgba(0,0,0,.08) 1px,
-    transparent 2px,
-    transparent 4px
-  );
-  pointer-events:none;
-  animation:scan 8s linear infinite;
-}
-@keyframes scan{
-  from{background-position:0 0}
-  to{background-position:0 100%}
-}
-
-#particles{position:fixed;inset:0;z-index:-1}
-
-#logo{
-  position:fixed;
-  top:20px;
-  left:50%;
-  transform:translateX(-50%);
-  height:65px;
-}
-
-/* ===== SYSTEM ===== */
 .system{
   width:90%;
   max-width:900px;
@@ -59,13 +28,10 @@ body::after{
   align-items:center;
 }
 
-/* ===== LEFT IMAGE ===== */
+/* ===== LEFT ART ===== */
 .login-art{
   width:40%;
-  display:flex;
-  justify-content:center;
 }
-
 .login-art img{
   width:100%;
   image-rendering:pixelated;
@@ -74,7 +40,7 @@ body::after{
 /* ===== TERMINAL ===== */
 .terminal-wrap{
   width:55%;
-  position:relative;
+  position:relative; /* مهم */
 }
 
 #terminalText{
@@ -103,6 +69,8 @@ body::after{
   border-left:4px solid #a67c52;
   padding:22px;
   display:none;
+  position:relative;
+  z-index:1;
 }
 
 .terminal span{color:#e6c79c}
@@ -127,42 +95,39 @@ body::after{
   cursor:pointer;
 }
 
-/* ===== BEAR ===== */
+/* ===== BEAR (ONE ONLY) ===== */
 .bear-login{
   position:absolute;
-  top:-170px;
+  top:-140px;              /* 👈 راكب فوق الكارت */
   left:50%;
   transform:translateX(-50%);
-  width:240px;
+  width:230px;
   image-rendering:pixelated;
   pointer-events:none;
-  z-index:5;
-  display:none; /* 👈 مهم */
+  z-index:3;
+  display:none;            /* 👈 مخفي حتى login */
 }
 
-/* ===== MOBILE ===== */
 @media(max-width:768px){
   .system{flex-direction:column}
   .login-art,.terminal-wrap{width:100%}
-  .bear-login{top:-140px;width:200px}
+  .bear-login{top:-120px;width:200px}
 }
 </style>
 </head>
 
 <body>
 
-<img src="ggg.png" id="logo">
-
 <div class="system">
 
   <div class="login-art">
-    <img src="bearee.png">
+    <img src="bearee.png" alt="art">
   </div>
 
   <div class="terminal-wrap">
 
-    <!-- BEAR فوق login -->
-    <img src="bearee.png" class="bear-login" id="bearLogin">
+    <!-- ONE BEAR ONLY -->
+    <img src="bearee.png" class="bear-login" id="bear">
 
     <div id="terminalText"></div>
     <div class="progress"><div class="bar" id="bar"></div></div>
@@ -191,7 +156,7 @@ const text=[
 const terminal=document.getElementById("terminalText");
 const bar=document.getElementById("bar");
 const loginBox=document.getElementById("loginBox");
-const bear=document.getElementById("bearLogin");
+const bear=document.getElementById("bear");
 
 let index=0,char=0;
 const line=document.createElement("span");
@@ -201,7 +166,7 @@ function typeLine(){
   if(index>=text.length){
     document.querySelector(".progress").style.display="none";
     loginBox.style.display="block";
-    bear.style.display="block"; // 👈 الدب يبان هنا
+    bear.style.display="block";   // 👈 يظهر هنا فقط
     return;
   }
   if(char<text[index].length){
@@ -226,6 +191,8 @@ function login(){
 
 </body>
 </html>
+
+
 
 
 
