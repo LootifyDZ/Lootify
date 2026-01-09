@@ -49,14 +49,6 @@ body::after{
   cursor:pointer;
 }
 
-#logo{
-  position:fixed;
-  top:20px;
-  left:50%;
-  transform:translateX(-50%);
-  height:65px;
-}
-
 .system{
   width:90%;
   max-width:720px;
@@ -96,7 +88,7 @@ body::after{
   border-left:4px solid #a67c52;
   padding:22px;
   display:none;
-  position:relative; /* مهم */
+  position:relative; /* important for bear */
 }
 
 .terminal span{color:#e6c79c}
@@ -124,19 +116,23 @@ body::after{
 
 /* ===== BEAR ABOVE LOGIN BOX ===== */
 .bear-login{
-  position:absolute;
-  top:-220px; /* فوق login box مباشرة */
-  left:50%;
-  transform:translateX(-50%);
-  width:200px;
-  image-rendering:pixelated;
-  pointer-events:none;
-  z-index:2; /* فوق login box فقط */
-  display:none; /* مخفي قبل الظهور */
+  position: absolute;
+  bottom: 100%; /* directly above login box */
+  left: 50%;
+  transform: translateX(-50%) translateY(20px); /* start slightly lower */
+  width: 200px;
+  image-rendering: pixelated;
+  pointer-events: none;
+  display: none;
+  opacity: 0;
+  transition: transform .5s ease, opacity .5s ease;
+}
+.bear-login.show {
+  transform: translateX(-50%) translateY(0); /* final position */
+  opacity: 1;
 }
 
 @media(max-width:768px){
-  #logo{height:45px}
   #terminalText{font-size:15px}
 }
 </style>
@@ -151,7 +147,9 @@ body::after{
   <div class="progress" id="prog"><div class="bar" id="bar"></div></div>
 
   <div class="terminal" id="loginBox">
+    <!-- bear inside terminal -->
     <img src="bearee.png" class="bear-login" id="bearLogin">
+
     <span>&gt; ENTER USER KEY :</span>
     <input id="user" autocomplete="off">
     <button onclick="login()">UNLOCK SYSTEM</button>
@@ -195,7 +193,8 @@ function nextLine(){
   if(i>=lines.length){
     document.getElementById("prog").classList.add("hide");
     loginBox.style.display="block";
-    bearLogin.style.display="block"; // يظهر الدب مع login box
+    bearLogin.style.display="block";
+    setTimeout(()=>bearLogin.classList.add("show"),50); // animate bear
     return;
   }
 
