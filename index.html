@@ -8,7 +8,6 @@
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:monospace}
-
 body{
   background:linear-gradient(180deg,#a67c52 0%,#8c6239 50%,#5a2d15 100%);
   height:100vh;
@@ -18,112 +17,30 @@ body{
   overflow:hidden;
   color:#eee;
 }
-
-body::after{
-  content:"";
-  position:fixed;
-  inset:0;
-  background:repeating-linear-gradient(
-    to bottom,
-    rgba(0,0,0,.08) 0px,
-    rgba(0,0,0,.08) 1px,
-    transparent 2px,
-    transparent 4px
-  );
-  pointer-events:none;
-  animation:scan 8s linear infinite;
-}
-@keyframes scan{
-  from{background-position:0 0}
-  to{background-position:0 100%}
-}
-
-#particles{position:fixed;inset:0;z-index:-1}
-#musicBtn{position:fixed;top:15px;right:20px;font-size:32px;cursor:pointer}
-#logo{position:fixed;top:20px;left:50%;transform:translateX(-50%);height:65px}
-
-.system{
-  width:90%;
-  max-width:900px;
-  display:flex;
-  gap:25px;
-  transform:translateY(-40px);
-  align-items:center;
-}
-
-.login-art{
-  width:40%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  position:relative;
-}
-
-.login-art img{
-  width:100%;
-  height:auto;
-  object-fit:contain;
-  image-rendering:pixelated;
-  filter:sepia(10%) contrast(1.15) brightness(.95);
-  z-index:1;
-}
-
-.eyes{
-  position:absolute;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-  pointer-events:none;
-  z-index:3;
-}
-
+.system{width:90%;max-width:900px;display:flex;gap:25px;transform:translateY(-40px);align-items:center;}
+.login-art{width:40%;display:flex;align-items:center;justify-content:center;position:relative;}
+.login-art img{width:100%;height:auto;object-fit:contain;image-rendering:pixelated;filter:sepia(10%) contrast(1.15) brightness(.95);z-index:1;}
+.eyes{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:3;}
 .eye{position:absolute;width:0;height:0;}
 .eye.left{left:36%; top:38%;}
 .eye.right{left:62%; top:38%;}
 .pupil{width:12px;height:12px;background:#1a0d05;border-radius:50%;position:absolute;transition:.05s;}
-
-.terminal-wrap{width:55%; position:relative;}
+.terminal-wrap{width:55%;position:relative;}
 #terminalText{font-size:17px;line-height:1.7;min-height:160px}
 .line{display:block;transition:opacity .6s}
 .progress{margin-top:20px;height:8px;background:#1a0d05;border:1px solid #5a2d15}
 .bar{height:100%;width:0%;background:#a67c52;transition:.4s}
 .hide{opacity:0}
-.terminal{margin-top:25px;background:rgba(0,0,0,.65);border-left:4px solid #a67c52;padding:22px;display:none}
-.terminal span{color:#e6c79c}
+.terminal{margin-top:25px;background:rgba(0,0,0,.65);border-left:4px solid #a67c52;padding:22px;display:none;}
 .terminal input{width:100%;background:#2b1506;color:#f3d7b0;border:none;border-bottom:1px solid #5a2d15;padding:12px;outline:none;margin:12px 0}
-.terminal button{width:100%;padding:12px;background:#3d1f0a;color:#f3d7b0;border:1px solid #a67c52;margin-top:8px;cursor:pointer}
-
-@media(max-width:768px){
-  .system{flex-direction:column; align-items:center;}
-  .login-art,.terminal-wrap{width:100%}
-  #logo{height:45px}
-  #terminalText{font-size:15px}
-}
-
-/* ===== BEAR ABOVE LOGIN BOX ===== */
-.bear-login{
-  position:absolute;
-  top:-150px;
-  left:50%;
-  transform:translateX(-50%);
-  width:250px;
-  image-rendering:pixelated;
-  pointer-events:none;
-  z-index:10;
-  display:none;
-}
+.terminal button{width:100%;padding:12px;background:#3d1f0a;color:#f3d7b0;border:1px solid #a67c52;margin-top:8px;cursor:pointer;}
+.bear-login{position:absolute;top:-150px;left:50%;transform:translateX(-50%);width:250px;image-rendering:pixelated;pointer-events:none;z-index:10;display:none;}
 </style>
 </head>
-
 <body>
-
-<div id="musicBtn">🔈</div>
-<audio id="bgMusic" src="wow.mp3" loop muted autoplay></audio>
 
 <div class="system">
 
-  <!-- IMAGE -->
   <div class="login-art">
     <img src="bearee.png" alt="Lootify Pixel Art">
     <div class="eyes">
@@ -132,12 +49,8 @@ body::after{
     </div>
   </div>
 
-  <!-- TERMINAL -->
   <div class="terminal-wrap">
-
-    <!-- BEAR -->
     <img src="bearee.png" class="bear-login" id="bearLogin">
-
     <div id="terminalText"></div>
     <div class="progress"><div class="bar" id="bar"></div></div>
 
@@ -147,7 +60,6 @@ body::after{
       <button onclick="login()">UNLOCK SYSTEM</button>
       <button id="googleBtn">GOOGLE AUTH</button>
     </div>
-
   </div>
 
 </div>
@@ -155,109 +67,86 @@ body::after{
 <canvas id="particles"></canvas>
 
 <script>
-/* ===== EYES FOLLOW MOUSE ===== */
-const pupils=document.querySelectorAll(".pupil");
-document.addEventListener("mousemove",e=>{
-  pupils.forEach(p=>{
-    const rect=p.parentElement.getBoundingClientRect();
-    const x=e.clientX-(rect.left+rect.width/2);
-    const y=e.clientY-(rect.top+rect.height/2);
-    const angle=Math.atan2(y,x);
-    const move=6;
-    p.style.transform=`translate(${Math.cos(angle)*move}px,${Math.sin(angle)*move}px)`;
+// ===== Eyes follow mouse =====
+const pupils = document.querySelectorAll(".pupil");
+document.addEventListener("mousemove", e => {
+  pupils.forEach(p => {
+    const rect = p.parentElement.getBoundingClientRect();
+    const x = e.clientX - (rect.left + rect.width/2);
+    const y = e.clientY - (rect.top + rect.height/2);
+    const angle = Math.atan2(y, x);
+    const move = 6;
+    p.style.transform = `translate(${Math.cos(angle)*move}px,${Math.sin(angle)*move}px)`;
   });
 });
 
-/* ===== TYPE EFFECT + LOGIN BLOCKED ===== */
-const text=[
-"BOOTING LOOTIFY OS...",
-"INITIALIZING CORE MODULES...",
-"CHECKING MEMORY ..... OK",
-"VERIFYING NETWORK ..... OK",
-"SECURITY LEVEL : HIGH",
-"SYSTEM LOCKED",
-"AWAITING USER AUTHORIZATION"
+// ===== Type effect =====
+const textArr = [
+  "BOOTING LOOTIFY OS...",
+  "INITIALIZING CORE MODULES...",
+  "CHECKING MEMORY ..... OK",
+  "VERIFYING NETWORK ..... OK",
+  "SECURITY LEVEL : HIGH",
+  "SYSTEM LOCKED",
+  "AWAITING USER AUTHORIZATION"
 ];
-
-const terminal=document.getElementById("terminalText");
-const bar=document.getElementById("bar");
-const loginBox=document.getElementById("loginBox");
+const terminal = document.getElementById("terminalText");
+const bar = document.getElementById("bar");
+const loginBox = document.getElementById("loginBox");
 const bear = document.getElementById("bearLogin");
-
-let index=0,char=0;
-const line=document.createElement("span");
+let i=0, j=0;
+const line = document.createElement("span");
 line.className="line";
 terminal.appendChild(line);
 
-function playTypeSound(){
-  const o=new (window.AudioContext||window.webkitAudioContext)().createOscillator();
-  const g=new (window.AudioContext||window.webkitAudioContext)().createGain();
-  o.type="square";
-  o.frequency.value=550+Math.random()*100;
-  g.gain.value=0.005;
-  o.connect(g); g.connect((window.AudioContext||window.webkitAudioContext)().destination);
-  o.start(); o.stop((window.AudioContext||window.webkitAudioContext)().currentTime+.04);
-}
-
-function glitch(el){el.style.textShadow="2px 0 red,-2px 0 cyan"; setTimeout(()=>el.style.textShadow="none",80);}
-
 function typeLine(){
-  if(index>=text.length){
+  if(i >= textArr.length){
     document.querySelector(".progress").classList.add("hide");
-    loginBox.style.display="block"; // يظهر بعد booting
-    bear.style.display="block";
+    loginBox.style.display = "block";
+    bear.style.display = "block";
     return;
   }
-  if(char<text[index].length){
-    line.textContent+=text[index][char++];
-    if(char%3===0) playTypeSound();
-    if(Math.random()<.04) glitch(line);
-    setTimeout(typeLine,45);
-  }else{
-    bar.style.width=((index+1)/text.length*100)+"%";
+  if(j < textArr[i].length){
+    line.textContent += textArr[i][j++];
+    setTimeout(typeLine, 45);
+  } else {
+    bar.style.width = ((i+1)/textArr.length*100) + "%";
     setTimeout(()=>{
-      line.textContent="";
-      char=0;
-      index++;
+      line.textContent = "";
+      j=0;
+      i++;
       typeLine();
-    },500);
+    }, 500);
   }
 }
 typeLine();
 
+// ===== Login =====
 function login(){
-  localStorage.setItem("loggedIn","true");
-  localStorage.setItem("username",user.value||"Player");
+  localStorage.setItem("username", user.value || "Player");
   location.href="Lootify1.html";
 }
 
-/* ===== MUSIC BUTTON ===== */
-const btn=document.getElementById("musicBtn");
-const audio=document.getElementById("bgMusic");
-btn.onclick=()=>{audio.muted=!audio.muted; btn.textContent=audio.muted?"🔈":"🔊";}
-
-/* ===== PARTICLES ===== */
+// ===== Particles =====
 const canvas=document.getElementById("particles");
 const ctx=canvas.getContext("2d");
-function resize(){canvas.width=innerWidth; canvas.height=innerHeight;}
-resize(); window.addEventListener("resize",resize);
-
+function resize(){canvas.width=innerWidth;canvas.height=innerHeight;}
+resize();window.addEventListener("resize",resize);
 const particles=[];
-for(let i=0;i<100;i++)
-  particles.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*2+1,vx:(Math.random()-.5)*.6,vy:(Math.random()-.5)*.6});
-
+for(let p=0;p<100;p++){
+  particles.push({x:Math.random()*canvas.width, y:Math.random()*canvas.height, r:Math.random()*2+1, vx:(Math.random()-.5)*.6, vy:(Math.random()-.5)*.6});
+}
 let mouse={x:null,y:null};
-window.addEventListener("mousemove",e=>{mouse.x=e.x; mouse.y=e.y;});
-
+window.addEventListener("mousemove",e=>{mouse.x=e.x;mouse.y=e.y;});
 function animate(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
   particles.forEach(p=>{
     const dx=mouse.x-p.x, dy=mouse.y-p.y;
-    const d=Math.sqrt(dx*dx+dy*dy);
-    if(d<120){p.x-=dx*.01; p.y-=dy*.01;}
+    const dist=Math.sqrt(dx*dx+dy*dy);
+    if(dist<120){p.x-=dx*.01; p.y-=dy*.01;}
     p.x+=p.vx; p.y+=p.vy;
-    if(p.x<0||p.x>canvas.width)p.vx*=-1;
-    if(p.y<0||p.y>canvas.height)p.vy*=-1;
+    if(p.x<0||p.x>canvas.width) p.vx*=-1;
+    if(p.y<0||p.y>canvas.height) p.vy*=-1;
     ctx.beginPath();
     ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
     ctx.fillStyle="rgba(255,220,180,.6)";
@@ -270,4 +159,5 @@ animate();
 
 </body>
 </html>
+
 
