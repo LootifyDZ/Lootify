@@ -75,25 +75,13 @@ body::after{
   width:100%;
   height:100%;
   pointer-events:none;
-  z-index:3; /* خلي العيون فوق الصورة */
+  z-index:3;
 }
 
 .eye{position:absolute;width:0;height:0;}
 .eye.left{left:36%; top:38%;}
 .eye.right{left:62%; top:38%;}
-.pupil{width:12px;height:12px;background:#1a0d05;border-radius:50%;position:absolute;transition:.05s;} /* كبرت التلميذ */
-
-.bear-login{
-  position:absolute;
-  top:-150px; /* رفع الدب شوي */
-  left:50%;
-  transform:translateX(-50%);
-  width:250px;
-  image-rendering:pixelated;
-  pointer-events:none;
-  z-index:10;
-  display:none; /* يظهر بعد التحميل */
-}
+.pupil{width:12px;height:12px;background:#1a0d05;border-radius:50%;position:absolute;transition:.05s;}
 
 .terminal-wrap{width:55%; position:relative;}
 #terminalText{font-size:17px;line-height:1.7;min-height:160px}
@@ -113,7 +101,18 @@ body::after{
   #terminalText{font-size:15px}
 }
 
-
+/* ===== BEAR ABOVE LOGIN BOX ===== */
+.bear-login{
+  position:absolute;
+  top:-150px;
+  left:50%;
+  transform:translateX(-50%);
+  width:250px;
+  image-rendering:pixelated;
+  pointer-events:none;
+  z-index:10;
+  display:none;
+}
 </style>
 </head>
 
@@ -169,7 +168,7 @@ document.addEventListener("mousemove",e=>{
   });
 });
 
-/* ===== TYPE EFFECT + LOGIN ===== */
+/* ===== TYPE EFFECT + LOGIN BLOCKED ===== */
 const text=[
 "BOOTING LOOTIFY OS...",
 "INITIALIZING CORE MODULES...",
@@ -205,8 +204,8 @@ function glitch(el){el.style.textShadow="2px 0 red,-2px 0 cyan"; setTimeout(()=>
 function typeLine(){
   if(index>=text.length){
     document.querySelector(".progress").classList.add("hide");
-    loginBox.style.display="block";
-    bear.style.display="block"; // يظهر فقط بعد CHECKING
+    loginBox.style.display="block"; // يظهر بعد booting
+    bear.style.display="block";
     return;
   }
   if(char<text[index].length){
