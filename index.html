@@ -73,7 +73,8 @@ body::after{
   display:flex;
   align-items:center;
   justify-content:center;
-  position:relative;
+  position:relative; /* مهم جداً */
+  z-index:1;          /* خلي الصورة في طبقة 1 */
 }
 
 .login-art img{
@@ -158,23 +159,32 @@ body::after{
 /* ===== PUPILS ONLY ===== */
 .eyes{
   position:absolute;
+  top:0;
+  left:0;
   width:100%;
   height:100%;
   pointer-events:none;
+  z-index:2; /* مهم جداً تبقى فوق الصورة */
 }
-
 .eye{
   position:absolute;
-  width:0; height:0; /* no white part */
+  width:0; height:0;
 }
 
-.eye.left{ left:43%; top:38%; }
-.eye.right{ left:53%; top:38%; }
+.eye.left{
+  left:42%; /* عدّل هنا لو محتاج تزبيت مكان العين */
+  top:37%;  /* عدّل هنا لو محتاج تزبيت مكان العين */
+}
+
+.eye.right{
+  left:54%; /* عدّل هنا كمان */
+  top:37%;
+}
 
 .pupil{
   width:8px;
   height:8px;
-  background:#1a0d05; /* dark pixel */
+  background:#1a0d05;
   border-radius:50%;
   position:absolute;
   transition:.05s;
@@ -371,6 +381,7 @@ document.addEventListener("mousemove",e=>{
 
 </body>
 </html>
+
 
 
 
