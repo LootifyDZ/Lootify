@@ -41,14 +41,6 @@ body::after{
 
 #particles{position:fixed;inset:0;z-index:-1}
 
-#musicBtn{
-  position:fixed;
-  top:15px;
-  right:20px;
-  font-size:32px;
-  cursor:pointer;
-}
-
 #logo{
   position:fixed;
   top:20px;
@@ -57,7 +49,7 @@ body::after{
   height:65px;
 }
 
-/* ===== SYSTEM WRAPPER ===== */
+/* ===== SYSTEM ===== */
 .system{
   width:90%;
   max-width:900px;
@@ -67,23 +59,19 @@ body::after{
   align-items:center;
 }
 
-/* ===== IMAGE SIDE ===== */
+/* ===== LEFT IMAGE ===== */
 .login-art{
   width:40%;
   display:flex;
-  align-items:center;
   justify-content:center;
-  position:relative;
 }
 
 .login-art img{
   width:100%;
-  height:auto;
   image-rendering:pixelated;
-  filter:sepia(10%) contrast(1.15) brightness(.95);
 }
 
-/* ===== TERMINAL SIDE ===== */
+/* ===== TERMINAL ===== */
 .terminal-wrap{
   width:55%;
   position:relative;
@@ -94,8 +82,6 @@ body::after{
   line-height:1.7;
   min-height:160px;
 }
-
-.line{display:block}
 
 .progress{
   margin-top:20px;
@@ -110,8 +96,6 @@ body::after{
   background:#a67c52;
   transition:.4s;
 }
-
-.hide{opacity:0}
 
 .terminal{
   margin-top:25px;
@@ -130,7 +114,6 @@ body::after{
   border:none;
   border-bottom:1px solid #5a2d15;
   padding:12px;
-  outline:none;
   margin:12px 0;
 }
 
@@ -144,7 +127,7 @@ body::after{
   cursor:pointer;
 }
 
-/* ===== BEAR ABOVE LOGIN ===== */
+/* ===== BEAR ===== */
 .bear-login{
   position:absolute;
   top:-170px;
@@ -154,6 +137,7 @@ body::after{
   image-rendering:pixelated;
   pointer-events:none;
   z-index:5;
+  display:none; /* 👈 مهم */
 }
 
 /* ===== MOBILE ===== */
@@ -168,36 +152,30 @@ body::after{
 <body>
 
 <img src="ggg.png" id="logo">
-<div id="musicBtn">🔈</div>
-<audio id="bgMusic" src="wow.mp3" loop muted autoplay></audio>
 
 <div class="system">
 
-  <!-- LEFT IMAGE -->
   <div class="login-art">
-    <img src="bearee.png" alt="bear">
+    <img src="bearee.png">
   </div>
 
-  <!-- TERMINAL -->
   <div class="terminal-wrap">
 
-    <!-- BEAR OVER LOGIN -->
-    <img src="bearee.png" class="bear-login" alt="bear">
+    <!-- BEAR فوق login -->
+    <img src="bearee.png" class="bear-login" id="bearLogin">
 
     <div id="terminalText"></div>
     <div class="progress"><div class="bar" id="bar"></div></div>
 
     <div class="terminal" id="loginBox">
       <span>&gt; ENTER USER KEY :</span>
-      <input id="user" autocomplete="off">
+      <input id="user">
       <button onclick="login()">UNLOCK SYSTEM</button>
       <button id="googleBtn">GOOGLE AUTH</button>
     </div>
+
   </div>
-
 </div>
-
-<canvas id="particles"></canvas>
 
 <script>
 const text=[
@@ -213,16 +191,17 @@ const text=[
 const terminal=document.getElementById("terminalText");
 const bar=document.getElementById("bar");
 const loginBox=document.getElementById("loginBox");
+const bear=document.getElementById("bearLogin");
 
 let index=0,char=0;
 const line=document.createElement("span");
-line.className="line";
 terminal.appendChild(line);
 
 function typeLine(){
   if(index>=text.length){
-    document.querySelector(".progress").classList.add("hide");
+    document.querySelector(".progress").style.display="none";
     loginBox.style.display="block";
+    bear.style.display="block"; // 👈 الدب يبان هنا
     return;
   }
   if(char<text[index].length){
@@ -241,16 +220,12 @@ typeLine();
 
 function login(){
   localStorage.setItem("loggedIn","true");
-  localStorage.setItem("username",user.value||"Player");
   location.href="Lootify1.html";
 }
 </script>
 
 </body>
 </html>
-
-
-
 
 
 
