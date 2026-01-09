@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -115,14 +115,12 @@ body::after{
 }
 
 /* ===== BEAR ABOVE LOGIN BOX ===== */
-.bear-login{.bear-login{
+.bear-login{
   position: absolute;
-  top: -120px;       /* يتحكم في النزول */
+  bottom: 100%; /* directly above login box */
   left: 50%;
-  transform: translateX(-50%);
+  transform: translateX(-50%) translateY(20px); /* start slightly lower */
   width: 200px;
-  z-index: 3;        /* فوق صندوق اللوقين */
-  pointer-events: none;
   image-rendering: pixelated;
   pointer-events: none;
   display: none;
@@ -292,7 +290,6 @@ window.googleLogin = function(){
 
 </body>
 </html>
-
 
 
 
