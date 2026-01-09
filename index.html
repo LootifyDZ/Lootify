@@ -149,16 +149,35 @@ body::after{
 
 <script>
 /* ===== typing sound (LOW) ===== */
-const AudioCtx = window.AudioContext || window.webkitAudioContext;
-const audioCtx = new AudioCtx();
-function playTypeSound(){
-  const o=audioCtx.createOscillator(), g=audioCtx.createGain();
-  o.type="square";
-  o.frequency.value=850+Math.random()*150;
-  g.gain.value=0.015; // 🔉 منخفض
-  o.connect(g); g.connect(audioCtx.destination);
-  o.start(); o.stop(audioCtx.currentTime+0.05);
+function typeChar(){
+  if(char < text[index].msg.length){
+    line.textContent += text[index].msg[char++];
+
+    // 🔊 صوت خفيف كل 3 حروف فقط
+    if(char % 3 === 0){
+      playTypeSound();
+    }
+
+    if(Math.random() < 0.05) glitch();
+
+    setTimeout(typeChar, 45); // 🐢 سرعة أبطأ ومريحة
+  }else{
+    bar.style.width = ((index+1)/text.length*100) + "%";
+
+    setTimeout(()=>{
+      let step = 0;
+      let fade = setInterval(()=>{
+        line.style.opacity = 1 - (++step / 8);
+        if(step >= 8){
+          clearInterval(fade);
+          index++;
+          showLine();
+        }
+      }, 30);
+    }, 350); // pause صغيرة باش ما يكونش مزعج
+  }
 }
+
 
 /* ===== boot text ===== */
 const lines=[
@@ -276,6 +295,7 @@ window.googleLogin = function(){
 
 </body>
 </html>
+
 
 
 
