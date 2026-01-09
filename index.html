@@ -61,7 +61,6 @@ body::after{
   width:90%;
   max-width:720px;
   transform:translateY(-40px);
-  position:relative; /* مهم لدب فوق login box */
 }
 
 #terminalText{
@@ -97,8 +96,7 @@ body::after{
   border-left:4px solid #a67c52;
   padding:22px;
   display:none;
-  position:relative;
-  z-index:1;
+  position:relative; /* مهم */
 }
 
 .terminal span{color:#e6c79c}
@@ -127,7 +125,7 @@ body::after{
 /* ===== BEAR ABOVE LOGIN BOX ===== */
 .bear-login{
   position:absolute;
-  bottom:100%; /* فوق login box مباشرة */
+  top:-220px; /* فوق login box مباشرة */
   left:50%;
   transform:translateX(-50%);
   width:200px;
@@ -145,7 +143,7 @@ body::after{
 </head>
 
 <body>
-
+<img src="ggg.png" id="logo">
 <div id="musicBtn">🔈</div>
 <audio id="bgMusic" src="wow.mp3" loop muted autoplay></audio>
 
@@ -153,10 +151,8 @@ body::after{
   <div id="terminalText"></div>
   <div class="progress" id="prog"><div class="bar" id="bar"></div></div>
 
-  <!-- دب يظهر فقط بعد CHECKING -->
-  <img src="bearee.png" class="bear-login" id="bearLogin">
-
   <div class="terminal" id="loginBox">
+    <img src="bearee.png" class="bear-login" id="bearLogin">
     <span>&gt; ENTER USER KEY :</span>
     <input id="user" autocomplete="off">
     <button onclick="login()">UNLOCK SYSTEM</button>
@@ -296,9 +292,6 @@ window.googleLogin = function(){
 
 </body>
 </html>
-
-
-
 
 
 
