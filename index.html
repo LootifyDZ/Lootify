@@ -49,38 +49,19 @@ body::after{
   cursor:pointer;
 }
 
-/* ===== SYSTEM WRAPPER ===== */
+#logo{
+  position:fixed;
+  top:20px;
+  left:50%;
+  transform:translateX(-50%);
+  height:65px;
+}
+
 .system{
   width:90%;
-  max-width:900px;
-  display:flex;
-  gap:25px;
+  max-width:720px;
   transform:translateY(-40px);
-  align-items:center;
-}
-
-/* ===== IMAGE SIDE ===== */
-.login-art{
-  width:40%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  position:relative; 
-  z-index:1;
-}
-
-.login-art img{
-  width:100%;
-  height:auto;
-  object-fit:contain;
-  image-rendering:pixelated;
-  filter:sepia(10%) contrast(1.15) brightness(.95);
-}
-
-/* ===== TERMINAL SIDE ===== */
-.terminal-wrap{
-  width:55%;
-  position:relative;
+  position:relative; /* مهم لدب فوق login box */
 }
 
 #terminalText{
@@ -116,6 +97,8 @@ body::after{
   border-left:4px solid #a67c52;
   padding:22px;
   display:none;
+  position:relative;
+  z-index:1;
 }
 
 .terminal span{color:#e6c79c}
@@ -144,117 +127,60 @@ body::after{
 /* ===== BEAR ABOVE LOGIN BOX ===== */
 .bear-login{
   position:absolute;
-  top:-150px;
+  bottom:100%; /* فوق login box مباشرة */
   left:50%;
   transform:translateX(-50%);
-  width:250px;
+  width:200px;
   image-rendering:pixelated;
   pointer-events:none;
-  z-index:10;
-  display:none; /* يظل مخفي قبل الظهور */
+  z-index:2; /* فوق login box فقط */
+  display:none; /* مخفي قبل الظهور */
 }
 
-/* ===== MOBILE ===== */
 @media(max-width:768px){
-  .system{flex-direction:column; align-items:center;}
-  .login-art,.terminal-wrap{width:100%}
+  #logo{height:45px}
   #terminalText{font-size:15px}
-}
-
-/* ===== PUPILS ONLY ===== */
-.eyes{
-  position:absolute;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-  pointer-events:none;
-  z-index:2;
-}
-.eye{
-  position:absolute;
-  width:0; height:0;
-}
-
-.eye.left{
-  left:42%;
-  top:37%;
-}
-
-.eye.right{
-  left:54%;
-  top:37%;
-}
-
-.pupil{
-  width:8px;
-  height:8px;
-  background:#1a0d05;
-  border-radius:50%;
-  position:absolute;
-  transition:.05s;
 }
 </style>
 </head>
 
 <body>
-
+<img src="ggg.png" id="logo">
 <div id="musicBtn">🔈</div>
 <audio id="bgMusic" src="wow.mp3" loop muted autoplay></audio>
 
 <div class="system">
+  <div id="terminalText"></div>
+  <div class="progress" id="prog"><div class="bar" id="bar"></div></div>
 
-  <!-- IMAGE -->
-  <div class="login-art">
-    <div class="eyes">
-      <div class="eye left"><div class="pupil"></div></div>
-      <div class="eye right"><div class="pupil"></div></div>
-    </div>
-    <img src="bearee.png" alt="Lootify Pixel Art">
+  <!-- دب يظهر فقط بعد CHECKING -->
+  <img src="bearee.png" class="bear-login" id="bearLogin">
+
+  <div class="terminal" id="loginBox">
+    <span>&gt; ENTER USER KEY :</span>
+    <input id="user" autocomplete="off">
+    <button onclick="login()">UNLOCK SYSTEM</button>
+    <button onclick="googleLogin()">GOOGLE AUTH</button>
   </div>
-
-  <!-- TERMINAL -->
-  <div class="terminal-wrap">
-    <img src="bearee.png" class="bear-login" id="bearLogin"> <!-- هنا أضفنا الدب -->
-
-    <div id="terminalText"></div>
-    <div class="progress"><div class="bar" id="bar"></div></div>
-
-    <div class="terminal" id="loginBox">
-      <span>&gt; ENTER USER KEY :</span>
-      <input id="user" autocomplete="off">
-      <button onclick="login()">UNLOCK SYSTEM</button>
-      <button id="googleBtn">GOOGLE AUTH</button>
-    </div>
-  </div>
-
 </div>
 
 <canvas id="particles"></canvas>
 
 <script>
-/* ===== AUDIO VERY LOW ===== */
-const AudioCtx=window.AudioContext||window.webkitAudioContext;
-const audioCtx=new AudioCtx();
-
+/* ===== typing sound (LOW) ===== */
+const AudioCtx = window.AudioContext || window.webkitAudioContext;
+const audioCtx = new AudioCtx();
 function playTypeSound(){
-  const o=audioCtx.createOscillator();
-  const g=audioCtx.createGain();
+  const o=audioCtx.createOscillator(), g=audioCtx.createGain();
   o.type="square";
-  o.frequency.value=550+Math.random()*100;
-  g.gain.value=0.005;
+  o.frequency.value=850+Math.random()*150;
+  g.gain.value=0.015;
   o.connect(g); g.connect(audioCtx.destination);
-  o.start(); o.stop(audioCtx.currentTime+.04);
+  o.start(); o.stop(audioCtx.currentTime+0.05);
 }
 
-/* ===== GLITCH ===== */
-function glitch(el){
-  el.style.textShadow="2px 0 red,-2px 0 cyan";
-  setTimeout(()=>el.style.textShadow="none",80);
-}
-
-/* ===== BOOT ===== */
-const text=[
+/* ===== boot text ===== */
+const lines=[
 "BOOTING LOOTIFY OS...",
 "INITIALIZING CORE MODULES...",
 "CHECKING MEMORY ..... OK",
@@ -264,94 +190,108 @@ const text=[
 "AWAITING USER AUTHORIZATION"
 ];
 
-const terminal=document.getElementById("terminalText");
+const term=document.getElementById("terminalText");
 const bar=document.getElementById("bar");
 const loginBox=document.getElementById("loginBox");
 const bearLogin=document.getElementById("bearLogin");
+let i=0;
 
-let index=0,char=0;
-const line=document.createElement("span");
-line.className="line";
-terminal.appendChild(line);
-
-function typeLine(){
-  if(index>=text.length){
-    document.querySelector(".progress").classList.add("hide");
+function nextLine(){
+  if(i>=lines.length){
+    document.getElementById("prog").classList.add("hide");
     loginBox.style.display="block";
-    bearLogin.style.display="block"; // يظهر الدب بعد CHECKING
+    bearLogin.style.display="block"; // يظهر الدب مع login box
     return;
   }
-  if(char<text[index].length){
-    line.textContent+=text[index][char++];
-    if(char%3===0) playTypeSound();
-    if(Math.random()<.04) glitch(line);
-    setTimeout(typeLine,45);
-  }else{
-    bar.style.width=((index+1)/text.length*100)+"%";
-    setTimeout(()=>{
-      line.textContent="";
-      char=0; index++;
-      typeLine();
-    },500);
-  }
-}
-typeLine();
 
-/* ===== LOGIN ===== */
+  const span=document.createElement("span");
+  span.className="line";
+  term.appendChild(span);
+
+  let c=0;
+  function type(){
+    if(c<lines[i].length){
+      span.textContent+=lines[i][c++];
+      playTypeSound();
+      setTimeout(type,22);
+    }else{
+      bar.style.width=((i+1)/lines.length*100)+"%";
+      setTimeout(()=>{
+        span.style.opacity=0;
+        i++;
+        nextLine();
+      },400);
+    }
+  }
+  type();
+}
+nextLine();
+
+/* ===== login ===== */
 function login(){
   localStorage.setItem("loggedIn","true");
   localStorage.setItem("username",user.value||"Player");
   location.href="Lootify1.html";
 }
 
-/* ===== MUSIC ===== */
+/* ===== music ===== */
 const btn=document.getElementById("musicBtn");
 const audio=document.getElementById("bgMusic");
 btn.onclick=()=>{audio.muted=!audio.muted; btn.textContent=audio.muted?"🔈":"🔊";};
 
-/* ===== PARTICLES ===== */
+/* ===== particles ===== */
 const canvas=document.getElementById("particles");
 const ctx=canvas.getContext("2d");
-resize(); addEventListener("resize",resize);
+resize(); window.onresize=resize;
 function resize(){canvas.width=innerWidth;canvas.height=innerHeight}
 
-const particles=[];
-for(let i=0;i<100;i++)
-particles.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*2+1,vx:(Math.random()-.5)*.6,vy:(Math.random()-.5)*.6});
+const p=[];
+for(let i=0;i<90;i++)
+  p.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*2+1,vx:(Math.random()-.5),vy:(Math.random()-.5)});
 
-let mouse={x:null,y:null};
-addEventListener("mousemove",e=>{mouse.x=e.x;mouse.y=e.y});
-
-function animate(){
+function anim(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
-  particles.forEach(p=>{
-    const dx=mouse.x-p.x,dy=mouse.y-p.y;
-    const d=Math.sqrt(dx*dx+dy*dy);
-    if(d<120){p.x-=dx*.01;p.y-=dy*.01}
-    p.x+=p.vx; p.y+=p.vy;
-    if(p.x<0||p.x>canvas.width)p.vx*=-1;
-    if(p.y<0||p.y>canvas.height)p.vy*=-1;
+  p.forEach(o=>{
+    o.x+=o.vx; o.y+=o.vy;
+    if(o.x<0||o.x>canvas.width)o.vx*=-1;
+    if(o.y<0||o.y>canvas.height)o.vy*=-1;
     ctx.beginPath();
-    ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
-    ctx.fillStyle="rgba(255,220,180,.6)";
+    ctx.arc(o.x,o.y,o.r,0,Math.PI*2);
+    ctx.fillStyle="rgba(255,220,180,.5)";
     ctx.fill();
   });
-  requestAnimationFrame(animate);
+  requestAnimationFrame(anim);
 }
-animate();
+anim();
+</script>
 
-/* ===== EYES FOLLOW MOUSE ===== */
-const pupils=document.querySelectorAll(".pupil");
-document.addEventListener("mousemove",e=>{
-  pupils.forEach(p=>{
-    const rect=p.parentElement.getBoundingClientRect();
-    const x=e.clientX-(rect.left+rect.width/2);
-    const y=e.clientY-(rect.top+rect.height/2);
-    const angle=Math.atan2(y,x);
-    const move=6;
-    p.style.transform=`translate(${Math.cos(angle)*move}px,${Math.sin(angle)*move}px)`;
-  });
-});
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup } 
+from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyA6XbX1DMzr_LBqxnMyafBX2jVVtoWU4PU",
+  authDomain: "lootify-89bf6.firebaseapp.com",
+  projectId: "lootify-89bf6",
+  storageBucket: "lootify-89bf6.appspot.com",
+  messagingSenderId: "1075454919896",
+  appId: "1:1075454919896:web:3cada8ca62c612dd9a03ad"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const provider = new GoogleAuthProvider();
+
+window.googleLogin = function(){
+  signInWithPopup(auth, provider)
+    .then(res=>{
+      localStorage.setItem("loggedIn","true");
+      localStorage.setItem("username",res.user.displayName);
+      location.href="Lootify1.html";
+    })
+    .catch(err=>console.error(err));
+};
 </script>
 
 </body>
