@@ -168,6 +168,13 @@ body::after{
 const AudioCtx = window.AudioContext || window.webkitAudioContext;
 const audioCtx = new AudioCtx();
 
+/* ===== GLITCH EFFECT ===== */
+function glitch(el){
+  el.style.textShadow="2px 0 red,-2px 0 cyan";
+  setTimeout(()=>el.style.textShadow="none",80);
+}
+
+  
 function playTypeSound(){
   if(audioCtx.state === "suspended") audioCtx.resume();
   const o = audioCtx.createOscillator();
@@ -199,38 +206,36 @@ const bearLogin = document.getElementById("bearLogin");
 
 let i = 0;
 
-function nextLine(){
-  if(i >= lines.length){
-    document.getElementById("prog").classList.add("hide");
-    loginBox.style.display = "block";
-    bearLogin.style.display = "block";
-    setTimeout(()=>bearLogin.classList.add("show"),50);
+let index=0, char=0;
+
+const line=document.createElement("span");
+line.className="line";
+terminal.appendChild(line);
+
+function typeLine(){
+  if(index>=text.length){
+    document.querySelector(".progress").classList.add("hide");
+    loginBox.style.display="block";
     return;
   }
 
-  const span = document.createElement("span");
-  span.className = "line";
-  term.appendChild(span);
-
-  let c = 0;
-  function type(){
-    if(c < lines[i].length){
-      span.textContent += lines[i][c++];
-      if(c % 4 === 0) playTypeSound(); // 🔊 مشي كل حرف
-      setTimeout(type, 30); // أهدأ
-    }else{
-      bar.style.width = ((i+1)/lines.length*100) + "%";
-      setTimeout(()=>{
-        span.style.opacity = 0;
-        i++;
-        nextLine();
-      }, 400);
-    }
+  if(char < text[index].length){
+    line.textContent += text[index][char++];
+    if(char % 3 === 0) playTypeSound();
+    if(Math.random()<0.04) glitch(line);
+    setTimeout(typeLine,45); // 🐢 سرعة مريحة
+  }else{
+    bar.style.width=((index+1)/text.length*100)+"%";
+    setTimeout(()=>{
+      line.textContent="";
+      char=0;
+      index++;
+      typeLine();
+    },500); // pause
   }
-  type();
 }
+typeLine();
 
-nextLine();
 
 /* ===== LOGIN ===== */
 function login(){
@@ -317,6 +322,7 @@ window.googleLogin = function(){
 
 </body>
 </html>
+
 
 
 
