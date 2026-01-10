@@ -168,11 +168,7 @@ body::after{
 const AudioCtx = window.AudioContext || window.webkitAudioContext;
 const audioCtx = new AudioCtx();
 
-/* ===== GLITCH EFFECT ===== */
-function glitch(el){
-  el.style.textShadow="2px 0 red,-2px 0 cyan";
-  setTimeout(()=>el.style.textShadow="none",80);
-}
+
 
   
 function playTypeSound(){
@@ -322,6 +318,7 @@ window.googleLogin = function(){
 
 </body>
 </html>
+
 
 
 
