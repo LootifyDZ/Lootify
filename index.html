@@ -16,11 +16,11 @@
   background:#001b0f;
   color:#38ff9c;
   display:flex;
-  justify-content:center;
-  align-items:center;
-  z-index:10;
+  justify-content:flex-start;
+  align-items:flex-start;
   flex-direction:column;
   overflow:hidden;
+  z-index:10;
 }
 #bootScreen::after{
   content:"";
@@ -28,34 +28,53 @@
   inset:0;
   background:repeating-linear-gradient(
     to bottom,
-    rgba(0,0,0,.3) 0px,
-    rgba(0,0,0,.3) 1px,
+    rgba(0,0,0,.35) 0px,
+    rgba(0,0,0,.35) 1px,
     transparent 2px,
     transparent 4px
   );
   animation:scan 6s linear infinite;
+  pointer-events:none;
 }
 @keyframes scan{
   from{background-position:0 0;}
   to{background-position:0 200%;}
 }
 
-/* Glitch text */
-#bootText .line{
-  display:block;
-  font-size:22px; 
-  font-family:monospace;
-  animation:glitch 0.5s infinite alternate;
-}
-@keyframes glitch{
-  0%{opacity:1; transform:translate(0);}
-  25%{opacity:.85; transform:translate(-0.5px,0.5px);}
-  50%{opacity:.9; transform:translate(0.5px,-0.5px);}
-  75%{opacity:.8; transform:translate(-0.5px,-0.5px);}
-  100%{opacity:1; transform:translate(0);}
+/* boot text */
+#bootText{
+  padding:30px;
 }
 
-/* Skip button */
+#bootText .line{
+  display:block;
+  font-size:22px;
+}
+
+#bootText .line.glitch{
+  animation:glitch .5s infinite alternate;
+}
+
+@keyframes glitch{
+  0%{transform:translate(0);opacity:1}
+  25%{transform:translate(-0.6px,0.6px);opacity:.85}
+  50%{transform:translate(0.6px,-0.6px);opacity:.9}
+  75%{transform:translate(-0.6px,-0.6px);opacity:.8}
+  100%{transform:translate(0);opacity:1}
+}
+
+/* cursor */
+.cursor{
+  display:inline-block;
+  margin-left:2px;
+  animation:blink 1s steps(2,start) infinite;
+}
+@keyframes blink{
+  0%,50%{opacity:1}
+  51%,100%{opacity:0}
+}
+
+/* skip */
 #skipBoot{
   position:absolute;
   top:15px;
@@ -68,22 +87,22 @@
   z-index:20;
 }
 
-/* ===== LOGIN SCREEN ===== */
+/* ===== LOGIN ===== */
 #loginScreen{
   display:none;
-  background:linear-gradient(180deg,#a67c52 0%,#8c6239 50%,#5a2d15 100%);
   height:100vh;
+  background:linear-gradient(180deg,#a67c52 0%,#8c6239 50%,#5a2d15 100%);
+  display:flex;
   justify-content:center;
   align-items:center;
-  display:flex;
   color:#eee;
   overflow:hidden;
 }
 
 .system{
   width:90%;
-  max-width:720px;
-  transform:translateY(50px);
+  max-width:720px;  transform:translateY(60px);
+
 }
 
 .terminal{
@@ -91,7 +110,7 @@
   background:rgba(0,0,0,.65);
   border-left:4px solid #a67c52;
   padding:22px;
-  position:relative;
+  position:relative; 
 }
 
 .terminal span{color:#e6c79c}
@@ -103,8 +122,8 @@
   border:none;
   border-bottom:1px solid #5a2d15;
   padding:12px;
-  outline:none;
   margin:12px 0;
+  outline:none;
 }
 
 .terminal button{
@@ -126,8 +145,23 @@
   image-rendering:pixelated;
   transform:translateX(-50%);
 }
+@media (max-width: 768px){
+  .bear-login{
+    position:relative;
+    bottom:auto;
+    left:50%;
+    transform:translateX(-50%);
+    width:140px;
+    margin-bottom:15px;
+  }
 
-canvas#particles{
+  .terminal{
+    padding-top:20px;
+  }
+}
+
+/* particles */
+#particles{
   position:fixed;
   inset:0;
   z-index:-1;
@@ -136,13 +170,13 @@ canvas#particles{
 </head>
 <body>
 
-<!-- BOOT SCREEN -->
+<!-- BOOT -->
 <div id="bootScreen">
   <button id="skipBoot">SKIP BOOT</button>
   <div id="bootText"></div>
 </div>
 
-<!-- LOGIN SCREEN -->
+<!-- LOGIN -->
 <div id="loginScreen">
   <canvas id="particles"></canvas>
   <div class="system">
@@ -157,12 +191,12 @@ canvas#particles{
 </div>
 
 <script>
-// ===== AUDIO SAFE =====
+// ===== AUDIO =====
 let audioCtx;
-document.addEventListener("click", ()=>{ 
-  if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); 
+document.addEventListener("click",()=>{
+  if(!audioCtx) audioCtx=new (window.AudioContext||window.webkitAudioContext)();
   if(audioCtx.state==="suspended") audioCtx.resume();
-}, {once:true});
+},{once:true});
 
 function playBeep(){
   if(!audioCtx) return;
@@ -175,54 +209,61 @@ function playBeep(){
 }
 
 // ===== BOOT LOGIC =====
-const lines = [
-  "BOOTING LOOTIFY OS...",
-  "INITIALIZING CORE MODULES...",
-  "LOADING KERNEL...",
-  "CHECKING MEMORY ........ OK",
-  "CHECKING CPU ........... OK",
-  "CHECKING GPU ........... OK",
-  "CHECKING NETWORK ....... OK",
-  "CHECKING STORAGE ....... OK",
-  "SECURITY LEVEL : HIGH",
-  "SYSTEM LOCKED",
-  "AWAITING USER AUTHORIZATION",
-  "PERFORMING DIAGNOSTICS...",
-  "FINALIZING BOOT..."
+const lines=[
+ "BOOTING LOOTIFY OPERATING SYSTEM...",
+ "INITIALIZING LOW LEVEL HARDWARE INTERFACES...",
+ "LOADING SYSTEM KERNEL INTO MEMORY...",
+ "VERIFYING SYSTEM FILE INTEGRITY AND HASHES...",
+ "CHECKING PHYSICAL MEMORY BANKS AND ALLOCATION STATUS...",
+ "SCANNING CPU CORES, THREADS AND MICROCODE VERSIONS...",
+ "INITIALIZING GRAPHICS PROCESSING UNIT AND DRIVERS...",
+ "CHECKING STORAGE DEVICES, PARTITIONS AND FILE SYSTEMS...",
+ "MOUNTING SYSTEM VOLUMES AND USER DIRECTORIES...",
+ "VERIFYING NETWORK INTERFACES AND FIREWALLS...",
+ "APPLYING SECURITY POLICIES AND ENCRYPTION...",
+ "SYSTEM SECURITY LEVEL : HIGH",
+ "ALL CHECKS PASSED",
+ "SYSTEM LOCKED — AUTH REQUIRED"
 ];
 
-let i=0, baseSpeed=70, skipped=false, timeout;
+let i=0, skipped=false;
 const bootText=document.getElementById("bootText");
 
 function showLogin(){
   skipped=true;
   document.getElementById("bootScreen").style.display="none";
   document.getElementById("loginScreen").style.display="flex";
-  if(audioCtx) audioCtx.close();
 }
 
 document.getElementById("skipBoot").onclick=showLogin;
 
 function nextLine(){
   if(skipped) return;
-  if(i>=lines.length){ setTimeout(showLogin,500); return; }
+  if(i>=lines.length){setTimeout(showLogin,500);return;}
 
   const line=document.createElement("span");
-  line.className="line";
+  line.className="line"+(Math.random()<0.25?" glitch":"");
   bootText.appendChild(line);
+
+  const text=document.createElement("span");
+  const cursor=document.createElement("span");
+  cursor.className="cursor";
+  cursor.textContent="█";
+
+  line.appendChild(text);
+  line.appendChild(cursor);
 
   let c=0;
   function type(){
     if(skipped) return;
     if(c<lines[i].length){
-      line.textContent+=lines[i][c++];
+      text.textContent+=lines[i][c++];
       if(c%4===0) playBeep();
-      let speed = baseSpeed - i*3;
-      if(speed<20) speed=20;
-      timeout=setTimeout(type, speed);
-    } else {
+      setTimeout(type,40);
+    }else{
+      cursor.remove();
       i++;
-      timeout=setTimeout(nextLine,200);
+      setTimeout(nextLine,200);
     }
   }
   type();
@@ -239,12 +280,12 @@ function login(){
 // ===== PARTICLES =====
 const canvas=document.getElementById("particles");
 const ctx=canvas.getContext("2d");
-function resize(){ canvas.width=innerWidth; canvas.height=innerHeight; }
+function resize(){canvas.width=innerWidth;canvas.height=innerHeight}
 window.onresize=resize; resize();
 
 const p=[];
 for(let j=0;j<80;j++){
-  p.push({x:Math.random()*canvas.width, y:Math.random()*canvas.height, r:Math.random()*2+1, vx:(Math.random()-.5), vy:(Math.random()-.5)});
+  p.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*2+1,vx:(Math.random()-.5),vy:(Math.random()-.5)});
 }
 function anim(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
@@ -267,33 +308,30 @@ anim();
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
 import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyA6XbX1DMzr_LBqxnMyafBX2jVVtoWU4PU",
-  authDomain: "lootify-89bf6.firebaseapp.com",
-  projectId: "lootify-89bf6",
-  storageBucket: "lootify-89bf6.appspot.com",
-  messagingSenderId: "1075454919896",
-  appId: "1:1075454919896:web:3cada8ca62c612dd9a03ad"
+const firebaseConfig={
+  apiKey:"AIzaSyA6XbX1DMzr_LBqxnMyafBX2jVVtoWU4PU",
+  authDomain:"lootify-89bf6.firebaseapp.com",
+  projectId:"lootify-89bf6",
+  storageBucket:"lootify-89bf6.appspot.com",
+  messagingSenderId:"1075454919896",
+  appId:"1:1075454919896:web:3cada8ca62c612dd9a03ad"
 };
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const provider = new GoogleAuthProvider();
+const app=initializeApp(firebaseConfig);
+const auth=getAuth(app);
+const provider=new GoogleAuthProvider();
 
-window.googleLogin = function(){
-  signInWithPopup(auth, provider)
-    .then(res=>{
-      localStorage.setItem("loggedIn","true");
-      localStorage.setItem("username",res.user.displayName);
-      location.href="Lootify1.html";
-    })
-    .catch(err=>console.error(err));
+window.googleLogin=function(){
+  signInWithPopup(auth,provider).then(res=>{
+    localStorage.setItem("loggedIn","true");
+    localStorage.setItem("username",res.user.displayName);
+    location.href="Lootify1.html";
+  });
 };
 </script>
 
 </body>
 </html>
-
 
 
 
