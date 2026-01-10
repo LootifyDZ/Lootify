@@ -9,7 +9,7 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:monospace}
 
-/* ================= BOOT SCREEN ================= */
+/* ===== BOOT SCREEN ===== */
 #bootScreen{
   position:fixed;
   inset:0;
@@ -19,57 +19,45 @@
   justify-content:center;
   align-items:center;
   z-index:10;
+  flex-direction:column;
+  overflow:hidden;
 }
-
 #bootScreen::after{
   content:"";
   position:absolute;
   inset:0;
   background:repeating-linear-gradient(
     to bottom,
-    rgba(0,0,0,.25) 0px,
-    rgba(0,0,0,.25) 1px,
+    rgba(0,0,0,.3) 0px,
+    rgba(0,0,0,.3) 1px,
     transparent 2px,
     transparent 4px
   );
   animation:scan 6s linear infinite;
-  pointer-events:none;
 }
-
 @keyframes scan{
-  from{background-position:0 0}
-  to{background-position:0 100%}
+  from{background-position:0 0;}
+  to{background-position:0 200%;}
 }
 
-#bootBox{
-  width:90%;
-  max-width:700px;
-}
-
+/* Glitch text */
 #bootText .line{
   display:block;
-  animation:flicker 0.15s infinite alternate;
+  font-size:22px; 
+  font-family:monospace;
+  animation:glitch 0.5s infinite alternate;
+}
+@keyframes glitch{
+  0%{opacity:1; transform:translate(0);}
+  25%{opacity:.85; transform:translate(-0.5px,0.5px);}
+  50%{opacity:.9; transform:translate(0.5px,-0.5px);}
+  75%{opacity:.8; transform:translate(-0.5px,-0.5px);}
+  100%{opacity:1; transform:translate(0);}
 }
 
-@keyframes flicker{
-  from{opacity:1}
-  to{opacity:.85}
-}
-
-.progress{
-  margin-top:20px;
-  height:8px;
-  border:1px solid #38ff9c;
-}
-.bar{
-  height:100%;
-  width:0%;
-  background:#38ff9c;
-  transition:.3s;
-}
-
+/* Skip button */
 #skipBoot{
-  position:fixed;
+  position:absolute;
   top:15px;
   right:20px;
   background:transparent;
@@ -80,21 +68,23 @@
   z-index:20;
 }
 
-/* ================= LOGIN SCREEN ================= */
+/* ===== LOGIN SCREEN ===== */
 #loginScreen{
   display:none;
   background:linear-gradient(180deg,#a67c52 0%,#8c6239 50%,#5a2d15 100%);
   height:100vh;
-  display:flex;
   justify-content:center;
- align-items:center ;
+  align-items:center;
+  display:flex;
   color:#eee;
-
+  overflow:hidden;
 }
+
 .system{
   width:90%;
   max-width:720px;
-transform:translateY(50px);}
+  transform:translateY(50px);
+}
 
 .terminal{
   margin-top:25px;
@@ -136,23 +126,25 @@ transform:translateY(50px);}
   image-rendering:pixelated;
   transform:translateX(-50%);
 }
+
+canvas#particles{
+  position:fixed;
+  inset:0;
+  z-index:-1;
+}
 </style>
 </head>
-
 <body>
 
-<!-- ================= BOOT ================= -->
+<!-- BOOT SCREEN -->
 <div id="bootScreen">
   <button id="skipBoot">SKIP BOOT</button>
-
-  <div id="bootBox">
-    <div id="bootText"></div>
-    <div class="progress"><div class="bar" id="bar"></div></div>
-  </div>
+  <div id="bootText"></div>
 </div>
 
-<!-- ================= LOGIN ================= -->
+<!-- LOGIN SCREEN -->
 <div id="loginScreen">
+  <canvas id="particles"></canvas>
   <div class="system">
     <div class="terminal">
       <img src="bearee.png" class="bear-login">
@@ -165,41 +157,42 @@ transform:translateY(50px);}
 </div>
 
 <script>
-/* ============ AUDIO SAFE ============ */
+// ===== AUDIO SAFE =====
 let audioCtx;
-function initAudio(){
-  if(!audioCtx){
-    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  }
+document.addEventListener("click", ()=>{ 
+  if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); 
   if(audioCtx.state==="suspended") audioCtx.resume();
-}
-document.addEventListener("click", initAudio, {once:true});
+}, {once:true});
 
 function playBeep(){
   if(!audioCtx) return;
-  const o = audioCtx.createOscillator();
-  const g = audioCtx.createGain();
-  o.frequency.value = 800;
-  g.gain.value = 0.004;
+  const o=audioCtx.createOscillator();
+  const g=audioCtx.createGain();
+  o.frequency.value=800;
+  g.gain.value=0.004;
   o.connect(g); g.connect(audioCtx.destination);
-  o.start();
-  o.stop(audioCtx.currentTime+0.03);
+  o.start(); o.stop(audioCtx.currentTime+0.03);
 }
 
-/* ============ BOOT LOGIC ============ */
-const lines=[
+// ===== BOOT LOGIC =====
+const lines = [
   "BOOTING LOOTIFY OS...",
   "INITIALIZING CORE MODULES...",
-  "CHECKING MEMORY ..... OK",
-  "VERIFYING NETWORK ..... OK",
+  "LOADING KERNEL...",
+  "CHECKING MEMORY ........ OK",
+  "CHECKING CPU ........... OK",
+  "CHECKING GPU ........... OK",
+  "CHECKING NETWORK ....... OK",
+  "CHECKING STORAGE ....... OK",
   "SECURITY LEVEL : HIGH",
   "SYSTEM LOCKED",
-  "AWAITING USER AUTHORIZATION"
+  "AWAITING USER AUTHORIZATION",
+  "PERFORMING DIAGNOSTICS...",
+  "FINALIZING BOOT..."
 ];
 
+let i=0, baseSpeed=70, skipped=false, timeout;
 const bootText=document.getElementById("bootText");
-const bar=document.getElementById("bar");
-let i=0, skipped=false, timeout;
 
 function showLogin(){
   skipped=true;
@@ -212,11 +205,7 @@ document.getElementById("skipBoot").onclick=showLogin;
 
 function nextLine(){
   if(skipped) return;
-
-  if(i>=lines.length){
-    setTimeout(showLogin,500);
-    return;
-  }
+  if(i>=lines.length){ setTimeout(showLogin,500); return; }
 
   const line=document.createElement("span");
   line.className="line";
@@ -228,30 +217,55 @@ function nextLine(){
     if(c<lines[i].length){
       line.textContent+=lines[i][c++];
       if(c%4===0) playBeep();
-      timeout=setTimeout(type,35);
-    }else{
-      bar.style.width=((i+1)/lines.length*100)+"%";
+      let speed = baseSpeed - i*3;
+      if(speed<20) speed=20;
+      timeout=setTimeout(type, speed);
+    } else {
       i++;
-      timeout=setTimeout(nextLine,300);
+      timeout=setTimeout(nextLine,200);
     }
   }
   type();
 }
 nextLine();
 
-/* ============ LOGIN ============ */
+// ===== LOGIN =====
 function login(){
   localStorage.setItem("loggedIn","true");
   localStorage.setItem("username",user.value||"Player");
   location.href="Lootify1.html";
 }
+
+// ===== PARTICLES =====
+const canvas=document.getElementById("particles");
+const ctx=canvas.getContext("2d");
+function resize(){ canvas.width=innerWidth; canvas.height=innerHeight; }
+window.onresize=resize; resize();
+
+const p=[];
+for(let j=0;j<80;j++){
+  p.push({x:Math.random()*canvas.width, y:Math.random()*canvas.height, r:Math.random()*2+1, vx:(Math.random()-.5), vy:(Math.random()-.5)});
+}
+function anim(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  p.forEach(o=>{
+    o.x+=o.vx; o.y+=o.vy;
+    if(o.x<0||o.x>canvas.width) o.vx*=-1;
+    if(o.y<0||o.y>canvas.height) o.vy*=-1;
+    ctx.beginPath();
+    ctx.arc(o.x,o.y,o.r,0,Math.PI*2);
+    ctx.fillStyle="rgba(255,220,180,.5)";
+    ctx.fill();
+  });
+  requestAnimationFrame(anim);
+}
+anim();
 </script>
 
-<!-- FIREBASE (كما هو، ما مسّيناهش) -->
+<!-- FIREBASE -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
-import { getAuth, GoogleAuthProvider, signInWithPopup }
-from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyA6XbX1DMzr_LBqxnMyafBX2jVVtoWU4PU",
@@ -279,21 +293,6 @@ window.googleLogin = function(){
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
