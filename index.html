@@ -164,20 +164,25 @@ body::after{
 <canvas id="particles"></canvas>
 
 <script>
-/* ===== typing sound (LOW) ===== */
+/* ===== AUDIO (LOW & NOT EVERY LETTER) ===== */
 const AudioCtx = window.AudioContext || window.webkitAudioContext;
 const audioCtx = new AudioCtx();
+
 function playTypeSound(){
-  const o=audioCtx.createOscillator(), g=audioCtx.createGain();
-  o.type="square";
-  o.frequency.value=850+Math.random()*150;
-  g.gain.value=0.015;
-  o.connect(g); g.connect(audioCtx.destination);
-  o.start(); o.stop(audioCtx.currentTime+0.05);
+  if(audioCtx.state === "suspended") audioCtx.resume();
+  const o = audioCtx.createOscillator();
+  const g = audioCtx.createGain();
+  o.type = "square";
+  o.frequency.value = 700 + Math.random()*80;
+  g.gain.value = 0.005; // 🔉 صوت ضعيف بزاف
+  o.connect(g);
+  g.connect(audioCtx.destination);
+  o.start();
+  o.stop(audioCtx.currentTime + 0.03);
 }
 
-/* ===== boot text ===== */
-const lines=[
+/* ===== BOOT TEXT ===== */
+const lines = [
   "BOOTING LOOTIFY OS...",
   "INITIALIZING CORE MODULES...",
   "CHECKING MEMORY ..... OK",
@@ -187,46 +192,39 @@ const lines=[
   "AWAITING USER AUTHORIZATION"
 ];
 
-const term=document.getElementById("terminalText");
-const bar=document.getElementById("bar");
-const loginBox=document.getElementById("loginBox");
-const bearLogin=document.getElementById("bearLogin");
+const term = document.getElementById("terminalText");
+const bar  = document.getElementById("bar");
+const loginBox = document.getElementById("loginBox");
+const bearLogin = document.getElementById("bearLogin");
 
-let i=0;
+let i = 0;
 
 function nextLine(){
-  if(i>=lines.length){
+  if(i >= lines.length){
     document.getElementById("prog").classList.add("hide");
-    loginBox.style.display="block";
-    if(bearLogin){
-      bearLogin.style.display="block";
-      setTimeout(()=>bearLogin.classList.add("show"),50);
-    }
+    loginBox.style.display = "block";
+    bearLogin.style.display = "block";
+    setTimeout(()=>bearLogin.classList.add("show"),50);
     return;
   }
 
-  const span=document.createElement("span");
-  span.className="line";
-
-  if(lines[i].includes("CHECKING")){
-    span.id="line-check";
-  }
-
+  const span = document.createElement("span");
+  span.className = "line";
   term.appendChild(span);
 
-  let c=0;
+  let c = 0;
   function type(){
-    if(c<lines[i].length){
-      span.textContent+=lines[i][c++];
-      playTypeSound();
-      setTimeout(type,22);
+    if(c < lines[i].length){
+      span.textContent += lines[i][c++];
+      if(c % 4 === 0) playTypeSound(); // 🔊 مشي كل حرف
+      setTimeout(type, 30); // أهدأ
     }else{
-      bar.style.width=((i+1)/lines.length*100)+"%";
+      bar.style.width = ((i+1)/lines.length*100) + "%";
       setTimeout(()=>{
-        span.style.opacity=0;
+        span.style.opacity = 0;
         i++;
         nextLine();
-      },400);
+      }, 400);
     }
   }
   type();
@@ -234,37 +232,50 @@ function nextLine(){
 
 nextLine();
 
-/* ===== login ===== */
+/* ===== LOGIN ===== */
 function login(){
   localStorage.setItem("loggedIn","true");
-  localStorage.setItem("username",user.value||"Player");
+  localStorage.setItem("username",user.value || "Player");
   location.href="Lootify1.html";
 }
 
-/* ===== music ===== */
-const btn=document.getElementById("musicBtn");
-const audio=document.getElementById("bgMusic");
-btn.onclick=()=>{
-  audio.muted=!audio.muted;
-  btn.textContent=audio.muted?"🔈":"🔊";
+/* ===== MUSIC BUTTON ===== */
+const btn = document.getElementById("musicBtn");
+const audio = document.getElementById("bgMusic");
+btn.onclick = ()=>{
+  audio.muted = !audio.muted;
+  btn.textContent = audio.muted ? "🔈" : "🔊";
 };
 
-/* ===== particles ===== */
-const canvas=document.getElementById("particles");
-const ctx=canvas.getContext("2d");
-resize(); window.onresize=resize;
-function resize(){canvas.width=innerWidth;canvas.height=innerHeight}
+/* ===== PARTICLES ===== */
+const canvas = document.getElementById("particles");
+const ctx = canvas.getContext("2d");
+resize();
+window.onresize = resize;
+
+function resize(){
+  canvas.width = innerWidth;
+  canvas.height = innerHeight;
+}
 
 const p=[];
-for(let i=0;i<90;i++)
-  p.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*2+1,vx:(Math.random()-.5),vy:(Math.random()-.5)});
+for(let i=0;i<90;i++){
+  p.push({
+    x:Math.random()*canvas.width,
+    y:Math.random()*canvas.height,
+    r:Math.random()*2+1,
+    vx:(Math.random()-.5),
+    vy:(Math.random()-.5)
+  });
+}
 
 function anim(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
   p.forEach(o=>{
-    o.x+=o.vx; o.y+=o.vy;
-    if(o.x<0||o.x>canvas.width)o.vx*=-1;
-    if(o.y<0||o.y>canvas.height)o.vy*=-1;
+    o.x+=o.vx; 
+    o.y+=o.vy;
+    if(o.x<0||o.x>canvas.width) o.vx*=-1;
+    if(o.y<0||o.y>canvas.height) o.vy*=-1;
     ctx.beginPath();
     ctx.arc(o.x,o.y,o.r,0,Math.PI*2);
     ctx.fillStyle="rgba(255,220,180,.5)";
@@ -274,7 +285,6 @@ function anim(){
 }
 anim();
 </script>
-
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
@@ -307,6 +317,7 @@ window.googleLogin = function(){
 
 </body>
 </html>
+
 
 
 
