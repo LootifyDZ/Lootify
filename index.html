@@ -393,6 +393,12 @@ document.addEventListener('mousemove', (e) => {
   rightPupil.style.left = `${bearWrapper.offsetWidth*0.76 + offsetX - rightPupil.offsetWidth/2}px`;
   rightPupil.style.top = `${bearWrapper.offsetHeight*0.29 + offsetY - rightPupil.offsetHeight/2}px`;
 });
+function smoothSwitch(url){
+  document.body.style.opacity = "0";
+  setTimeout(()=>{
+    location.href = url;
+  },300);
+}
 
 </script>
 
@@ -426,6 +432,7 @@ window.googleLogin=function(){
 
 </body>
 </html>
+
 
 
 
