@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -219,8 +220,10 @@
       <div class="pupil" id="rightPupil"></div>
     </div>
 
-    <span>&gt; ENTER USER KEY :</span>
-    <input id="user">
+    <span>&gt; ENTER PASSWORD :</span>
+<input id="email" type="email" placeholder="email">
+<input id="pass" type="password" placeholder="password">
+
     <button onclick="login()">UNLOCK SYSTEM</button>
     <button onclick="googleLogin()">GOOGLE AUTH</button>
 
@@ -307,11 +310,21 @@ function nextLine(){
 nextLine();
 
 // ===== LOGIN =====
-function login(){
-  localStorage.setItem("loggedIn","true");
-  localStorage.setItem("username",user.value||"Player");
-  location.href="Lootify1.html";
-}
+window.login = function () {
+  const email = document.getElementById("email").value;
+  const pass = document.getElementById("pass").value;
+
+  signInWithEmailAndPassword(auth, email, pass)
+    .then(() => {
+      localStorage.setItem("loggedIn","true");
+      location.href = "Lootify1.html";
+    })
+    .catch(() => {
+      // هنا نقدر نخلي الدب يعصب 😈
+      alert("Wrong password");
+    });
+};
+
 
 // ===== PARTICLES =====
 const canvas=document.getElementById("particles");
@@ -373,6 +386,7 @@ document.addEventListener('mousemove', (e) => {
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
 import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
+import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
 
 const firebaseConfig={
   apiKey:"AIzaSyA6XbX1DMzr_LBqxnMyafBX2jVVtoWU4PU",
@@ -398,6 +412,8 @@ window.googleLogin=function(){
 
 </body>
 </html>
+>
+
 
 
 
