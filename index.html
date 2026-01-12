@@ -40,6 +40,9 @@
   from{background-position:0 0;}
   to{background-position:0 200%;}
 }
+body{
+  transition: opacity .3s ease;
+}
 
 /* boot text */
 #bootText{
@@ -229,7 +232,7 @@
     <button onclick="login()">UNLOCK SYSTEM</button>
     <button onclick="googleLogin()">GOOGLE AUTH</button>
 
-    <a href="sign up.html" style="display:block;margin-top:12px;color:#e6c79c;text-align:center">
+    <a href="#" onclick="smoothSwitch('mouse.html')" style="display:block;margin-top:12px;color:#e6c79c;text-align:center">
       you don’t have an account? sign up
     </a>
 
@@ -276,12 +279,17 @@ let i=0, skipped=false;
 const bootText=document.getElementById("bootText");
 
 function showLogin(){
+  sessionStorage.setItem("bootDone","true");
   skipped=true;
   document.getElementById("bootScreen").style.display="none";
   document.getElementById("loginScreen").style.display="flex";
 }
-
-document.getElementById("skipBoot").onclick=showLogin;
+if(sessionStorage.getItem("bootDone")==="true"){
+  document.getElementById("bootScreen").style.display="none";
+  document.getElementById("loginScreen").style.display="flex";
+} else {
+    nextLine();
+}
 
 function nextLine(){
   if(skipped) return;
@@ -314,7 +322,6 @@ function nextLine(){
   }
   type();
 }
-nextLine();
 
 // ===== LOGIN =====
 window.login = function () {
@@ -419,6 +426,7 @@ window.googleLogin=function(){
 
 </body>
 </html>
+
 
 
 
