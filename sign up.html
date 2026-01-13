@@ -156,7 +156,6 @@
       <input id="pass" type="password" placeholder="كلمة المرور">
 
       <button onclick="signUp()">CREATE ACCOUNT</button>
-      <button class="google" onclick="googleSignUp()">GOOGLE AUTH</button>
 
       <a href="index.html" style="display:block;margin-top:12px;color:#e6c79c;text-align:center">
         لديك حساب؟ تسجيل الدخول
@@ -167,57 +166,8 @@
 </div>
 
 <script>
-/* ===== BOOT ===== */
-const lines=[
- "BOOTING LOOTIFY OPERATING SYSTEM...",
- "INITIALIZING HARDWARE...",
- "VERIFYING SECURITY...",
- "SYSTEM LOCKED — AUTH REQUIRED"
-];
 
-let i=0, skipped=false;
-const bootText=document.getElementById("bootText");
 
-function showSignUp(){
-  skipped=true;
-  sessionStorage.setItem("bootDone","true");
-  document.getElementById("bootScreen").style.display="none";
-  document.getElementById("signupScreen").style.display="flex";
-}
-
-document.getElementById("skipBoot").onclick=showSignUp;
-
-function nextLine(){
-  if(skipped) return;
-  if(i>=lines.length){setTimeout(showSignUp,500);return;}
-
-  const line=document.createElement("span");
-  line.className="line";
-  bootText.appendChild(line);
-
-  let c=0;
-  const cursor=document.createElement("span");
-  cursor.className="cursor";
-  cursor.textContent="█";
-  line.append(cursor);
-
-  const t=setInterval(()=>{ 
-    if(c<lines[i].length){
-      line.insertBefore(document.createTextNode(lines[i][c++]),cursor);
-    }else{
-      cursor.remove();
-      clearInterval(t);
-      i++;
-      setTimeout(nextLine,300);
-    }
-  },40);
-}
-
-if(sessionStorage.getItem("bootDone")==="true"){
-  showSignUp();
-}else{
-  nextLine();
-}
 
 /* ===== PUPILS ===== */
 const leftPupil = document.getElementById('leftPupil');
@@ -249,21 +199,6 @@ document.addEventListener('mousemove', (e) => {
 
 <!-- FIREBASE -->
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
-import { getAuth, GoogleAuthProvider, signInWithPopup, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
-
-const firebaseConfig={
-  apiKey:"AIzaSyA6XbX1DMzr_LBqxnMyafBX2jVVtoWU4PU",
-  authDomain:"lootify-89bf6.firebaseapp.com",
-  projectId:"lootify-89bf6",
-  storageBucket:"lootify-89bf6.appspot.com",
-  messagingSenderId:"1075454919896",
-  appId:"1:1075454919896:web:3cada8ca62dd9a03ad"
-};
-
-const app=initializeApp(firebaseConfig);
-const auth=getAuth(app);
-const provider=new GoogleAuthProvider();
 
 window.signUp=()=>{
   const email=document.getElementById('email').value;
@@ -283,4 +218,5 @@ window.googleSignUp=()=>{
 
 </body>
 </html>
+
 
