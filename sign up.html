@@ -1,86 +1,117 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar">
 <head>
-<meta charset="UTF-8">
-<title>Lootify | Sign Up</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<style>
-*{box-sizing:border-box;font-family:monospace}
-body{
-  background:linear-gradient(180deg,#0b1e14,#001b0f);
-  height:100vh;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  color:#38ff9c;
-}
-.box{
-  background:rgba(0,0,0,.7);
-  padding:30px;
-  width:320px;
-  border-left:4px solid #38ff9c;
-}
-input,button{
-  width:100%;
-  padding:10px;
-  margin-top:10px;
-  background:#001b0f;
-  border:1px solid #38ff9c;
-  color:#38ff9c;
-}
-button{
-  cursor:pointer;
-}
-a{
-  color:#38ff9c;
-  display:block;
-  margin-top:15px;
-  text-align:center;
-  text-decoration:none;
-}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lootify | Sign Up</title>
+  <link rel="icon" href="rr.png">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: monospace;
+    }
+    body {
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(180deg, #a67, #6a4);
+      direction: rtl;
+    }
+    .signup-container {
+      background: rgba(255,255,255,0.9);
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+      width: 350px;
+      text-align: center;
+    }
+    .signup-container h1 {
+      margin-bottom: 30px;
+      color: #333;
+    }
+    .signup-container input {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 20px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+    .signup-container button {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 15px;
+      border-radius: 10px;
+      border: none;
+      background-color: #6a4;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .signup-container button:hover {
+      background-color: #594;
+    }
+    .google-btn {
+      background-color: #dd4b39;
+    }
+    .google-btn:hover {
+      background-color: #c23321;
+    }
+    .redirect {
+      font-size: 14px;
+      margin-top: 10px;
+    }
+    .redirect a {
+      color: #6a4;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    .redirect a:hover {
+      text-decoration: underline;
+    }
+  </style>
 </head>
 <body>
+  <div class="signup-container">
+    <h1>إنشاء حساب</h1>
+    <form id="signupForm">
+      <input type="email" placeholder="البريد الإلكتروني" id="email" required>
+      <input type="password" placeholder="كلمة المرور" id="password" required>
+      <button type="submit">تسجيل</button>
+    </form>
+    <button class="google-btn" id="googleSignUp">التسجيل بواسطة Google</button>
+    <div class="redirect">
+      لديك حساب؟ <a href="login.html">تسجيل الدخول</a>
+    </div>
+  </div>
 
-<div class="box">
-  <h2>&gt; CREATE ACCOUNT</h2>
-  <input id="email" type="email" placeholder="Email">
-  <input id="pass" type="password" placeholder="Password (min 6 chars)">
-  <button onclick="signup()">SIGN UP</button>
-  <a href="index.html">Back to Login</a>
-</div>
+  <script>
+    // تسجيل بالإيميل وكلمة المرور
+    document.getElementById('signupForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
+      // هنا تحط كود تسجيل الإيميل وكلمة المرور عبر Firebase أو أي Backend
+      console.log("Email:", email, "Password:", password);
 
-const firebaseConfig = {
-  apiKey: "AIzaSyA6XbX1DMzr_LBqxnMyafBX2jVVtoWU4PU",
-  authDomain: "lootify-89bf6.firebaseapp.com",
-  projectId: "lootify-89bf6",
-  storageBucket: "lootify-89bf6.appspot.com",
-  messagingSenderId: "1075454919896",
-  appId: "1:1075454919896:web:3cada8ca62c612dd9a03ad"
-};
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-
-window.signup = function(){
-  const email = document.getElementById("email").value;
-  const pass = document.getElementById("pass").value;
-
-  createUserWithEmailAndPassword(auth, email, pass)
-    .then(()=>{
-      alert("Account created successfully!");
-      location.href="index.html";
-    })
-    .catch(err=>{
-      alert(err.message);
+      // بعد التسجيل، عمل Redirect للصفحة الرئيسية
+      window.location.href = "home.html";
     });
-};
-</script>
 
+    // تسجيل بواسطة Google
+    document.getElementById('googleSignUp').addEventListener('click', function() {
+      // هنا تحط كود Google Sign-In عبر Firebase أو OAuth
+      console.log("Google Sign-Up clicked");
+
+      // بعد تسجيل الدخول بنجاح
+      window.location.href = "home.html";
+    });
+  </script>
 </body>
 </html>
 
