@@ -1,118 +1,177 @@
 <!DOCTYPE html>
 <html lang="ar">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lootify | Sign Up</title>
-  <link rel="icon" href="rr.png">
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: monospace;
-    }
-    body {
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background: linear-gradient(180deg, #a67, #6a4);
-      direction: rtl;
-    }
-    .signup-container {
-      background: rgba(255,255,255,0.9);
-      padding: 40px;
-      border-radius: 20px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-      width: 350px;
-      text-align: center;
-    }
-    .signup-container h1 {
-      margin-bottom: 30px;
-      color: #333;
-    }
-    .signup-container input {
-      width: 100%;
-      padding: 12px;
-      margin-bottom: 20px;
-      border-radius: 10px;
-      border: 1px solid #ccc;
-      font-size: 16px;
-    }
-    .signup-container button {
-      width: 100%;
-      padding: 12px;
-      margin-bottom: 15px;
-      border-radius: 10px;
-      border: none;
-      background-color: #6a4;
-      color: white;
-      font-size: 16px;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-    .signup-container button:hover {
-      background-color: #594;
-    }
-    .google-btn {
-      background-color: #dd4b39;
-    }
-    .google-btn:hover {
-      background-color: #c23321;
-    }
-    .redirect {
-      font-size: 14px;
-      margin-top: 10px;
-    }
-    .redirect a {
-      color: #6a4;
-      text-decoration: none;
-      font-weight: bold;
-    }
-    .redirect a:hover {
-      text-decoration: underline;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lootify | Sign Up</title>
+<link rel="icon" href="rr.png">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:monospace}
+
+/* ===== SIGNUP SCREEN ===== */
+body, html{
+  height:100%;
+  overflow:hidden;
+}
+
+#signupScreen{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+  background:linear-gradient(180deg,#a67c52 0%,#8c6239 50%,#5a2d15 100%);
+  color:#eee;
+  position:relative;
+}
+
+.system{width:90%;max-width:720px;transform:translateY(60px)}
+
+.terminal{
+  margin-top:25px;
+  background:rgba(0,0,0,.65);
+  border-left:4px solid #a67c52;
+  padding:22px;
+  position:relative;
+}
+
+.terminal span{color:#e6c79c}
+.terminal input{
+  width:100%;
+  background:#2b1506;
+  color:#f3d7b0;
+  border:none;
+  border-bottom:1px solid #5a2d15;
+  padding:12px;
+  margin:12px 0;
+}
+.terminal button{
+  width:100%;
+  padding:12px;
+  background:#3d1f0a;
+  color:#f3d7b0;
+  border:1px solid #a67c52;
+  margin-top:8px;
+  cursor:pointer;
+}
+.terminal button.google{
+  background:#dd4b39;
+  border-color:#c23321;
+  margin-top:5px;
+}
+
+/* Bear & Pupils */
+.bear-login-wrapper{
+  position:absolute;
+  bottom:98%;
+  left:15%;
+  transform:translateX(-50%);
+  width:199px;
+  pointer-events:none;
+}
+.bear-login{width:100%;image-rendering:pixelated}
+
+.pupil{
+  position:absolute;
+  width:16px;
+  height:16px;
+  background:#000;
+  border-radius:50%;
+  z-index:2;
+}
+</style>
 </head>
 <body>
-  <div class="signup-container">
-    <h1>إنشاء حساب</h1>
-    <form id="signupForm">
-      <input type="email" placeholder="البريد الإلكتروني" id="email" required>
-      <input type="password" placeholder="كلمة المرور" id="password" required>
-      <button type="submit">تسجيل</button>
-    </form>
-    <button class="google-btn" id="googleSignUp">التسجيل بواسطة Google</button>
-    <div class="redirect">
-      لديك حساب؟ <a href="index.html">تسجيل الدخول</a>
+
+<div id="signupScreen">
+  <div class="system">
+    <div class="terminal">
+
+      <div class="bear-login-wrapper">
+        <img src="bearee.png" class="bear-login">
+        <div class="pupil" id="leftPupil"></div>
+        <div class="pupil" id="rightPupil"></div>
+      </div>
+
+      <span>&gt; ENTER EMAIL :</span>
+      <input id="email" type="email" placeholder="البريد الإلكتروني">
+
+      <span>&gt; ENTER PASSWORD :</span>
+      <input id="pass" type="password" placeholder="كلمة المرور">
+
+      <button onclick="signUp()">CREATE ACCOUNT</button>
+      <button class="google" onclick="googleSignUp()">GOOGLE AUTH</button>
+
+      <a href="login.html" style="display:block;margin-top:12px;color:#e6c79c;text-align:center">
+        لديك حساب؟ تسجيل الدخول
+      </a>
+
     </div>
   </div>
+</div>
 
-  <script>
-    // تسجيل بالإيميل وكلمة المرور
-    document.getElementById('signupForm').addEventListener('submit', function(e) {
-      e.preventDefault();
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
+<script>
+/* ===== PUPILS ===== */
+const leftPupil = document.getElementById('leftPupil');
+const rightPupil = document.getElementById('rightPupil');
+const bearWrapper = document.querySelector('.bear-login-wrapper');
 
-      // هنا تحط كود تسجيل الإيميل وكلمة المرور عبر Firebase أو أي Backend
-      console.log("Email:", email, "Password:", password);
+const eyesCenter = {
+  x: bearWrapper.offsetWidth * 0.575,
+  y: bearWrapper.offsetHeight * 0.29
+};
 
-      // بعد التسجيل، عمل Redirect للصفحة الرئيسية
-      window.location.href = "home.html";
-    });
+document.addEventListener('mousemove', (e) => {
+  const rect = bearWrapper.getBoundingClientRect();
+  const dx = e.clientX - (rect.left + eyesCenter.x);
+  const dy = e.clientY - (rect.top + eyesCenter.y);
+  const angle = Math.atan2(dy, dx);
+  const radius = 8;
 
-    // تسجيل بواسطة Google
-    document.getElementById('googleSignUp').addEventListener('click', function() {
-      // هنا تحط كود Google Sign-In عبر Firebase أو OAuth
-      console.log("Google Sign-Up clicked");
+  const offsetX = radius * Math.cos(angle);
+  const offsetY = radius * Math.sin(angle);
 
-      // بعد تسجيل الدخول بنجاح
-      window.location.href = "home.html";
-    });
-  </script>
+  leftPupil.style.left = `${bearWrapper.offsetWidth*0.39 + offsetX - leftPupil.offsetWidth/2}px`;
+  leftPupil.style.top = `${bearWrapper.offsetHeight*0.29 + offsetY - leftPupil.offsetHeight/2}px`;
+
+  rightPupil.style.left = `${bearWrapper.offsetWidth*0.76 + offsetX - rightPupil.offsetWidth/2}px`;
+  rightPupil.style.top = `${bearWrapper.offsetHeight*0.29 + offsetY - rightPupil.offsetHeight/2}px`;
+});
+</script>
+
+<!-- FIREBASE -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
+
+const firebaseConfig={
+  apiKey:"AIzaSyA6XbX1DMzr_LBqxnMyafBX2jVVtoWU4PU",
+  authDomain:"lootify-89bf6.firebaseapp.com",
+  projectId:"lootify-89bf6",
+  storageBucket:"lootify-89bf6.appspot.com",
+  messagingSenderId:"1075454919896",
+  appId:"1:1075454919896:web:3cada8ca62c612dd9a03ad"
+};
+
+const app=initializeApp(firebaseConfig);
+const auth=getAuth(app);
+const provider=new GoogleAuthProvider();
+
+window.signUp=()=>{
+  const email=document.getElementById('email').value;
+  const password=document.getElementById('pass').value;
+
+  createUserWithEmailAndPassword(auth,email,password)
+    .then(()=>{ location.href="Lootify1.html"; })
+    .catch((err)=>{ alert(err.message); });
+};
+
+window.googleSignUp=()=>{
+  signInWithPopup(auth,provider)
+    .then(()=>{ location.href="Lootify1.html"; })
+    .catch((err)=>{ alert(err.message); });
+};
+</script>
+
 </body>
 </html>
-
-
