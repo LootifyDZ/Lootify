@@ -92,9 +92,9 @@ body{
 
 /* ===== LOGIN ===== */
 #loginScreen{
+  display:none;
   height:100vh;
   background:linear-gradient(180deg,#a67c52 0%,#8c6239 50%,#5a2d15 100%);
-  display:flex;
   justify-content:center;
   align-items:center;
   color:#eee;
@@ -363,7 +363,12 @@ const eyesCenter = {
   y: bearWrapper.offsetHeight * 0.29
 };
 
-document.addEventListener('mousemove', (e) => {
+window.addEventListener('load', () => {
+  document.addEventListener('mousemove', (e) => {
+    // نفس كود pupils
+  });
+});
+ {
   const rect = bearWrapper.getBoundingClientRect();
   const dx = e.clientX - (rect.left + eyesCenter.x);
   const dy = e.clientY - (rect.top + eyesCenter.y);
@@ -406,6 +411,9 @@ const firebaseConfig={
 
 const app=initializeApp(firebaseConfig);
 const auth=getAuth(app);
+  window.auth = auth;
+window.signInWithEmailAndPassword = signInWithEmailAndPassword;
+
 const provider=new GoogleAuthProvider();
 
 window.googleLogin=function(){
@@ -434,6 +442,7 @@ window.googleLogin=function(){
 
 </body>
 </html>
+
 
 
 
