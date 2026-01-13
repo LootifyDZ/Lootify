@@ -9,20 +9,70 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:monospace}
 
-/* ===== SIGNUP SCREEN ===== */
-body, html{
-  height:100%;
+/* ===== BOOT SCREEN ===== */
+#bootScreen{
+  position:fixed;
+  inset:0;
+  background:#001b0f;
+  color:#38ff9c;
+  display:flex;
+  flex-direction:column;
   overflow:hidden;
+  z-index:10;
+}
+#bootScreen::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:repeating-linear-gradient(
+    to bottom,
+    rgba(0,0,0,.35) 0px,
+    rgba(0,0,0,.35) 1px,
+    transparent 2px,
+    transparent 4px
+  );
+  animation:scan 6s linear infinite;
+  pointer-events:none;
+}
+@keyframes scan{
+  from{background-position:0 0;}
+  to{background-position:0 200%;}
+}
+#bootText{padding:30px}
+#bootText .line{display:block;font-size:22px}
+.line.glitch{animation:glitch .5s infinite alternate}
+@keyframes glitch{
+  0%{transform:translate(0);opacity:1}
+  50%{transform:translate(.6px,-.6px);opacity:.85}
+  100%{transform:translate(0);opacity:1}
+}
+.cursor{
+  display:inline-block;
+  margin-left:2px;
+  animation:blink 1s steps(2,start) infinite;
+}
+@keyframes blink{50%{opacity:0}}
+#skipBoot{
+  position:absolute;
+  top:15px;
+  right:20px;
+  background:transparent;
+  border:1px solid #38ff9c;
+  color:#38ff9c;
+  padding:6px 14px;
+  cursor:pointer;
+  z-index:20;
 }
 
+/* ===== SIGNUP ===== */
 #signupScreen{
-  display:flex;
-  justify-content:center;
-  align-items:center;
+  display:none;
   height:100vh;
   background:linear-gradient(180deg,#a67c52 0%,#8c6239 50%,#5a2d15 100%);
+  justify-content:center;
+  align-items:center;
   color:#eee;
-  position:relative;
+  overflow:hidden;
 }
 
 .system{width:90%;max-width:720px;transform:translateY(60px)}
@@ -60,7 +110,6 @@ body, html{
   margin-top:5px;
 }
 
-/* Bear & Pupils */
 .bear-login-wrapper{
   position:absolute;
   bottom:98%;
@@ -83,6 +132,13 @@ body, html{
 </head>
 <body>
 
+<!-- BOOT -->
+<div id="bootScreen">
+  <button id="skipBoot">SKIP BOOT</button>
+  <div id="bootText"></div>
+</div>
+
+<!-- SIGNUP -->
 <div id="signupScreen">
   <div class="system">
     <div class="terminal">
@@ -103,75 +159,63 @@ body, html{
       <button class="google" onclick="googleSignUp()">GOOGLE AUTH</button>
 
       <a href="index.html" style="display:block;margin-top:12px;color:#e6c79c;text-align:center">
-you have an account?sign up    </a>
+        لديك حساب؟ تسجيل الدخول
+      </a>
 
     </div>
   </div>
 </div>
 
 <script>
-/* ===== PUPILS ===== */
-const leftPupil = document.getElementById('leftPupil');
-const rightPupil = document.getElementById('rightPupil');
-const bearWrapper = document.querySelector('.bear-login-wrapper');
+/* ===== BOOT ===== */
+const lines=[
+ "BOOTING LOOTIFY OPERATING SYSTEM...",
+ "INITIALIZING HARDWARE...",
+ "VERIFYING SECURITY...",
+ "SYSTEM LOCKED — AUTH REQUIRED"
+];
 
-const eyesCenter = {
-  x: bearWrapper.offsetWidth * 0.575,
-  y: bearWrapper.offsetHeight * 0.29
-};
+let i=0, skipped=false;
+const bootText=document.getElementById("bootText");
 
-document.addEventListener('mousemove', (e) => {
-  const rect = bearWrapper.getBoundingClientRect();
-  const dx = e.clientX - (rect.left + eyesCenter.x);
-  const dy = e.clientY - (rect.top + eyesCenter.y);
-  const angle = Math.atan2(dy, dx);
-  const radius = 8;
+function showSignUp(){
+  skipped=true;
+  sessionStorage.setItem("bootDone","true");
+  document.getElementById("bootScreen").style.display="none";
+  document.getElementById("signupScreen").style.display="flex";
+}
 
-  const offsetX = radius * Math.cos(angle);
-  const offsetY = radius * Math.sin(angle);
+document.getElementById("skipBoot").onclick=showSignUp;
 
-  leftPupil.style.left = `${bearWrapper.offsetWidth*0.39 + offsetX - leftPupil.offsetWidth/2}px`;
-  leftPupil.style.top = `${bearWrapper.offsetHeight*0.29 + offsetY - leftPupil.offsetHeight/2}px`;
+function nextLine(){
+  if(skipped) return;
+  if(i>=lines.length){setTimeout(showSignUp,500);return;}
 
-  rightPupil.style.left = `${bearWrapper.offsetWidth*0.76 + offsetX - rightPupil.offsetWidth/2}px`;
-  rightPupil.style.top = `${bearWrapper.offsetHeight*0.29 + offsetY - rightPupil.offsetHeight/2}px`;
-});
-</script>
+  const line=document.createElement("span");
+  line.className="line";
+  bootText.appendChild(line);
 
-<!-- FIREBASE -->
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
-import { getAuth, GoogleAuthProvider, signInWithPopup, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
+  let c=0;
+  const cursor=document.createElement("span");
+  cursor.className="cursor";
+  cursor.textContent="█";
+  line.append(cursor);
 
-const firebaseConfig={
-  apiKey:"AIzaSyA6XbX1DMzr_LBqxnMyafBX2jVVtoWU4PU",
-  authDomain:"lootify-89bf6.firebaseapp.com",
-  projectId:"lootify-89bf6",
-  storageBucket:"lootify-89bf6.appspot.com",
-  messagingSenderId:"1075454919896",
-  appId:"1:1075454919896:web:3cada8ca62c612dd9a03ad"
-};
+  const t=setInterval(()=>{ 
+    if(c<lines[i].length){
+      line.insertBefore(document.createTextNode(lines[i][c++]),cursor);
+    }else{
+      cursor.remove();
+      clearInterval(t);
+      i++;
+      setTimeout(nextLine,300);
+    }
+  },40);
+}
 
-const app=initializeApp(firebaseConfig);
-const auth=getAuth(app);
-const provider=new GoogleAuthProvider();
+if(sessionStorage.getItem("bootDone")==="true"){
+  showSignUp();
+}else{
+  nextLine(
 
-window.signUp=()=>{
-  const email=document.getElementById('email').value;
-  const password=document.getElementById('pass').value;
-
-  createUserWithEmailAndPassword(auth,email,password)
-    .then(()=>{ location.href="Lootify1.html"; })
-    .catch((err)=>{ alert(err.message); });
-};
-
-window.googleSignUp=()=>{
-  signInWithPopup(auth,provider)
-    .then(()=>{ location.href="Lootify1.html"; })
-    .catch((err)=>{ alert(err.message); });
-};
-</script>
-
-</body>
-</html>
 
