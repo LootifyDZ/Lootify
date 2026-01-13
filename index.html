@@ -40,9 +40,6 @@
   from{background-position:0 0;}
   to{background-position:0 200%;}
 }
-body{
-  transition: opacity .3s ease;
-}
 
 /* boot text */
 #bootText{
@@ -95,12 +92,12 @@ body{
   display:none;
   height:100vh;
   background:linear-gradient(180deg,#a67c52 0%,#8c6239 50%,#5a2d15 100%);
+  display:flex;
   justify-content:center;
   align-items:center;
   color:#eee;
   overflow:hidden;
 }
-
 
 .system{
   width:90%;
@@ -232,7 +229,7 @@ body{
     <button onclick="login()">UNLOCK SYSTEM</button>
     <button onclick="googleLogin()">GOOGLE AUTH</button>
 
-    <a href="#" onclick="smoothSwitch('sign up.html')" style="display:block;margin-top:12px;color:#e6c79c;text-align:center">
+    <a href="sign up.html" style="display:block;margin-top:12px;color:#e6c79c;text-align:center">
       you don’t have an account? sign up
     </a>
 
@@ -279,17 +276,12 @@ let i=0, skipped=false;
 const bootText=document.getElementById("bootText");
 
 function showLogin(){
-  sessionStorage.setItem("bootDone","true");
   skipped=true;
   document.getElementById("bootScreen").style.display="none";
   document.getElementById("loginScreen").style.display="flex";
 }
-if(sessionStorage.getItem("bootDone")==="true"){
-  document.getElementById("bootScreen").style.display="none";
-  document.getElementById("loginScreen").style.display="flex";
-} else {
-    nextLine();
-}
+
+document.getElementById("skipBoot").onclick=showLogin;
 
 function nextLine(){
   if(skipped) return;
@@ -322,9 +314,23 @@ function nextLine(){
   }
   type();
 }
+nextLine();
 
 // ===== LOGIN =====
+window.login = function () {
+  const email = document.getElementById("email").value;
+  const pass = document.getElementById("pass").value;
 
+  signInWithEmailAndPassword(auth, email, pass)
+    .then(() => {
+      localStorage.setItem("loggedIn","true");
+      location.href = "Lootify1.html";
+    })
+    .catch(() => {
+      // هنا نقدر نخلي الدب يعصب 😈
+      alert("Wrong password");
+    });
+};
 
 
 // ===== PARTICLES =====
@@ -363,12 +369,7 @@ const eyesCenter = {
   y: bearWrapper.offsetHeight * 0.29
 };
 
-window.addEventListener('load', () => {
-  document.addEventListener('mousemove', (e) => {
-    // نفس كود pupils
-  });
-});
- {
+document.addEventListener('mousemove', (e) => {
   const rect = bearWrapper.getBoundingClientRect();
   const dx = e.clientX - (rect.left + eyesCenter.x);
   const dy = e.clientY - (rect.top + eyesCenter.y);
@@ -385,12 +386,6 @@ window.addEventListener('load', () => {
   rightPupil.style.left = `${bearWrapper.offsetWidth*0.76 + offsetX - rightPupil.offsetWidth/2}px`;
   rightPupil.style.top = `${bearWrapper.offsetHeight*0.29 + offsetY - rightPupil.offsetHeight/2}px`;
 });
-function smoothSwitch(url){
-  document.body.style.opacity = "0";
-  setTimeout(()=>{
-    location.href = url;
-  },300);
-}
 
 </script>
 
@@ -411,9 +406,6 @@ const firebaseConfig={
 
 const app=initializeApp(firebaseConfig);
 const auth=getAuth(app);
-  window.auth = auth;
-window.signInWithEmailAndPassword = signInWithEmailAndPassword;
-
 const provider=new GoogleAuthProvider();
 
 window.googleLogin=function(){
@@ -423,25 +415,20 @@ window.googleLogin=function(){
     location.href="Lootify1.html";
   });
 };
-  window.login = function(){
-  const email = document.getElementById("email").value;
-  const pass  = document.getElementById("pass").value;
-
-  signInWithEmailAndPassword(auth,email,pass)
-    .then(()=>{
-      localStorage.setItem("loggedIn","true");
-      location.href="Lootify1.html";
-    })
-    .catch(()=>{
-      alert("Wrong email or password");
-      // هنا نقدر نخلو الدب يعصب 👿
-    });
-};
-
 </script>
 
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
 
 
 
