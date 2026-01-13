@@ -92,7 +92,6 @@ body{
 
 /* ===== LOGIN ===== */
 #loginScreen{
-  display:none;
   height:100vh;
   background:linear-gradient(180deg,#a67c52 0%,#8c6239 50%,#5a2d15 100%);
   display:flex;
@@ -101,6 +100,7 @@ body{
   color:#eee;
   overflow:hidden;
 }
+
 
 .system{
   width:90%;
@@ -324,20 +324,7 @@ function nextLine(){
 }
 
 // ===== LOGIN =====
-window.login = function () {
-  const email = document.getElementById("email").value;
-  const pass = document.getElementById("pass").value;
 
-  signInWithEmailAndPassword(auth, email, pass)
-    .then(() => {
-      localStorage.setItem("loggedIn","true");
-      location.href = "Lootify1.html";
-    })
-    .catch(() => {
-      // هنا نقدر نخلي الدب يعصب 😈
-      alert("Wrong password");
-    });
-};
 
 
 // ===== PARTICLES =====
@@ -428,10 +415,26 @@ window.googleLogin=function(){
     location.href="Lootify1.html";
   });
 };
+  window.login = function(){
+  const email = document.getElementById("email").value;
+  const pass  = document.getElementById("pass").value;
+
+  signInWithEmailAndPassword(auth,email,pass)
+    .then(()=>{
+      localStorage.setItem("loggedIn","true");
+      location.href="Lootify1.html";
+    })
+    .catch(()=>{
+      alert("Wrong email or password");
+      // هنا نقدر نخلو الدب يعصب 👿
+    });
+};
+
 </script>
 
 </body>
 </html>
+
 
 
 
