@@ -216,6 +216,71 @@ function nextLine(){
 if(sessionStorage.getItem("bootDone")==="true"){
   showSignUp();
 }else{
-  nextLine(
+  nextLine();
+}
 
+/* ===== PUPILS ===== */
+const leftPupil = document.getElementById('leftPupil');
+const rightPupil = document.getElementById('rightPupil');
+const bearWrapper = document.querySelector('.bear-login-wrapper');
+
+const eyesCenter = {
+  x: bearWrapper.offsetWidth * 0.575,
+  y: bearWrapper.offsetHeight * 0.29
+};
+
+document.addEventListener('mousemove', (e) => {
+  const rect = bearWrapper.getBoundingClientRect();
+  const dx = e.clientX - (rect.left + eyesCenter.x);
+  const dy = e.clientY - (rect.top + eyesCenter.y);
+  const angle = Math.atan2(dy, dx);
+  const radius = 8;
+
+  const offsetX = radius * Math.cos(angle);
+  const offsetY = radius * Math.sin(angle);
+
+  leftPupil.style.left = `${bearWrapper.offsetWidth*0.39 + offsetX - leftPupil.offsetWidth/2}px`;
+  leftPupil.style.top = `${bearWrapper.offsetHeight*0.29 + offsetY - leftPupil.offsetHeight/2}px`;
+
+  rightPupil.style.left = `${bearWrapper.offsetWidth*0.76 + offsetX - rightPupil.offsetWidth/2}px`;
+  rightPupil.style.top = `${bearWrapper.offsetHeight*0.29 + offsetY - rightPupil.offsetHeight/2}px`;
+});
+</script>
+
+<!-- FIREBASE -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
+
+const firebaseConfig={
+  apiKey:"AIzaSyA6XbX1DMzr_LBqxnMyafBX2jVVtoWU4PU",
+  authDomain:"lootify-89bf6.firebaseapp.com",
+  projectId:"lootify-89bf6",
+  storageBucket:"lootify-89bf6.appspot.com",
+  messagingSenderId:"1075454919896",
+  appId:"1:1075454919896:web:3cada8ca62dd9a03ad"
+};
+
+const app=initializeApp(firebaseConfig);
+const auth=getAuth(app);
+const provider=new GoogleAuthProvider();
+
+window.signUp=()=>{
+  const email=document.getElementById('email').value;
+  const password=document.getElementById('pass').value;
+
+  createUserWithEmailAndPassword(auth,email,password)
+    .then(()=>{ location.href="Lootify1.html"; })
+    .catch((err)=>{ alert(err.message); });
+};
+
+window.googleSignUp=()=>{
+  signInWithPopup(auth,provider)
+    .then(()=>{ location.href="Lootify1.html"; })
+    .catch((err)=>{ alert(err.message); });
+};
+</script>
+
+</body>
+</html>
 
