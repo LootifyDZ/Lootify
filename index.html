@@ -9,6 +9,8 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:monospace}
 
+
+/* ===== LOGIN ===== */
 #loginScreen{
   display:flex;
   height:100vh;
@@ -63,17 +65,34 @@
   position:absolute;
   width:14px;
   height:14px;
+  pointer-events:none;
+  z-index:2;
+
+  /* شكل + */
   background:
     linear-gradient(#000 0 0) center/90% 8px no-repeat,
     linear-gradient(#000 0 0) center/7px 90% no-repeat;
-  transform:translate(-50%,-50%);
+
+  /* IMPORTANT */
+  transform: translate(-50%, -50%);
+}
+
+
+#particles{
+  position:fixed;
+  inset:0;
+  z-index:-1;
 }
 </style>
 </head>
-
 <body>
 
+
+
+<!-- LOGIN -->
 <div id="loginScreen">
+  <canvas id="particles"></canvas>
+
   <div class="system">
     <div class="terminal">
 
@@ -92,28 +111,70 @@
       <button onclick="login()">UNLOCK SYSTEM</button>
       <button onclick="googleLogin()">GOOGLE AUTH</button>
 
+      <a href="sign up.html" style="display:block;margin-top:12px;color:#e6c79c;text-align:center">
+        you don’t have an account? sign up
+      </a>
+
     </div>
   </div>
 </div>
 
 <script>
+
+/* ===== LOGIN ===== */
 function login(){
-  signInWithEmailAndPassword(auth,email.value,pass.value)
-    .then(()=> location.replace("/Lootify/Lootify1.html"))
-    .catch(()=> alert("Wrong email or password"));
+  signInWithEmailAndPassword(auth,
+    email.value,
+    pass.value
+  ).then(()=>{
+    location.href= "/Lootify/Lootify1.html";
+  }).catch(()=>{
+    alert("Wrong email or password");
+  });
 }
+
+/* ===== PUPILS ===== */
+const leftPupil = document.getElementById('leftPupil');
+const rightPupil = document.getElementById('rightPupil');
+const bearWrapper = document.querySelector('.bear-login-wrapper');
+
+// treat pupils as one "eye unit"
+const eyesCenter = {
+  x: bearWrapper.offsetWidth * 0.575,  // center between both eyes
+  y: bearWrapper.offsetHeight * 0.29
+};
+function setInitialEyes(){
+  leftPupil.style.left  = `${bearWrapper.offsetWidth * 0.39}px`;
+  leftPupil.style.top   = `${bearWrapper.offsetHeight * 3.80}px`;
+
+  rightPupil.style.left = `${bearWrapper.offsetWidth * 0.76}px`;
+  rightPupil.style.top  = `${bearWrapper.offsetHeight * 3.80}px`;
+}
+
+setInitialEyes();
+
+document.addEventListener('mousemove', (e) => {
+  const rect = bearWrapper.getBoundingClientRect();
+  const dx = e.clientX - (rect.left + eyesCenter.x);
+  const dy = e.clientY - (rect.top + eyesCenter.y);
+
+  const angle = Math.atan2(dy, dx);
+  const radius = 6;
+
+  const x = Math.cos(angle) * radius;
+  const y = Math.sin(angle) * radius;
+
+  leftPupil.style.transform  = `translate(-50%, -50%) translate(${x}px, ${y}px)`;
+  rightPupil.style.transform = `translate(-50%, -50%) translate(${x}px, ${y}px)`;
+});
+
+ 
 </script>
 
 <!-- FIREBASE -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
-import {
-  getAuth,
-  GoogleAuthProvider,
-  signInWithRedirect,
-  getRedirectResult,
-  signInWithEmailAndPassword
-} from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
 
 const firebaseConfig={
   apiKey:"AIzaSyA6XbX1DMzr_LBqxnMyafBX2jVVtoWU4PU",
@@ -124,28 +185,34 @@ const firebaseConfig={
   appId:"1:1075454919896:web:3cada8ca62c612dd9a03ad"
 };
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const provider = new GoogleAuthProvider();
+const app=initializeApp(firebaseConfig);
+const auth=getAuth(app);
+const provider=new GoogleAuthProvider();
 
-window.signInWithEmailAndPassword = signInWithEmailAndPassword;
-window.auth = auth;
+window.auth=auth;
+window.signInWithEmailAndPassword=signInWithEmailAndPassword;
 
-window.googleLogin = () => {
-  signInWithRedirect(auth, provider);
+window.googleLogin=()=>{
+  signInWithPopup(auth,provider).then(()=>{
+    location.href= "/Lootify/Lootify1.html";
+  });
 };
-
-getRedirectResult(auth)
-  .then((result)=>{
-    if(result && result.user){
-      location.replace("/Lootify/Lootify1.html");
-    }
-  })
-  .catch(console.error);
 </script>
 
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
