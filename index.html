@@ -9,66 +9,10 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:monospace}
 
-/* ===== BOOT SCREEN ===== */
-#bootScreen{
-  position:fixed;
-  inset:0;
-  background:#001b0f;
-  color:#38ff9c;
-  display:flex;
-  flex-direction:column;
-  overflow:hidden;
-  z-index:10;
-}
-#bootScreen::after{
-  content:"";
-  position:absolute;
-  inset:0;
-  background:repeating-linear-gradient(
-    to bottom,
-    rgba(0,0,0,.35) 0px,
-    rgba(0,0,0,.35) 1px,
-    transparent 2px,
-    transparent 4px
-  );
-  animation:scan 6s linear infinite;
-  pointer-events:none;
-}
-@keyframes scan{
-  from{background-position:0 0;}
-  to{background-position:0 200%;}
-}
-
-#bootText{padding:30px}
-#bootText .line{display:block;font-size:22px}
-.line.glitch{animation:glitch .5s infinite alternate}
-@keyframes glitch{
-  0%{transform:translate(0);opacity:1}
-  50%{transform:translate(.6px,-.6px);opacity:.85}
-  100%{transform:translate(0);opacity:1}
-}
-.cursor{
-  display:inline-block;
-  margin-left:2px;
-  animation:blink 1s steps(2,start) infinite;
-}
-@keyframes blink{50%{opacity:0}}
-
-#skipBoot{
-  position:absolute;
-  top:15px;
-  right:20px;
-  background:transparent;
-  border:1px solid #38ff9c;
-  color:#38ff9c;
-  padding:6px 14px;
-  cursor:pointer;
-  z-index:20;
-}
 
 /* ===== LOGIN ===== */
 #loginScreen{
-  display:none;
+  display:flex;
   height:100vh;
   background:linear-gradient(180deg,#a67c52 0%,#8c6239 50%,#5a2d15 100%);
   justify-content:center;
@@ -116,15 +60,18 @@
   pointer-events:none;
 }
 .bear-login{width:100%;image-rendering:pixelated}
-
 .pupil{
   position:absolute;
-  width:16px;
-  height:16px;
-  background:#000;
-  border-radius:50%;
+  width:14px;      /* حجم العين */
+  height:14px;
+  pointer-events:none;
   z-index:2;
+
+  background:
+    linear-gradient(#000 0 0) center/90% 8px no-repeat,  /* الخط الأفقي */
+    linear-gradient(#000 0 0) center/7px 90% no-repeat;  /* الخط العمودي */
 }
+
 
 #particles{
   position:fixed;
@@ -135,11 +82,7 @@
 </head>
 <body>
 
-<!-- BOOT -->
-<div id="bootScreen">
-  <button id="skipBoot">SKIP BOOT</button>
-  <div id="bootText"></div>
-</div>
+
 
 <!-- LOGIN -->
 <div id="loginScreen">
@@ -172,57 +115,6 @@
 </div>
 
 <script>
-/* ===== BOOT ===== */
-const lines=[
- "BOOTING LOOTIFY OPERATING SYSTEM...",
- "INITIALIZING HARDWARE...",
- "VERIFYING SECURITY...",
- "SYSTEM LOCKED — AUTH REQUIRED"
-];
-
-let i=0, skipped=false;
-const bootText=document.getElementById("bootText");
-
-function showLogin(){
-  skipped=true;
-  sessionStorage.setItem("bootDone","true");
-  document.getElementById("bootScreen").style.display="none";
-  document.getElementById("loginScreen").style.display="flex";
-}
-
-document.getElementById("skipBoot").onclick=showLogin;
-
-function nextLine(){
-  if(skipped) return;
-  if(i>=lines.length){setTimeout(showLogin,500);return;}
-
-  const line=document.createElement("span");
-  line.className="line";
-  bootText.appendChild(line);
-
-  let c=0;
-  const cursor=document.createElement("span");
-  cursor.className="cursor";
-  cursor.textContent="█";
-  line.append(cursor);
-
-  const t=setInterval(()=>{
-    if(c<lines[i].length){
-      line.insertBefore(document.createTextNode(lines[i][c++]),cursor);
-    }else{
-      cursor.remove();
-      clearInterval(t);
-      i++;
-      setTimeout(nextLine,300);
-    }
-  },40);
-}
-
-if(sessionStorage.getItem("bootDone")==="true"){
-  showLogin();
-}else{
-  nextLine();
-}
 
 /* ===== LOGIN ===== */
 function login(){
@@ -297,6 +189,8 @@ window.googleLogin=()=>{
 
 </body>
 </html>
+
+
 
 
 
