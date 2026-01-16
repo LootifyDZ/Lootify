@@ -60,16 +60,21 @@
   pointer-events:none;
 }
 .bear-login{width:100%;image-rendering:pixelated}
+
 .pupil{
   position:absolute;
-  width:14px;      /* حجم العين */
+  width:14px;
   height:14px;
   pointer-events:none;
   z-index:2;
 
+  /* شكل + */
   background:
-    linear-gradient(#000 0 0) center/90% 8px no-repeat,  /* الخط الأفقي */
-    linear-gradient(#000 0 0) center/7px 90% no-repeat;  /* الخط العمودي */
+    linear-gradient(#000 0 0) center/90% 8px no-repeat,
+    linear-gradient(#000 0 0) center/7px 90% no-repeat;
+
+  /* IMPORTANT */
+  transform: translate(-50%, -50%);
 }
 
 
@@ -138,25 +143,32 @@ const eyesCenter = {
   x: bearWrapper.offsetWidth * 0.575,  // center between both eyes
   y: bearWrapper.offsetHeight * 0.29
 };
+function setInitialEyes(){
+  leftPupil.style.left  = `${bearWrapper.offsetWidth * 0.39}px`;
+  leftPupil.style.top   = `${bearWrapper.offsetHeight * 3.80}px`;
+
+  rightPupil.style.left = `${bearWrapper.offsetWidth * 0.76}px`;
+  rightPupil.style.top  = `${bearWrapper.offsetHeight * 3.80}px`;
+}
+
+setInitialEyes();
 
 document.addEventListener('mousemove', (e) => {
   const rect = bearWrapper.getBoundingClientRect();
   const dx = e.clientX - (rect.left + eyesCenter.x);
   const dy = e.clientY - (rect.top + eyesCenter.y);
+
   const angle = Math.atan2(dy, dx);
-  const radius = 8; // how far pupils can move
+  const radius = 6;
 
-  // new position for both pupils
-  const offsetX = radius * Math.cos(angle);
-  const offsetY = radius * Math.sin(angle);
+  const x = Math.cos(angle) * radius;
+  const y = Math.sin(angle) * radius;
 
-  leftPupil.style.left = `${bearWrapper.offsetWidth*0.39 + offsetX - leftPupil.offsetWidth/2}px`;
-  leftPupil.style.top = `${bearWrapper.offsetHeight*0.29 + offsetY - leftPupil.offsetHeight/2}px`;
-
-  rightPupil.style.left = `${bearWrapper.offsetWidth*0.76 + offsetX - rightPupil.offsetWidth/2}px`;
-  rightPupil.style.top = `${bearWrapper.offsetHeight*0.29 + offsetY - rightPupil.offsetHeight/2}px`;
+  leftPupil.style.transform  = `translate(-50%, -50%) translate(${x}px, ${y}px)`;
+  rightPupil.style.transform = `translate(-50%, -50%) translate(${x}px, ${y}px)`;
 });
 
+ 
 </script>
 
 <!-- FIREBASE -->
@@ -189,6 +201,9 @@ window.googleLogin=()=>{
 
 </body>
 </html>
+
+
+
 
 
 
