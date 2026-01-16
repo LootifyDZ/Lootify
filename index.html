@@ -127,7 +127,7 @@ function login(){
     email.value,
     pass.value
   ).then(()=>{
-    location.href="Lootify1.html";
+    location.href= "/Lootify/Lootify1.html";
   }).catch(()=>{
     alert("Wrong email or password");
   });
@@ -194,13 +194,14 @@ window.signInWithEmailAndPassword=signInWithEmailAndPassword;
 
 window.googleLogin=()=>{
   signInWithPopup(auth,provider).then(()=>{
-    location.href="Lootify1.html";
+    location.href= "/Lootify/Lootify1.html";
   });
 };
 </script>
 
 </body>
 </html>
+
 
 
 
