@@ -16,6 +16,8 @@
   background:#001b0f;
   color:#38ff9c;
   display:flex;
+  justify-content:flex-start;
+  align-items:flex-start;
   flex-direction:column;
   overflow:hidden;
   z-index:10;
@@ -39,21 +41,40 @@
   to{background-position:0 200%;}
 }
 
-#bootText{padding:30px}
-#bootText .line{display:block;font-size:22px}
-.line.glitch{animation:glitch .5s infinite alternate}
+/* boot text */
+#bootText{
+  padding:30px;
+}
+
+#bootText .line{
+  display:block;
+  font-size:22px;
+}
+
+#bootText .line.glitch{
+  animation:glitch .5s infinite alternate;
+}
+
 @keyframes glitch{
   0%{transform:translate(0);opacity:1}
-  50%{transform:translate(.6px,-.6px);opacity:.85}
+  25%{transform:translate(-0.6px,0.6px);opacity:.85}
+  50%{transform:translate(0.6px,-0.6px);opacity:.9}
+  75%{transform:translate(-0.6px,-0.6px);opacity:.8}
   100%{transform:translate(0);opacity:1}
 }
+
+/* cursor */
 .cursor{
   display:inline-block;
   margin-left:2px;
   animation:blink 1s steps(2,start) infinite;
 }
-@keyframes blink{50%{opacity:0}}
+@keyframes blink{
+  0%,50%{opacity:1}
+  51%,100%{opacity:0}
+}
 
+/* skip */
 #skipBoot{
   position:absolute;
   top:15px;
@@ -71,23 +92,29 @@
   display:none;
   height:100vh;
   background:linear-gradient(180deg,#a67c52 0%,#8c6239 50%,#5a2d15 100%);
+  display:flex;
   justify-content:center;
   align-items:center;
   color:#eee;
   overflow:hidden;
 }
 
-.system{width:90%;max-width:720px;transform:translateY(60px)}
+.system{
+  width:90%;
+  max-width:720px;  transform:translateY(60px);
+
+}
 
 .terminal{
   margin-top:25px;
   background:rgba(0,0,0,.65);
   border-left:4px solid #a67c52;
   padding:22px;
-  position:relative;
+  position:relative; 
 }
 
 .terminal span{color:#e6c79c}
+
 .terminal input{
   width:100%;
   background:#2b1506;
@@ -96,7 +123,9 @@
   border-bottom:1px solid #5a2d15;
   padding:12px;
   margin:12px 0;
+  outline:none;
 }
+
 .terminal button{
   width:100%;
   padding:12px;
@@ -107,25 +136,31 @@
   cursor:pointer;
 }
 
-.bear-login-wrapper{
+/* bear */
+.bear-login{
   position:absolute;
-  bottom:98%;
+  bottom:100%;
   left:15%;
+  width:200px;
+  image-rendering:pixelated;
   transform:translateX(-50%);
-  width:199px;
-  pointer-events:none;
 }
-.bear-login{width:100%;image-rendering:pixelated}
+@media (max-width: 768px){
+  .bear-login{
+    position:relative;
+    bottom:100%;
+    left:10%;
+    transform:translateX(-50%);
+    width:140px;
+   
+  }
 
-.pupil{
-  position:absolute;
-  width:16px;
-  height:16px;
-  background:#000;
-  border-radius:50%;
-  z-index:2;
+  .terminal{
+    padding-top:20px;
+  }
 }
 
+/* particles */
 #particles{
   position:fixed;
   inset:0;
@@ -144,39 +179,50 @@
 <!-- LOGIN -->
 <div id="loginScreen">
   <canvas id="particles"></canvas>
-
   <div class="system">
     <div class="terminal">
-
-      <div class="bear-login-wrapper">
-        <img src="bearee.png" class="bear-login">
-        <div class="pupil" id="leftPupil"></div>
-        <div class="pupil" id="rightPupil"></div>
-      </div>
-
-      <span>&gt; ENTER EMAIL :</span>
-      <input id="email" type="email">
-
-      <span>&gt; ENTER PASSWORD :</span>
-      <input id="pass" type="password">
-
+      <img src="bearee.png" class="bear-login">
+      <span>&gt; ENTER USER KEY :</span>
+      <input id="user">
       <button onclick="login()">UNLOCK SYSTEM</button>
       <button onclick="googleLogin()">GOOGLE AUTH</button>
-
-      <a href="sign up.html" style="display:block;margin-top:12px;color:#e6c79c;text-align:center">
-        you don’t have an account? sign up
-      </a>
-
     </div>
   </div>
 </div>
 
 <script>
-/* ===== BOOT ===== */
+// ===== AUDIO =====
+let audioCtx;
+document.addEventListener("click",()=>{
+  if(!audioCtx) audioCtx=new (window.AudioContext||window.webkitAudioContext)();
+  if(audioCtx.state==="suspended") audioCtx.resume();
+},{once:true});
+
+function playBeep(){
+  if(!audioCtx) return;
+  const o=audioCtx.createOscillator();
+  const g=audioCtx.createGain();
+  o.frequency.value=800;
+  g.gain.value=0.004;
+  o.connect(g); g.connect(audioCtx.destination);
+  o.start(); o.stop(audioCtx.currentTime+0.03);
+}
+
+// ===== BOOT LOGIC =====
 const lines=[
  "BOOTING LOOTIFY OPERATING SYSTEM...",
- "INITIALIZING HARDWARE...",
- "VERIFYING SECURITY...",
+ "INITIALIZING LOW LEVEL HARDWARE INTERFACES...",
+ "LOADING SYSTEM KERNEL INTO MEMORY...",
+ "VERIFYING SYSTEM FILE INTEGRITY AND HASHES...",
+ "CHECKING PHYSICAL MEMORY BANKS AND ALLOCATION STATUS...",
+ "SCANNING CPU CORES, THREADS AND MICROCODE VERSIONS...",
+ "INITIALIZING GRAPHICS PROCESSING UNIT AND DRIVERS...",
+ "CHECKING STORAGE DEVICES, PARTITIONS AND FILE SYSTEMS...",
+ "MOUNTING SYSTEM VOLUMES AND USER DIRECTORIES...",
+ "VERIFYING NETWORK INTERFACES AND FIREWALLS...",
+ "APPLYING SECURITY POLICIES AND ENCRYPTION...",
+ "SYSTEM SECURITY LEVEL : HIGH",
+ "ALL CHECKS PASSED",
  "SYSTEM LOCKED — AUTH REQUIRED"
 ];
 
@@ -185,7 +231,6 @@ const bootText=document.getElementById("bootText");
 
 function showLogin(){
   skipped=true;
-  sessionStorage.setItem("bootDone","true");
   document.getElementById("bootScreen").style.display="none";
   document.getElementById("loginScreen").style.display="flex";
 }
@@ -197,80 +242,71 @@ function nextLine(){
   if(i>=lines.length){setTimeout(showLogin,500);return;}
 
   const line=document.createElement("span");
-  line.className="line";
+  line.className="line"+(Math.random()<0.25?" glitch":"");
   bootText.appendChild(line);
 
-  let c=0;
+  const text=document.createElement("span");
   const cursor=document.createElement("span");
   cursor.className="cursor";
   cursor.textContent="█";
-  line.append(cursor);
 
-  const t=setInterval(()=>{
+  line.appendChild(text);
+  line.appendChild(cursor);
+
+  let c=0;
+  function type(){
+    if(skipped) return;
     if(c<lines[i].length){
-      line.insertBefore(document.createTextNode(lines[i][c++]),cursor);
+      text.textContent+=lines[i][c++];
+      if(c%4===0) playBeep();
+      setTimeout(type,40);
     }else{
       cursor.remove();
-      clearInterval(t);
       i++;
-      setTimeout(nextLine,300);
+      setTimeout(nextLine,200);
     }
-  },40);
+  }
+  type();
 }
+nextLine();
 
-if(sessionStorage.getItem("bootDone")==="true"){
-  showLogin();
-}else{
-  nextLine();
-}
-
-/* ===== LOGIN ===== */
+// ===== LOGIN =====
 function login(){
-  signInWithEmailAndPassword(auth,
-    email.value,
-    pass.value
-  ).then(()=>{
-    location.href="Lootify1.html";
-  }).catch(()=>{
-    alert("Wrong email or password");
-  });
+  localStorage.setItem("loggedIn","true");
+  localStorage.setItem("username",user.value||"Player");
+  location.href="Lootify1.html";
 }
 
-/* ===== PUPILS ===== */
-const leftPupil = document.getElementById('leftPupil');
-const rightPupil = document.getElementById('rightPupil');
-const bearWrapper = document.querySelector('.bear-login-wrapper');
+// ===== PARTICLES =====
+const canvas=document.getElementById("particles");
+const ctx=canvas.getContext("2d");
+function resize(){canvas.width=innerWidth;canvas.height=innerHeight}
+window.onresize=resize; resize();
 
-// treat pupils as one "eye unit"
-const eyesCenter = {
-  x: bearWrapper.offsetWidth * 0.575,  // center between both eyes
-  y: bearWrapper.offsetHeight * 0.29
-};
-
-document.addEventListener('mousemove', (e) => {
-  const rect = bearWrapper.getBoundingClientRect();
-  const dx = e.clientX - (rect.left + eyesCenter.x);
-  const dy = e.clientY - (rect.top + eyesCenter.y);
-  const angle = Math.atan2(dy, dx);
-  const radius = 8; // how far pupils can move
-
-  // new position for both pupils
-  const offsetX = radius * Math.cos(angle);
-  const offsetY = radius * Math.sin(angle);
-
-  leftPupil.style.left = `${bearWrapper.offsetWidth*0.39 + offsetX - leftPupil.offsetWidth/2}px`;
-  leftPupil.style.top = `${bearWrapper.offsetHeight*0.29 + offsetY - leftPupil.offsetHeight/2}px`;
-
-  rightPupil.style.left = `${bearWrapper.offsetWidth*0.76 + offsetX - rightPupil.offsetWidth/2}px`;
-  rightPupil.style.top = `${bearWrapper.offsetHeight*0.29 + offsetY - rightPupil.offsetHeight/2}px`;
-});
-
+const p=[];
+for(let j=0;j<80;j++){
+  p.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*2+1,vx:(Math.random()-.5),vy:(Math.random()-.5)});
+}
+function anim(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  p.forEach(o=>{
+    o.x+=o.vx; o.y+=o.vy;
+    if(o.x<0||o.x>canvas.width) o.vx*=-1;
+    if(o.y<0||o.y>canvas.height) o.vy*=-1;
+    ctx.beginPath();
+    ctx.arc(o.x,o.y,o.r,0,Math.PI*2);
+    ctx.fillStyle="rgba(255,220,180,.5)";
+    ctx.fill();
+  });
+  requestAnimationFrame(anim);
+}
+anim();
 </script>
 
 <!-- FIREBASE -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
-import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
 
 const firebaseConfig={
   apiKey:"AIzaSyA6XbX1DMzr_LBqxnMyafBX2jVVtoWU4PU",
@@ -285,11 +321,10 @@ const app=initializeApp(firebaseConfig);
 const auth=getAuth(app);
 const provider=new GoogleAuthProvider();
 
-window.auth=auth;
-window.signInWithEmailAndPassword=signInWithEmailAndPassword;
-
-window.googleLogin=()=>{
-  signInWithPopup(auth,provider).then(()=>{
+window.googleLogin=function(){
+  signInWithPopup(auth,provider).then(res=>{
+    localStorage.setItem("loggedIn","true");
+    localStorage.setItem("username",res.user.displayName);
     location.href="Lootify1.html";
   });
 };
