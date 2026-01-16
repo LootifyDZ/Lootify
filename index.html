@@ -9,112 +9,27 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:monospace}
 
-/* ===== BOOT SCREEN ===== */
-#bootScreen{
-  position:fixed;
-  inset:0;
-  background:#001b0f;
-  color:#38ff9c;
-  display:flex;
-  justify-content:flex-start;
-  align-items:flex-start;
-  flex-direction:column;
-  overflow:hidden;
-  z-index:10;
-}
-#bootScreen::after{
-  content:"";
-  position:absolute;
-  inset:0;
-  background:repeating-linear-gradient(
-    to bottom,
-    rgba(0,0,0,.35) 0px,
-    rgba(0,0,0,.35) 1px,
-    transparent 2px,
-    transparent 4px
-  );
-  animation:scan 6s linear infinite;
-  pointer-events:none;
-}
-@keyframes scan{
-  from{background-position:0 0;}
-  to{background-position:0 200%;}
-}
-
-/* boot text */
-#bootText{
-  padding:30px;
-}
-
-#bootText .line{
-  display:block;
-  font-size:22px;
-}
-
-#bootText .line.glitch{
-  animation:glitch .5s infinite alternate;
-}
-
-@keyframes glitch{
-  0%{transform:translate(0);opacity:1}
-  25%{transform:translate(-0.6px,0.6px);opacity:.85}
-  50%{transform:translate(0.6px,-0.6px);opacity:.9}
-  75%{transform:translate(-0.6px,-0.6px);opacity:.8}
-  100%{transform:translate(0);opacity:1}
-}
-
-/* cursor */
-.cursor{
-  display:inline-block;
-  margin-left:2px;
-  animation:blink 1s steps(2,start) infinite;
-}
-@keyframes blink{
-  0%,50%{opacity:1}
-  51%,100%{opacity:0}
-}
-
-/* skip */
-#skipBoot{
-  position:absolute;
-  top:15px;
-  right:20px;
-  background:transparent;
-  border:1px solid #38ff9c;
-  color:#38ff9c;
-  padding:6px 14px;
-  cursor:pointer;
-  z-index:20;
-}
-
-/* ===== LOGIN ===== */
 #loginScreen{
-  display:none;
+  display:flex;
   height:100vh;
   background:linear-gradient(180deg,#a67c52 0%,#8c6239 50%,#5a2d15 100%);
-  display:flex;
   justify-content:center;
   align-items:center;
   color:#eee;
   overflow:hidden;
 }
 
-.system{
-  width:90%;
-  max-width:720px;  transform:translateY(60px);
-
-}
+.system{width:90%;max-width:620px;transform:translateY(60px)}
 
 .terminal{
   margin-top:25px;
   background:rgba(0,0,0,.65);
   border-left:4px solid #a67c52;
   padding:22px;
-  position:relative; 
+  position:relative;
 }
 
 .terminal span{color:#e6c79c}
-
 .terminal input{
   width:100%;
   background:#2b1506;
@@ -123,9 +38,7 @@
   border-bottom:1px solid #5a2d15;
   padding:12px;
   margin:12px 0;
-  outline:none;
 }
-
 .terminal button{
   width:100%;
   padding:12px;
@@ -136,177 +49,71 @@
   cursor:pointer;
 }
 
-/* bear */
-.bear-login{
+.bear-login-wrapper{
   position:absolute;
-  bottom:100%;
+  bottom:98%;
   left:15%;
-  width:200px;
-  image-rendering:pixelated;
   transform:translateX(-50%);
+  width:159px;
+  pointer-events:none;
 }
-@media (max-width: 768px){
-  .bear-login{
-    position:relative;
-    bottom:100%;
-    left:10%;
-    transform:translateX(-50%);
-    width:140px;
-   
-  }
+.bear-login{width:100%;image-rendering:pixelated}
 
-  .terminal{
-    padding-top:20px;
-  }
-}
-
-/* particles */
-#particles{
-  position:fixed;
-  inset:0;
-  z-index:-1;
+.pupil{
+  position:absolute;
+  width:14px;
+  height:14px;
+  background:
+    linear-gradient(#000 0 0) center/90% 8px no-repeat,
+    linear-gradient(#000 0 0) center/7px 90% no-repeat;
+  transform:translate(-50%,-50%);
 }
 </style>
 </head>
+
 <body>
 
-<!-- BOOT -->
-<div id="bootScreen">
-  <button id="skipBoot">SKIP BOOT</button>
-  <div id="bootText"></div>
-</div>
-
-<!-- LOGIN -->
 <div id="loginScreen">
-  <canvas id="particles"></canvas>
   <div class="system">
     <div class="terminal">
-      <img src="bearee.png" class="bear-login">
-      <span>&gt; ENTER USER KEY :</span>
-      <input id="user">
+
+      <div class="bear-login-wrapper">
+        <img src="bearee.png" class="bear-login">
+        <div class="pupil" id="leftPupil"></div>
+        <div class="pupil" id="rightPupil"></div>
+      </div>
+
+      <span>&gt; ENTER EMAIL :</span>
+      <input id="email" type="email">
+
+      <span>&gt; ENTER PASSWORD :</span>
+      <input id="pass" type="password">
+
       <button onclick="login()">UNLOCK SYSTEM</button>
       <button onclick="googleLogin()">GOOGLE AUTH</button>
+
     </div>
   </div>
 </div>
 
 <script>
-// ===== AUDIO =====
-let audioCtx;
-document.addEventListener("click",()=>{
-  if(!audioCtx) audioCtx=new (window.AudioContext||window.webkitAudioContext)();
-  if(audioCtx.state==="suspended") audioCtx.resume();
-},{once:true});
-
-function playBeep(){
-  if(!audioCtx) return;
-  const o=audioCtx.createOscillator();
-  const g=audioCtx.createGain();
-  o.frequency.value=800;
-  g.gain.value=0.004;
-  o.connect(g); g.connect(audioCtx.destination);
-  o.start(); o.stop(audioCtx.currentTime+0.03);
-}
-
-// ===== BOOT LOGIC =====
-const lines=[
- "BOOTING LOOTIFY OPERATING SYSTEM...",
- "INITIALIZING LOW LEVEL HARDWARE INTERFACES...",
- "LOADING SYSTEM KERNEL INTO MEMORY...",
- "VERIFYING SYSTEM FILE INTEGRITY AND HASHES...",
- "CHECKING PHYSICAL MEMORY BANKS AND ALLOCATION STATUS...",
- "SCANNING CPU CORES, THREADS AND MICROCODE VERSIONS...",
- "INITIALIZING GRAPHICS PROCESSING UNIT AND DRIVERS...",
- "CHECKING STORAGE DEVICES, PARTITIONS AND FILE SYSTEMS...",
- "MOUNTING SYSTEM VOLUMES AND USER DIRECTORIES...",
- "VERIFYING NETWORK INTERFACES AND FIREWALLS...",
- "APPLYING SECURITY POLICIES AND ENCRYPTION...",
- "SYSTEM SECURITY LEVEL : HIGH",
- "ALL CHECKS PASSED",
- "SYSTEM LOCKED — AUTH REQUIRED"
-];
-
-let i=0, skipped=false;
-const bootText=document.getElementById("bootText");
-
-function showLogin(){
-  skipped=true;
-  document.getElementById("bootScreen").style.display="none";
-  document.getElementById("loginScreen").style.display="flex";
-}
-
-document.getElementById("skipBoot").onclick=showLogin;
-
-function nextLine(){
-  if(skipped) return;
-  if(i>=lines.length){setTimeout(showLogin,500);return;}
-
-  const line=document.createElement("span");
-  line.className="line"+(Math.random()<0.25?" glitch":"");
-  bootText.appendChild(line);
-
-  const text=document.createElement("span");
-  const cursor=document.createElement("span");
-  cursor.className="cursor";
-  cursor.textContent="█";
-
-  line.appendChild(text);
-  line.appendChild(cursor);
-
-  let c=0;
-  function type(){
-    if(skipped) return;
-    if(c<lines[i].length){
-      text.textContent+=lines[i][c++];
-      if(c%4===0) playBeep();
-      setTimeout(type,40);
-    }else{
-      cursor.remove();
-      i++;
-      setTimeout(nextLine,200);
-    }
-  }
-  type();
-}
-nextLine();
-
-// ===== LOGIN =====
 function login(){
-  localStorage.setItem("loggedIn","true");
-  localStorage.setItem("username",user.value||"Player");
-  location.href="Lootify1.html";
+  signInWithEmailAndPassword(auth,email.value,pass.value)
+    .then(()=> location.replace("/Lootify/Lootify1.html"))
+    .catch(()=> alert("Wrong email or password"));
 }
-
-// ===== PARTICLES =====
-const canvas=document.getElementById("particles");
-const ctx=canvas.getContext("2d");
-function resize(){canvas.width=innerWidth;canvas.height=innerHeight}
-window.onresize=resize; resize();
-
-const p=[];
-for(let j=0;j<80;j++){
-  p.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*2+1,vx:(Math.random()-.5),vy:(Math.random()-.5)});
-}
-function anim(){
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  p.forEach(o=>{
-    o.x+=o.vx; o.y+=o.vy;
-    if(o.x<0||o.x>canvas.width) o.vx*=-1;
-    if(o.y<0||o.y>canvas.height) o.vy*=-1;
-    ctx.beginPath();
-    ctx.arc(o.x,o.y,o.r,0,Math.PI*2);
-    ctx.fillStyle="rgba(255,220,180,.5)";
-    ctx.fill();
-  });
-  requestAnimationFrame(anim);
-}
-anim();
 </script>
 
 <!-- FIREBASE -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
-import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
+import {
+  getAuth,
+  GoogleAuthProvider,
+  signInWithRedirect,
+  getRedirectResult,
+  signInWithEmailAndPassword
+} from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
 
 const firebaseConfig={
   apiKey:"AIzaSyA6XbX1DMzr_LBqxnMyafBX2jVVtoWU4PU",
@@ -317,18 +124,43 @@ const firebaseConfig={
   appId:"1:1075454919896:web:3cada8ca62c612dd9a03ad"
 };
 
-const app=initializeApp(firebaseConfig);
-const auth=getAuth(app);
-const provider=new GoogleAuthProvider();
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const provider = new GoogleAuthProvider();
 
-window.googleLogin=function(){
-  signInWithPopup(auth,provider).then(res=>{
-    localStorage.setItem("loggedIn","true");
-    localStorage.setItem("username",res.user.displayName);
-    location.href="Lootify1.html";
-  });
+window.signInWithEmailAndPassword = signInWithEmailAndPassword;
+window.auth = auth;
+
+window.googleLogin = () => {
+  signInWithRedirect(auth, provider);
 };
+
+getRedirectResult(auth)
+  .then((result)=>{
+    if(result && result.user){
+      location.replace("/Lootify/Lootify1.html");
+    }
+  })
+  .catch(console.error);
 </script>
 
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
