@@ -158,7 +158,13 @@ document.addEventListener('mousemove', (e) => {
 <!-- FIREBASE -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
-import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
+import { 
+  getAuth, 
+  GoogleAuthProvider, 
+  signInWithPopup, 
+  signInWithEmailAndPassword,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyC9CiSEsdIYIHcFhTkrwyCxlLUUxkmLiDY",
@@ -173,18 +179,29 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 
+// 🔐 إذا راه مسجل، ما نخلوهش هنا
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    window.location.href = "Lootify1.html";
+  }
+});
+
+// expose to normal script
 window.auth = auth;
 window.signInWithEmailAndPassword = signInWithEmailAndPassword;
 
+// Google login
 window.googleLogin = () => {
-  signInWithPopup(auth, provider).then(()=>{
-    location.href = "Lootify1.html";
-  }).catch(err=>{
-    alert(err.message);
-  });
+  signInWithPopup(auth, provider)
+    .then(() => {
+      window.location.href = "Lootify1.html";
+    })
+    .catch(err => alert(err.message));
 };
 </script>
 
+
 </body>
 </html>
+
 
