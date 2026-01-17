@@ -362,17 +362,13 @@ nav a:hover{color:#f2dc91}
 </div>
 
 <script>
-// Protection
-if(localStorage.getItem("loggedIn")!=="true"){location.href="index.html";}
 
 // User & Cart
-document.getElementById("username").innerText="Hi, "+(localStorage.getItem("username")||"Player");
 let cart=JSON.parse(localStorage.getItem("cart"))||[];
 updateCount();
 function addToCart(item){cart.push(item);localStorage.setItem("cart",JSON.stringify(cart));updateCount();}
 function updateCount(){document.getElementById("count").innerText=cart.length;}
 function showCart(){alert(cart.join(", "));}
-function logout(){localStorage.clear(); location.href="index.html";}
 
 // NPC dialogue
 const dialogues = [
@@ -428,9 +424,46 @@ dialogueBox.addEventListener("click",()=>{
 </script>
 
 <audio src="wow.mp3" autoplay loop></audio>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
+import { 
+  getAuth, 
+  onAuthStateChanged, 
+  signOut 
+} from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyC9CiSEsdIYIHcFhTkrwyCxlLUUxkmLiDY",
+  authDomain: "lootify-89bf6.firebaseapp.com",
+  projectId: "lootify-89bf6",
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+// 🔐 PROTECT STORE PAGE
+onAuthStateChanged(auth, (user) => {
+  if (!user) {
+    // ما كانش user → رجعو للـ login
+    window.location.href = "index.html";
+  } else {
+    // user موجود → مرحبا بيه
+    document.getElementById("username").innerText =
+      "Hi, " + (user.email || "Player");
+  }
+});
+
+// 🚪 LOGOUT
+window.logout = () => {
+  signOut(auth).then(() => {
+    window.location.href = "index.html";
+  });
+};
+</script>
 
 </body>
 </html>
+
 
 
 
