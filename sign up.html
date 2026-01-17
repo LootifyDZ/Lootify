@@ -1,95 +1,24 @@
-v<!DOCTYPE html>
-<html lang="ar">
+<!DOCTYPE html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Lootify | Sign Up</title>
 <link rel="icon" href="rr.png">
-
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:monospace}
-
-/* ===== SIGNUP ===== */
-body, html{
-  height:100%;
-  background:#001b0f;
-  color:#38ff9c;
-  overflow:hidden;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-}
-
-.system{
-  width:90%;
-  max-width:720px;
-  position:relative;
-}
-
-.terminal{
-  background:rgba(0,0,0,.75);
-  border-left:4px solid #38ff9c;
-  padding:22px;
-  position:relative;
-}
-
-.terminal span{color:#38ff9c; display:block; margin-bottom:10px;}
-.terminal input{
-  width:100%;
-  background:#0d1b0c;
-  color:#a8ff8c;
-  border:none;
-  border-bottom:1px solid #38ff9c;
-  padding:12px;
-  margin:12px 0;
-}
-.terminal button{
-  width:100%;
-  padding:12px;
-  background:#073d10;
-  color:#a8ff8c;
-  border:1px solid #38ff9c;
-  margin-top:10px;
-  cursor:pointer;
-}
-
-/* Bear & Pupils */
-.bear-login-wrapper{
-  position:absolute;
-  bottom:100%;
-  left:20%;
-  transform:translateX(-50%);
-  width:180px;
-  pointer-events:none;
-}
+body, html{height:100%;display:flex;justify-content:center;align-items:center;background:#001b0f;color:#38ff9c;overflow:hidden}
+.system{width:90%;max-width:720px;position:relative}
+.terminal{background:rgba(0,0,0,.75);border-left:4px solid #38ff9c;padding:22px;position:relative;}
+.terminal span{color:#38ff9c;display:block;margin-bottom:10px;}
+.terminal input{width:100%;background:#0d1b0c;color:#a8ff8c;border:none;border-bottom:1px solid #38ff9c;padding:12px;margin:12px 0;}
+.terminal button{width:100%;padding:12px;background:#073d10;color:#a8ff8c;border:1px solid #38ff9c;margin-top:10px;cursor:pointer;}
+.bear-login-wrapper{position:absolute;bottom:100%;left:20%;transform:translateX(-50%);width:180px;pointer-events:none;}
 .bear-login{width:100%;image-rendering:pixelated;animation:blink 5s infinite;}
-@keyframes blink{
-  0%,90%,100%{transform:scaleY(1);}
-  92%,96%{transform:scaleY(0.1);}
-}
-.pupil{
-  position:absolute;
-  width:16px;
-  height:16px;
-  background:#000;
-  border-radius:50%;
-  z-index:2;
-}
-
-/* Confetti */
-.confetti-piece{
-  position:absolute;
-  width:6px;
-  height:6px;
-  background:#a8ff8c;
-  opacity:0.8;
-  pointer-events:none;
-  animation:fall 2s linear forwards;
-}
-@keyframes fall{
-  0%{transform:translateY(0);}
-  100%{transform:translateY(200px) rotate(360deg); opacity:0;}
-}
+@keyframes blink{0%,90%,100%{transform:scaleY(1);}92%,96%{transform:scaleY(0.1);}}
+.pupil{position:absolute;width:16px;height:16px;background:#000;border-radius:50%;z-index:2;}
+.confetti-piece{position:absolute;width:6px;height:6px;background:#a8ff9c;opacity:0.8;pointer-events:none;animation:fall 2s linear forwards;}
+@keyframes fall{0%{transform:translateY(0);}100%{transform:translateY(200px) rotate(360deg);opacity:0;}}
 </style>
 </head>
 <body>
@@ -106,11 +35,14 @@ body, html{
     <input id="email" type="email" placeholder="البريد الإلكتروني">
     <input id="pass" type="password" placeholder="كلمة المرور">
     <button onclick="signUp()">CREATE ACCOUNT</button>
+
+    <a href="index.html" style="display:block;margin-top:12px;color:#38ff9c;text-align:center">
+      Already have an account? Login
+    </a>
   </div>
 </div>
 
 <script type="module">
-// ===== Firebase =====
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
 import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
 
@@ -126,75 +58,46 @@ const firebaseConfig={
 const app=initializeApp(firebaseConfig);
 const auth=getAuth(app);
 
-// ===== Pupils =====
-const leftPupil=document.getElementById('leftPupil');
-const rightPupil=document.getElementById('rightPupil');
-const bearWrapper=document.querySelector('.bear-login-wrapper');
-const eyesCenter = { x: bearWrapper.offsetWidth*0.55, y: bearWrapper.offsetHeight*0.3 };
+// Pupils animation
+window.addEventListener('DOMContentLoaded',()=>{
+  const leftPupil=document.getElementById('leftPupil');
+  const rightPupil=document.getElementById('rightPupil');
+  const bearWrapper=document.querySelector('.bear-login-wrapper');
+  const eyesCenter={x:bearWrapper.offsetWidth*0.55,y:bearWrapper.offsetHeight*0.3};
 
-document.addEventListener('mousemove',(e)=>{
-  const rect=bearWrapper.getBoundingClientRect();
-  const dx=e.clientX-(rect.left+eyesCenter.x);
-  const dy=e.clientY-(rect.top+eyesCenter.y);
-  const angle=Math.atan2(dy,dx);
-  const radius=8;
-  const offsetX=radius*Math.cos(angle);
-  const offsetY=radius*Math.sin(angle);
+  leftPupil.style.left=`${bearWrapper.offsetWidth*0.35}px`;
+  leftPupil.style.top=`${bearWrapper.offsetHeight*0.3}px`;
+  rightPupil.style.left=`${bearWrapper.offsetWidth*0.65}px`;
+  rightPupil.style.top=`${bearWrapper.offsetHeight*0.3}px`;
 
-  leftPupil.style.left=`${bearWrapper.offsetWidth*0.35 + offsetX - leftPupil.offsetWidth/2}px`;
-  leftPupil.style.top=`${bearWrapper.offsetHeight*0.3 + offsetY - leftPupil.offsetHeight/2}px`;
-
-  rightPupil.style.left=`${bearWrapper.offsetWidth*0.65 + offsetX - rightPupil.offsetWidth/2}px`;
-  rightPupil.style.top=`${bearWrapper.offsetHeight*0.3 + offsetY - rightPupil.offsetHeight/2}px`;
+  document.addEventListener('mousemove',(e)=>{
+    const rect=bearWrapper.getBoundingClientRect();
+    const dx=e.clientX-(rect.left+eyesCenter.x);
+    const dy=e.clientY-(rect.top+eyesCenter.y);
+    const angle=Math.atan2(dy,dx);
+    const radius=8;
+    const offsetX=radius*Math.cos(angle);
+    const offsetY=radius*Math.sin(angle);
+    leftPupil.style.left=`${bearWrapper.offsetWidth*0.35 + offsetX}px`;
+    leftPupil.style.top=`${bearWrapper.offsetHeight*0.3 + offsetY}px`;
+    rightPupil.style.left=`${bearWrapper.offsetWidth*0.65 + offsetX}px`;
+    rightPupil.style.top=`${bearWrapper.offsetHeight*0.3 + offsetY}px`;
+  });
 });
 
-// ===== Terminal typing effect =====
-const terminalText = document.getElementById('terminalText');
-function typeEffect(text,callback){
-  terminalText.textContent=''; let i=0;
-  const t=setInterval(()=>{
-    if(i<text.length){
-      terminalText.textContent+=text[i++];
-    }else{
-      clearInterval(t);
-      if(callback) callback();
-    }
-  },40);
-}
-
-// ===== Confetti =====
-function confetti(){
-  for(let i=0;i<30;i++){
-    const piece=document.createElement('div');
-    piece.className='confetti-piece';
-    piece.style.left=Math.random()*window.innerWidth+'px';
-    piece.style.background=`hsl(${Math.random()*360},80%,60%)`;
-    document.body.appendChild(piece);
-    setTimeout(()=>piece.remove(),2000);
-  }
-}
-
-// ===== SignUp =====
+// Sign Up
 window.signUp=()=>{
   const email=document.getElementById('email').value;
   const password=document.getElementById('pass').value;
-  typeEffect("> Creating your account...",()=>{
-    createUserWithEmailAndPassword(auth,email,password)
-      .then(()=>{
-        confetti();
-        typeEffect("> Account created successfully! Redirecting...",()=>{
-          setTimeout(()=>{ location.href="index.html"; },1500);
-        });
-      })
-      .catch(err=>{
-        typeEffect(`> ERROR: ${err.message}`);
-      });
-  });
+  createUserWithEmailAndPassword(auth,email,password)
+    .then(()=>{location.href="Lootify1.html";})
+    .catch(err=>alert(err.message));
 };
 </script>
 
 </body>
 </html>
+
 
 
 
