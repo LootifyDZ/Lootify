@@ -3,168 +3,50 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lootify | System Access</title>
+<title>Lootify | Login</title>
 <link rel="icon" href="rr.png">
-
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:monospace}
-
-/* ===== LOGIN ===== */
-#loginScreen{
-  display:flex;
-  height:100vh;
-  background:linear-gradient(180deg,#a67c52 0%,#8c6239 50%,#5a2d15 100%);
-  justify-content:center;
-  align-items:center;
-  color:#eee;
-  overflow:hidden;
-}
-
-.system{width:90%;max-width:620px;transform:translateY(60px)}
-
-.terminal{
-  margin-top:25px;
-  background:rgba(0,0,0,.65);
-  border-left:4px solid #a67c52;
-  padding:22px;
-  position:relative;
-}
-
-.terminal span{color:#e6c79c}
-.terminal input{
-  width:100%;
-  background:#2b1506;
-  color:#f3d7b0;
-  border:none;
-  border-bottom:1px solid #5a2d15;
-  padding:12px;
-  margin:12px 0;
-}
-.terminal button{
-  width:100%;
-  padding:12px;
-  background:#3d1f0a;
-  color:#f3d7b0;
-  border:1px solid #a67c52;
-  margin-top:8px;
-  cursor:pointer;
-}
-
-.bear-login-wrapper{
-  position:absolute;
-  bottom:98%;
-  left:15%;
-  transform:translateX(-50%);
-  width:159px;
-  pointer-events:none;
-}
-.bear-login{width:100%;image-rendering:pixelated}
-
-.pupil{
-  position:absolute;
-  width:14px;
-  height:14px;
-  pointer-events:none;
-  z-index:2;
-  background:
-    linear-gradient(#000 0 0) center/90% 8px no-repeat,
-    linear-gradient(#000 0 0) center/7px 90% no-repeat;
-  transform: translate(-50%, -50%);
-}
-
-#particles{
-  position:fixed;
-  inset:0;
-  z-index:-1;
-}
+body, html{height:100%;display:flex;justify-content:center;align-items:center;background:#001b0f;color:#38ff9c;overflow:hidden}
+.system{width:90%;max-width:720px;position:relative}
+.terminal{background:rgba(0,0,0,.75);border-left:4px solid #38ff9c;padding:22px;position:relative;}
+.terminal span{color:#38ff9c;display:block;margin-bottom:10px;}
+.terminal input{width:100%;background:#0d1b0c;color:#a8ff8c;border:none;border-bottom:1px solid #38ff9c;padding:12px;margin:12px 0;}
+.terminal button{width:100%;padding:12px;background:#073d10;color:#a8ff9c;border:1px solid #38ff9c;margin-top:10px;cursor:pointer;}
+.bear-login-wrapper{position:absolute;bottom:100%;left:20%;transform:translateX(-50%);width:180px;pointer-events:none;}
+.bear-login{width:100%;image-rendering:pixelated;animation:blink 5s infinite;}
+@keyframes blink{0%,90%,100%{transform:scaleY(1);}92%,96%{transform:scaleY(0.1);}}
+.pupil{position:absolute;width:16px;height:16px;background:#000;border-radius:50%;z-index:2;}
 </style>
 </head>
 <body>
 
-<div id="loginScreen">
-  <canvas id="particles"></canvas>
-
-  <div class="system">
-    <div class="terminal">
-
-      <div class="bear-login-wrapper">
-        <img src="bearee.png" class="bear-login">
-        <div class="pupil" id="leftPupil"></div>
-        <div class="pupil" id="rightPupil"></div>
-      </div>
-
-      <span>&gt; ENTER EMAIL :</span>
-      <input id="email" type="email">
-
-      <span>&gt; ENTER PASSWORD :</span>
-      <input id="pass" type="password">
-
-      <button onclick="login()">UNLOCK SYSTEM</button>
-      <button onclick="googleLogin()">GOOGLE AUTH</button>
-
-      <a href="sign up.html" style="display:block;margin-top:12px;color:#e6c79c;text-align:center">
-        you don’t have an account? sign up
-      </a>
-
+<div class="system">
+  <div class="terminal">
+    <div class="bear-login-wrapper">
+      <img src="bearee.png" class="bear-login">
+      <div class="pupil" id="leftPupil"></div>
+      <div class="pupil" id="rightPupil"></div>
     </div>
+
+    <span>&gt; ENTER EMAIL :</span>
+    <input id="email" type="email">
+
+    <span>&gt; ENTER PASSWORD :</span>
+    <input id="pass" type="password">
+
+    <button onclick="login()">UNLOCK SYSTEM</button>
+    <button onclick="googleLogin()">GOOGLE AUTH</button>
+
+    <a href="signup.html" style="display:block;margin-top:12px;color:#38ff9c;text-align:center">
+      you don’t have an account? sign up
+    </a>
   </div>
 </div>
 
-<script>
-/* ===== LOGIN ===== */
-function login(){
-  signInWithEmailAndPassword(
-    window.auth,
-    email.value,
-    pass.value
-  ).then(()=>{
-    location.href = "Lootify1.html";
-  }).catch(err=>{
-    alert(err.message);
-  });
-}
-
-/* ===== PUPILS (UNCHANGED) ===== */
-const leftPupil = document.getElementById('leftPupil');
-const rightPupil = document.getElementById('rightPupil');
-const bearWrapper = document.querySelector('.bear-login-wrapper');
-
-const eyesCenter = {
-  x: bearWrapper.offsetWidth * 0.575,
-  y: bearWrapper.offsetHeight * 0.29
-};
-
-function setInitialEyes(){
-  leftPupil.style.left  = `${bearWrapper.offsetWidth * 0.39}px`;
-  leftPupil.style.top   = `${bearWrapper.offsetHeight * 3.80}px`;
-  rightPupil.style.left = `${bearWrapper.offsetWidth * 0.76}px`;
-  rightPupil.style.top  = `${bearWrapper.offsetHeight * 3.80}px`;
-}
-setInitialEyes();
-
-document.addEventListener('mousemove', (e) => {
-  const rect = bearWrapper.getBoundingClientRect();
-  const dx = e.clientX - (rect.left + eyesCenter.x);
-  const dy = e.clientY - (rect.top + eyesCenter.y);
-  const angle = Math.atan2(dy, dx);
-  const radius = 6;
-  const x = Math.cos(angle) * radius;
-  const y = Math.sin(angle) * radius;
-  leftPupil.style.transform  = `translate(-50%, -50%) translate(${x}px, ${y}px)`;
-  rightPupil.style.transform = `translate(-50%, -50%) translate(${x}px, ${y}px)`;
-});
-</script>
-
-<!-- FIREBASE -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
-import { 
-  getAuth, 
-  GoogleAuthProvider, 
-  signInWithPopup, 
-  signInWithEmailAndPassword,
-  onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
+import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyC9CiSEsdIYIHcFhTkrwyCxlLUUxkmLiDY",
@@ -179,29 +61,54 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 
-// 🔐 إذا راه مسجل، ما نخلوهش هنا
+// 🔐 Redirect if logged in
 onAuthStateChanged(auth, (user) => {
-  if (user) {
-    window.location.href = "Lootify1.html";
-  }
+  if(user) location.href = "Lootify1.html";
 });
 
-// expose to normal script
-window.auth = auth;
-window.signInWithEmailAndPassword = signInWithEmailAndPassword;
-
-// Google login
-window.googleLogin = () => {
-  signInWithPopup(auth, provider)
-    .then(() => {
-      window.location.href = "Lootify1.html";
-    })
-    .catch(err => alert(err.message));
+// Login functions
+window.login = () => {
+  const emailInput = document.getElementById('email').value;
+  const passInput = document.getElementById('pass').value;
+  signInWithEmailAndPassword(auth,emailInput,passInput)
+    .then(()=>location.href="Lootify1.html")
+    .catch(err=>alert(err.message));
 };
-</script>
 
+window.googleLogin = () => {
+  signInWithPopup(auth,provider)
+    .then(()=>location.href="Lootify1.html")
+    .catch(err=>alert(err.message));
+};
+
+// Pupils animation
+window.addEventListener('DOMContentLoaded',()=>{
+  const leftPupil=document.getElementById('leftPupil');
+  const rightPupil=document.getElementById('rightPupil');
+  const bearWrapper=document.querySelector('.bear-login-wrapper');
+  const eyesCenter={x:bearWrapper.offsetWidth*0.55,y:bearWrapper.offsetHeight*0.3};
+
+  leftPupil.style.left=`${bearWrapper.offsetWidth*0.35}px`;
+  leftPupil.style.top=`${bearWrapper.offsetHeight*0.3}px`;
+  rightPupil.style.left=`${bearWrapper.offsetWidth*0.65}px`;
+  rightPupil.style.top=`${bearWrapper.offsetHeight*0.3}px`;
+
+  document.addEventListener('mousemove',(e)=>{
+    const rect=bearWrapper.getBoundingClientRect();
+    const dx=e.clientX-(rect.left+eyesCenter.x);
+    const dy=e.clientY-(rect.top+eyesCenter.y);
+    const angle=Math.atan2(dy,dx);
+    const radius=8;
+    const offsetX=radius*Math.cos(angle);
+    const offsetY=radius*Math.sin(angle);
+    leftPupil.style.left=`${bearWrapper.offsetWidth*0.35 + offsetX}px`;
+    leftPupil.style.top=`${bearWrapper.offsetHeight*0.3 + offsetY}px`;
+    rightPupil.style.left=`${bearWrapper.offsetWidth*0.65 + offsetX}px`;
+    rightPupil.style.top=`${bearWrapper.offsetHeight*0.3 + offsetY}px`;
+  });
+});
+</script>
 
 </body>
 </html>
-
 
