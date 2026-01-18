@@ -177,9 +177,9 @@ window.addEventListener('DOMContentLoaded', () => {
   const eyesCenter = { x: bearWrapper.offsetWidth*0.55, y: bearWrapper.offsetHeight*0.3 };
 
   // initial position
-  leftPupil.style.left  = `${bearWrapper.offsetWidth * 0.35}px`;
+  leftPupil.style.left  = `${bearWrapper.offsetWidth * 0.38}px`;
   leftPupil.style.top   = `${bearWrapper.offsetHeight * 0.3}px`;
-  rightPupil.style.left = `${bearWrapper.offsetWidth * 0.65}px`;
+  rightPupil.style.left = `${bearWrapper.offsetWidth * 0.77}px`;
   rightPupil.style.top  = `${bearWrapper.offsetHeight * 0.3}px`;
 
   document.addEventListener('mousemove', (e) => {
@@ -190,10 +190,10 @@ window.addEventListener('DOMContentLoaded', () => {
     const radius = 8;
     const offsetX = radius * Math.cos(angle);
     const offsetY = radius * Math.sin(angle);
-    leftPupil.style.left  = `${bearWrapper.offsetWidth*0.35 + offsetX}px`;
-    leftPupil.style.top   = `${bearWrapper.offsetHeight*0.31 + offsetY}px`;
-    rightPupil.style.left = `${bearWrapper.offsetWidth*0.85 + offsetX}px`;
-    rightPupil.style.top  = `${bearWrapper.offsetHeight*0.31 + offsetY}px`;
+    leftPupil.style.left  = `${bearWrapper.offsetWidth*0.38 + offsetX}px`;
+    leftPupil.style.top   = `${bearWrapper.offsetHeight*0.30 + offsetY}px`;
+    rightPupil.style.left = `${bearWrapper.offsetWidth*0.77 + offsetX}px`;
+    rightPupil.style.top  = `${bearWrapper.offsetHeight*0.30 + offsetY}px`;
   });
 });
 </script>
@@ -202,5 +202,6 @@ window.addEventListener('DOMContentLoaded', () => {
 
 </body>
 </html>
+
 
 
