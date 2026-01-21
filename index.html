@@ -5,134 +5,90 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Lootify | System Access</title>
 <link rel="icon" href="rr.png">
-
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:monospace}
-
-/* ===== LOGIN ===== */
-#loginScreen{
-  display:flex;
-  height:100vh;
-  background:linear-gradient(180deg,#a67c52 0%,#8c6239 50%,#5a2d15 100%);
-  justify-content:center;
-  align-items:center;
-  color:#eee;
-  overflow:hidden;
-}
-
-.system{width:90%;max-width:620px;transform:translateY(60px)}
-
-.terminal{
-  margin-top:25px;
-  background:rgba(0,0,0,.65);
-  border-left:4px solid #a67c52;
-  padding:22px;
-  position:relative;
-}
-
-.terminal span{color:#e6c79c}
-.terminal input{
-  width:100%;
-  background:#2b1506;
-  color:#f3d7b0;
-  border:none;
-  border-bottom:1px solid #5a2d15;
-  padding:12px;
-  margin:12px 0;
-}
-.terminal button{
-  width:100%;
-  padding:12px;
-  background:#3d1f0a;
-  color:#f3d7b0;
-  border:1px solid #a67c52;
-  margin-top:8px;
-  cursor:pointer;
-}
-
-.bear-login-wrapper{
-  position:absolute;
-  bottom:98%;
-  left:15%;
-  transform:translateX(-50%);
-  width:159px;
-  pointer-events:none;
-}
-.bear-login{width:100%;image-rendering:pixelated}
-
-.pupil{
-  position:absolute;
-  width:14px;
-  height:14px;
-  pointer-events:none;
-  z-index:2;
+html, body { margin:0; padding:0; height:100%; overflow:hidden; cursor:none; font-family: monospace; }
+body {
   background:
-    linear-gradient(#000 0 0) center/90% 8px no-repeat,
-    linear-gradient(#000 0 0) center/7px 90% no-repeat;
-  transform: translate(-50%, -50%);
+    radial-gradient(circle at 25% 25%, #a67c52 0%, transparent 50%),
+    radial-gradient(circle at 75% 75%, #8c6239 0%, transparent 50%),
+    linear-gradient(180deg,#a67c52 0%,#8c6239 50%,#5a2d15 100%);
 }
+.cursor {
+  position:fixed; width:6px; height:6px;
+  border:2px solid #f3d7b0; border-radius:50%;
+  pointer-events:none; transform:translate(-50%,-50%);
+  z-index:9999; transition: transform 0.05s ease-out;
+}
+.cursor.active { transform:translate(-50%,-50%) scale(2); background:#f3d7b0; }
 
-#particles{
-  position:fixed;
-  inset:0;
-  z-index:-1;
+#particles { position:fixed; inset:0; z-index:0; pointer-events:none; }
+
+#loginScreen { display:flex; justify-content:center; align-items:center; height:100%; }
+.system { width:90%; max-width:620px; transform:translateY(60px); }
+.terminal {
+  margin-top:25px;background:rgba(0,0,0,.65);
+  border-left:4px solid #a67c52;padding:22px;position:relative;
+}
+.terminal span { color:#e6c79c; display:block; margin:8px 0; }
+
+.terminal input {
+  width:95%; margin:8px 0; padding:12px;cursor: none;
+  background:#2b1506; color:#f3d7b0; border:none; border-bottom:1px solid #5a2d15;
+}
+.terminal button {
+  width:100%; margin:10px 0; padding:12px;
+  background:#3d1f0a; color:#f3d7b0; border:1px solid #a67c52;cursor: none;
+}
+.terminal button:hover { box-shadow:0 0 20px rgba(166,124,82,0.6); }
+
+.bear-login-wrapper {
+  position:absolute; bottom:98%; left:15%; transform:translateX(-50%);
+  width:159px; pointer-events:none;
+}
+.bear-login { width:100%; image-rendering:pixelated; }
+.pupil {
+  position:absolute; width:14px; height:14px;
+  background:linear-gradient(#000 0 0) center/90% 8px no-repeat,
+             linear-gradient(#000 0 0) center/7px 90% no-repeat;
+  transform:translate(-50%,-50%); pointer-events:none; transition: transform 0.15s;
+  transform-origin: center center;
 }
 </style>
 </head>
 <body>
 
-<div id="loginScreen">
-  <canvas id="particles"></canvas>
+<div class="cursor"></div>
+<canvas id="particles"></canvas>
 
+<div id="loginScreen">
   <div class="system">
     <div class="terminal">
-
       <div class="bear-login-wrapper">
-        <img src="bearee.png" class="bear-login">
+        <img src="bearee.png" class="bear-login" id="bear">
         <div class="pupil" id="leftPupil"></div>
         <div class="pupil" id="rightPupil"></div>
       </div>
 
-      <span>&gt; ENTER EMAIL :</span>
+      <span>&gt; EMAIL:</span>
       <input id="email" type="email">
-
-      <span>&gt; ENTER PASSWORD :</span>
+      <span>&gt; PASSWORD:</span>
       <input id="pass" type="password">
 
       <button onclick="login()">UNLOCK SYSTEM</button>
-      <button onclick="googleLogin()">GOOGLE AUTH</button>
-
+      <button onclick="googleLogin()">GOOGLE LOGIN</button>
       <a href="sign up.html" style="display:block;margin-top:12px;color:#e6c79c;text-align:center">
         you don’t have an account? sign up
       </a>
-
     </div>
   </div>
 </div>
 
-<script>
-/* ===== LOGIN ===== */
-function login(){
-  signInWithEmailAndPassword(
-    window.auth,
-    email.value,
-    pass.value
-  ).then(()=>{
-    location.href = "Lootify1.html";
-  }).catch(err=>{
-    alert(err.message);
-  });
-}
-
-
-</script>
-
-<!-- FIREBASE -->
 <script type="module">
+// ===== FIREBASE =====
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
-import { getAuth, onAuthStateChanged, GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
+import { getAuth, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
+import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
 
-// ===== Firebase config =====
 const firebaseConfig = {
   apiKey: "AIzaSyC9CiSEsdIYIHcFhTkrwyCxlLUUxkmLiDY",
   authDomain: "lootify-89bf6.firebaseapp.com",
@@ -141,67 +97,129 @@ const firebaseConfig = {
   messagingSenderId: "1075454919896",
   appId: "1:1075454919896:web:3cada8ca62c612dd9a03ad"
 };
-
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
+const db = getFirestore(app);
 const provider = new GoogleAuthProvider();
 
-// ===== 🔐 Redirect if logged in =====
-onAuthStateChanged(auth, (user) => {
-  if (user) {
-    window.location.href = "Lootify1.html"; // يروح مباشرة للستور
-  }
-});
+// ===== REDIRECT IF LOGGED IN =====
+onAuthStateChanged(auth, user => { if(user) location.href="Lootify1.html"; });
 
-// ===== Login functions =====
-window.auth = auth;
-window.signInWithEmailAndPassword = signInWithEmailAndPassword;
-
+// ===== LOGIN FUNCTIONS =====
 window.login = () => {
-  signInWithEmailAndPassword(auth, email.value, pass.value)
-    .then(() => { location.href = "Lootify1.html"; })
-    .catch(err => { alert(err.message); });
+  const emailVal = document.getElementById('email').value;
+  const passVal = document.getElementById('pass').value;
+  signInWithEmailAndPassword(auth, emailVal, passVal)
+    .then(async cred => {
+      await setDoc(doc(db, "users", cred.user.uid), { email:cred.user.email, lastLogin:new Date() });
+      location.href="Lootify1.html";
+    }).catch(err => alert(err.message));
 };
 
 window.googleLogin = () => {
   signInWithPopup(auth, provider)
-    .then(() => { location.href = "Lootify1.html"; })
-    .catch(err => { alert(err.message); });
+    .then(async cred => {
+      await setDoc(doc(db,"users",cred.user.uid), { email:cred.user.email, lastLogin:new Date() });
+      location.href="Lootify1.html";
+    }).catch(err => alert(err.message));
 };
 
-// ===== Pupils animation =====
-window.addEventListener('DOMContentLoaded', () => {
-  const leftPupil = document.getElementById('leftPupil');
-  const rightPupil = document.getElementById('rightPupil');
-  const bearWrapper = document.querySelector('.bear-login-wrapper');
-  const eyesCenter = { x: bearWrapper.offsetWidth*0.55, y: bearWrapper.offsetHeight*0.3 };
-
-  // initial position
-  leftPupil.style.left  = `${bearWrapper.offsetWidth * 0.38}px`;
-  leftPupil.style.top   = `${bearWrapper.offsetHeight * 0.3}px`;
-  rightPupil.style.left = `${bearWrapper.offsetWidth * 0.77}px`;
-  rightPupil.style.top  = `${bearWrapper.offsetHeight * 0.3}px`;
-
-  document.addEventListener('mousemove', (e) => {
-    const rect = bearWrapper.getBoundingClientRect();
-    const dx = e.clientX - (rect.left + eyesCenter.x);
-    const dy = e.clientY - (rect.top + eyesCenter.y);
-    const angle = Math.atan2(dy, dx);
-    const radius = 8;
-    const offsetX = radius * Math.cos(angle);
-    const offsetY = radius * Math.sin(angle);
-    leftPupil.style.left  = `${bearWrapper.offsetWidth*0.38 + offsetX}px`;
-    leftPupil.style.top   = `${bearWrapper.offsetHeight*0.30 + offsetY}px`;
-    rightPupil.style.left = `${bearWrapper.offsetWidth*0.77 + offsetX}px`;
-    rightPupil.style.top  = `${bearWrapper.offsetHeight*0.30 + offsetY}px`;
-  });
+// ===== CURSOR =====
+const cursor = document.querySelector(".cursor");
+document.addEventListener("mousemove", e => {
+  cursor.style.left = e.clientX + "px";
+  cursor.style.top = e.clientY + "px";
 });
+document.querySelectorAll("button,input").forEach(el=>{
+  el.addEventListener("mouseenter",()=>cursor.classList.add("active"));
+  el.addEventListener("mouseleave",()=>cursor.classList.remove("active"));
+});
+
+// ===== PUPILS =====
+const left = document.getElementById("leftPupil");
+const right = document.getElementById("rightPupil");
+const bear = document.querySelector(".bear-login-wrapper");
+left.style.left="38%"; left.style.top="30%";
+right.style.left="77%"; right.style.top="30%";
+
+document.addEventListener("mousemove", e => {
+  const r = bear.getBoundingClientRect();
+  const dx = e.clientX - (r.left + r.width/2);
+  const dy = e.clientY - (r.top + r.height/2);
+  const a = Math.atan2(dy, dx);
+  const x = Math.cos(a)*8;
+  const y = Math.sin(a)*8;
+
+  left.dataset.tx = x; left.dataset.ty = y;
+  right.dataset.tx = x; right.dataset.ty = y;
+
+  left.style.transform = `translate(-50%,-50%) translate(${x}px,${y}px) scaleY(${left.dataset.blink || 1})`;
+  right.style.transform = `translate(-50%,-50%) translate(${x}px,${y}px) scaleY(${right.dataset.blink || 1})`;
+});
+
+
+// ===== CLEAN SYNCHRONIZED BLINK =====
+const allPupils = [left, right];
+
+function blink(){
+  // close eyes
+  allPupils.forEach(p=>{
+    p.dataset.blink = 0.1;
+    p.style.transform =
+      `translate(-50%,-50%) translate(${p.dataset.tx||0}px,${p.dataset.ty||0}px) scaleY(0.1)`;
+  });
+
+  // open eyes
+  setTimeout(()=>{
+    allPupils.forEach(p=>{
+      p.dataset.blink = 1;
+      p.style.transform =
+        `translate(-50%,-50%) translate(${p.dataset.tx||0}px,${p.dataset.ty||0}px) scaleY(1)`;
+    });
+  },120);
+
+  // next blink (natural delay)
+  setTimeout(blink, Math.random()*2500 + 2500);
+}
+
+blink();
+
+// ===== PARTICLES =====
+const canvas = document.getElementById("particles");
+const ctx = canvas.getContext("2d");
+function resize(){canvas.width=window.innerWidth; canvas.height=window.innerHeight;}
+window.addEventListener("resize",resize); resize();
+
+let particles=[];
+for(let i=0;i<120;i++){
+  particles.push({
+    x: Math.random()*canvas.width,
+    y: Math.random()*canvas.height,
+    r: Math.random()*2+1,
+    vx: (Math.random()-0.5)/2,
+    vy: (Math.random()-0.5)/2,
+    color: `hsla(${Math.random()*40+20},35%,80%,0.35)`
+  });
+}
+
+function draw(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  particles.forEach(p=>{
+    p.x+=p.vx; p.y+=p.vy;
+    if(p.x>canvas.width) p.x=0; if(p.x<0) p.x=canvas.width;
+    if(p.y>canvas.height) p.y=0; if(p.y<0) p.y=canvas.height;
+    ctx.beginPath();
+    ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+    ctx.fillStyle = p.color; ctx.fill();
+  });
+  requestAnimationFrame(draw);
+}
+draw();
+
 </script>
-
-
-
 </body>
 </html>
+
 
 
 
